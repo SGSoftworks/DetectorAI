@@ -244,11 +244,25 @@ class AnalysisService {
         },
       });
 
+      const searchResults = response.data.items || [];
+      const totalResults = response.data.searchInformation?.totalResults || 0;
+
+      // Procesar y formatear los resultados para mostrar
+      const formattedResults = searchResults.map((item, index) => ({
+        id: index + 1,
+        title: item.title,
+        link: item.link,
+        snippet: item.snippet,
+        displayLink: item.displayLink,
+        relevance: this.calculateRelevance(text, item),
+      }));
+
       return {
-        searchResults: response.data.items || [],
-        totalResults: response.data.searchInformation?.totalResults || 0,
+        searchResults: formattedResults,
+        totalResults: totalResults,
         keywords: keywords,
-        similarity: this.calculateSimilarity(text, response.data.items || []),
+        similarity: this.calculateSimilarity(text, searchResults),
+        analysis: this.analyzeSearchResults(formattedResults, text),
       };
     } catch (error) {
       throw new Error(`Error en Google Search API: ${error.message}`);
@@ -489,6 +503,96 @@ class AnalysisService {
     return Math.round((totalSimilarity / searchResults.length) * 100) / 100;
   }
 
+  // Calcular relevancia de cada resultado de búsqueda
+  calculateRelevance(text, searchResult) {
+    const textWords = new Set(text.toLowerCase().split(/\s+/));
+    const titleWords = new Set(searchResult.title.toLowerCase().split(/\s+/));
+    const snippetWords = new Set(searchResult.snippet.toLowerCase().split(/\s+/));
+    
+    const titleIntersection = new Set([...textWords].filter(x => titleWords.has(x)));
+    const snippetIntersection = new Set([...textWords].filter(x => snippetWords.has(x)));
+    
+    const titleRelevance = titleIntersection.size / textWords.size;
+    const snippetRelevance = snippetIntersection.size / textWords.size;
+    
+    return Math.round((titleRelevance * 0.7 + snippetRelevance * 0.3) * 100) / 100;
+  }
+
+  // Analizar resultados de búsqueda para contexto
+  analyzeSearchResults(searchResults, originalText) {
+    if (!searchResults.length) {
+      return {
+        summary: "No se encontraron resultados relevantes",
+        conclusion: "La falta de fuentes verificadas sugiere contenido original o poco común",
+        recommendation: "Verificar manualmente la información"
+      };
+    }
+
+    const highRelevanceResults = searchResults.filter(r => r.relevance > 0.5);
+    const mediumRelevanceResults = searchResults.filter(r => r.relevance > 0.2 && r.relevance <= 0.5);
+    const lowRelevanceResults = searchResults.filter(r => r.relevance <= 0.2);
+
+    let conclusion = "";
+    let recommendation = "";
+
+    if (highRelevanceResults.length > 0) {
+      conclusion = `Se encontraron ${highRelevanceResults.length} fuentes altamente relevantes que respaldan o contradicen el contenido.`;
+      recommendation = "El contenido parece estar basado en información verificable.";
+    } else if (mediumRelevanceResults.length > 0) {
+      conclusion = `Se encontraron ${mediumRelevanceResults.length} fuentes con relevancia moderada.`;
+      recommendation = "El contenido tiene algunas referencias verificables pero requiere verificación adicional.";
+    } else {
+      conclusion = "Los resultados de búsqueda tienen baja relevancia con el contenido analizado.";
+      recommendation = "El contenido puede ser original, poco común o requerir verificación manual.";
+    }
+
+    return {
+      summary: `Análisis de ${searchResults.length} fuentes encontradas`,
+      conclusion: conclusion,
+      recommendation: recommendation,
+      relevanceBreakdown: {
+        high: highRelevanceResults.length,
+        medium: mediumRelevanceResults.length,
+        low: lowRelevanceResults.length
+      }
+    };
+  }
+
+  // Generar explicación detallada del resultado
+  generateDetailedExplanation(isAI, confidence, explanations, results) {
+    const baseExplanation = isAI 
+      ? "El análisis sugiere que este contenido fue generado por Inteligencia Artificial"
+      : "El análisis sugiere que este contenido fue creado por un ser humano";
+
+    let contextExplanation = "";
+    let sourceExplanation = "";
+    let recommendation = "";
+
+    // Explicación del contexto de búsqueda
+    if (results.googleSearch && results.googleSearch.analysis) {
+      const analysis = results.googleSearch.analysis;
+      contextExplanation = ` ${analysis.conclusion} ${analysis.recommendation}`;
+    }
+
+    // Explicación de fuentes
+    if (results.googleSearch && results.googleSearch.searchResults.length > 0) {
+      const sources = results.googleSearch.searchResults;
+      const highRelevance = sources.filter(s => s.relevance > 0.5).length;
+      sourceExplanation = ` Se analizaron ${sources.length} fuentes web, de las cuales ${highRelevance} tienen alta relevancia.`;
+    }
+
+    // Recomendación basada en confianza
+    if (confidence > 0.8) {
+      recommendation = " La alta confianza del análisis sugiere que este resultado es muy confiable.";
+    } else if (confidence > 0.6) {
+      recommendation = " La confianza moderada sugiere que este resultado es confiable pero se recomienda verificación adicional.";
+    } else {
+      recommendation = " La baja confianza sugiere que se requiere verificación manual del contenido.";
+    }
+
+    return baseExplanation + contextExplanation + sourceExplanation + recommendation;
+  }
+
   combineResults(results) {
     let aiScore = 0;
     let humanScore = 0;
@@ -523,20 +627,28 @@ class AnalysisService {
     // Analizar resultados de Google Search
     if (results.googleSearch) {
       const similarity = results.googleSearch.similarity;
+      const searchAnalysis = results.googleSearch.analysis;
+      
       if (similarity > 0.7) {
         humanScore += 0.8;
         aiScore += 0.2;
+        explanations.push(
+          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${searchAnalysis.conclusion}`
+        );
       } else if (similarity < 0.3) {
         aiScore += 0.8;
         humanScore += 0.2;
+        explanations.push(
+          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${searchAnalysis.conclusion}`
+        );
       } else {
         aiScore += 0.5;
         humanScore += 0.5;
+        explanations.push(
+          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${searchAnalysis.conclusion}`
+        );
       }
       totalConfidence += 0.6;
-      explanations.push(
-        `Búsqueda web: Similitud ${Math.round(similarity * 100)}%`
-      );
     }
 
     // Calcular resultado final
