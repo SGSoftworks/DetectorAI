@@ -1,0 +1,367 @@
+
+ 
+
+
+Institución: Fundación Universitaria para el desarrollo humano UNINPAHU
+
+
+Facultad: Ingeniería y tecnología
+
+
+Programa: Ingeniería de Software
+
+
+Título: Sistema Basado en Inteligencia Artificial para la Detección de Noticias Falsas
+
+
+Autores: Iván Jair Mendoza Solano, Juan David Gómez Ruidiaz
+
+
+Docente: Martha Cecilia Vidal Arizabaleta
+
+
+Asignatura: Anteproyecto NT 1256 grupo 001
+
+
+Lugar: Bogotá D.C.
+
+
+Fecha: 28/05/2025
+ 
+
+ 
+
+
+
+FUNDACIÓN UNIVERSITARIA PARA EL DESARROLLO HUMANO FACULTAD DE INGENIERÍA Y TECNOLOGÍAS DE LA INFORMACIÓN
+
+FORMATO PARA LA PRESENTACIÓN DEL ANTEPROYECTO DE INVESTIGACIÓN IDENTIFICACIÓN DE LA CÁTEDRA:
+FACULTAD	
+PROGRAMA	NOMBRE y CÓDIGO DE LA ASIGNATURA	NOMBRE Y CORREO DEL DOCENTE	FECHA DE ENTREGA
+Ingeniería y Tecnologías de la Información	Ingeniería de software	Anteproyecto
+NT 1256 Grupo 001	Martha Cecilia Vidal Arizabaleta mvidalar@uninpahu.edu.co
+28-05-2025
+INFORMACIÓN GENERAL DEL PROYECTO
+TÍTULO DEL PROYECTO: Sistema Basado en Inteligencia Artificial para la Detección de Noticias Falsas
+IDENTIFICACIÓN DE LOS PROPONENTES
+
+Estudiante 1.
+Nombre completo: Ivan Jair Mendoza Solano
+Correo electrónico institucional: imendozaso@uninpahu.edu.co Correo personal: ivanyairm176@gmail.com
+Teléfono fijo: 		Teléfono Celular: 3007379137
+
+Estudiante 2.
+Nombre completo: Juan David Gomez Ruidiaz
+Correo electrónico institucional: Jgomezru@uninpahu.edu.co Correo personal: Juandagr2004@gmail.com
+Teléfono fijo:	Teléfono Celular: 321 917 7602
+Patrocinio para el desarrollo: N/A
+Descriptores / Palabras claves: Inteligencia artificial (artificial intelligence), las noticias falsas (fake news), el procesamiento de lenguaje natural (natural language processing), el aprendizaje automático (machine learning) y la desinformación (disinformation)
+ 
+
+ 
+
+ANTEPROYECTO: NT 1256 GRUPO 001
+Pregrado FIT-CIB UNINPAHU
+Carta Aprobación Anteproyecto docente titular Docente: Martha Cecilia Vidal Arizabaleta
+Fecha: MAYO 30 2025
+Estudiante: Iván Jair Mendoza Solano, Juan David Gómez Ruidiaz
+Proyecto: Sistema Basado en Inteligencia Artificial para la Detección de Noticias Falsas
+Calificación: 46
+
+APRECIADOS PROFESORES Y ESTUDIANTES:
+
+Cordial saludo:
+
+Como es de su conocimiento, la investigación es un proceso de mejoramiento continuo, que invita siempre a tener una actitud atenta a los cambios y ajustes que requiere el tratamiento de un problema en el mundo real.
+
+En período 2025-1, los estudiantes de Anteproyecto NT 125c Grupo 001 estructuraron un Anteproyecto al que se le puede dar continuidad como opción de Grado. Los trabajos con soporte de empresa integran como Anexo una carta al documento final como aval de las organizaciones para estas prácticas académicas.
+
+El próximo semestre, adelantarán el desarrollo de los trabajos bajo la directriz de los docentes y/o tutores de las asignaturas orientadas a trabajo de grado. Visibilizar y llevar a cabo estos trabajos es una gran oportunidad para los nuevos profesionales y para nuestra institución.
+
+Es necesario ir ajustando en forma permanente los informes escritos en correlación con la información que emerja del contacto con entornos, usuarios, documentos, herramientas tecnológicas, organizaciones, entre otros.
+
+Los trabajos que se desarrollen como Proyectos de Investigación aplicada en organizaciones, asumirán con el director del Proyecto y los proponentes la elaboración de las partes capitulares del documento, el desarrollo del producto, puesta en marcha, validación y pruebas.
+
+Agradezco su atención.
+
+¡Les deseo éxitos en el desarrollo de esta importante propuesta!
+ 
+RESUMEN
+La presente investigación propone el desarrollo de un sistema basado en inteligencia artificial (IA) para la detección automatizada de noticias falsas en medios digitales. La proliferación de desinformación representa un riesgo significativo para la democracia, la salud pública y la cohesión social, especialmente en contextos como el colombiano. Este trabajo adopta un enfoque cuantitativo, aplicado y experimental, estructurado en cinco fases: recopilación y limpieza de datos, preprocesamiento mediante procesamiento de lenguaje natural (PLN), entrenamiento de modelos de aprendizaje automático, validación del sistema y desarrollo de una interfaz interactiva.
+La metodología integra algoritmos supervisados y modelos avanzados como redes neuronales recurrentes (RNN), SVM y transformadores (BERT), implementados con herramientas de software libre como Python, NLTK y (spaCy, s.f.). Se emplean conjuntos de datos etiquetados disponibles públicamente y se establecen métricas de evaluación como precisión, exactitud y F1-score. El sistema se somete a pruebas de usabilidad, integración y rendimiento para garantizar su eficacia.
+Adicionalmente, se incorporan criterios éticos, legales y normativos relacionados con el uso responsable de tecnologías de IA, la protección de datos personales y la transparencia algorítmica, conforme a lineamientos nacionales e internacionales. Como resultado, se espera obtener una herramienta funcional, precisa y accesible que permita mitigar la difusión de contenidos engañosos y fortalecer la veracidad informativa en entornos digitales. Este proyecto busca aportar a la alfabetización mediática y al desarrollo tecnológico con impacto social.
+
+
+Palabras clave: inteligencia artificial, noticias falsas, procesamiento de lenguaje natural, aprendizaje automático, desinformación.
+ABSTRACT
+This research proposes the development of an artificial intelligence (AI)-based system for the automated detection of fake news in digital media. The proliferation of misinformation poses a significant risk to democracy, public health, and social cohesion, especially in contexts such as Colombia. This work adopts a quantitative, applied, and experimental approach, structured in five phases: data collection and cleaning, preprocessing through natural language processing (NLP), training of machine learning models, system validation, and the development of an interactive interface.
+
+
+The methodology integrates supervised algorithms and advanced models such as recurrent neural networks (RNN), support vector machines (SVM), and transformers (BERT), implemented using open-source tools such as Python, NLTK, and spaCy. Publicly available labeled datasets are used, and evaluation metrics such as precision, accuracy, and F1-score are established. The system undergoes usability, integration, and performance testing to ensure its effectiveness.
+
+
+Additionally, ethical, legal, and regulatory criteria are incorporated regarding the responsible use of AI technologies, personal data protection, and algorithmic transparency, in accordance with national and international guidelines. As a result, the project aims to deliver a functional, accurate, and accessible tool to mitigate the spread of misleading content and enhance informational truthfulness in digital environments. This initiative contributes to media literacy and technological development with social impact.
+
+
+Keywords: artificial intelligence, fake news, natural language processing, machine learning, misinformation.
+ 
+1.	INTRODUCCIÓN
+
+En la era digital, el acceso a la información es más fácil y rápido que nunca, pero esto también ha dado lugar a un aumento significativo en la propagación de noticias falsas. Las plataformas digitales y las redes sociales permiten la difusión de contenido sin filtros ni verificaciones rigurosas, lo que genera una creciente problemática en términos de desinformación. Según la (UNESCO, 2021), la propagación de noticias falsas ha aumentado de manera alarmante, afectando no solo la percepción de la realidad de los usuarios, sino también la estabilidad política, social y económica de los países. Esto ha llevado a la necesidad de desarrollar herramientas tecnológicas avanzadas que permitan combatir la desinformación de manera eficaz.
+La inteligencia artificial (IA) ha emergido como una solución clave en la lucha contra la desinformación. Según la Organización para la Cooperación y el Desarrollo Económicos (OCDE, 2019) la implementación de modelos de aprendizaje automático en la verificación de información ha demostrado ser efectiva para identificar patrones de noticias falsas. Estos modelos utilizan algoritmos avanzados para analizar el contenido textual y audiovisual, comparándolo con fuentes verificadas para determinar su autenticidad. Además, un estudio de (WeLiveSecurity, 2024) señala que los avances en IA han permitido desarrollar herramientas de detección automatizada capaces de identificar contenido manipulado, incluyendo deepfakes y titulares engañosos.
+Este proyecto tiene como objetivo desarrollar un sistema basado en inteligencia artificial para la detección de noticias falsas, aplicando técnicas de procesamiento de lenguaje natural (NLP) y aprendizaje automático. La elección de este enfoque se debe a la creciente necesidad de soluciones automatizadas que permitan a los usuarios y plataformas digitales filtrar la información de manera más precisa y confiable. Investigaciones como las realizadas por la (Javeriana, 2023) han demostrado que el uso de IA en la detección de desinformación puede alcanzar niveles de precisión superiores al 85%, lo que refuerza su potencial como una herramienta efectiva en este ámbito.
+En el contexto colombiano, el (Ministerio de Ciencia, 2021) ha enfatizado la importancia de desarrollar normativas y tecnologías que contribuyan a la verificación de la información en medios digitales. La desinformación no solo afecta la credibilidad de las instituciones y medios
+ 
+de comunicación, sino que también influye en la toma de decisiones de la sociedad. Por ello, el desarrollo de este sistema basado en IA busca proporcionar una solución tecnológica que permita reducir el impacto de las noticias falsas, fortaleciendo la confianza en la información digital y promoviendo el acceso a contenido veraz y confiable.
+Por tanto, intentamos responder a una necesidad global y local de mitigar la desinformación a través de herramientas innovadoras basadas en inteligencia artificial. Su desarrollo permitirá avanzar en la creación de modelos más precisos y adaptables a la evolución de las estrategias de desinformación, contribuyendo así a la construcción de un ecosistema digital más seguro y transparente. La propagación de noticias falsas tiene un impacto significativo en la opinión pública, afectando la estabilidad política y social. La Inteligencia Artificial (IA) ha demostrado ser una herramienta efectiva para el análisis y clasificación de contenido, permitiendo la automatización de procesos de verificación de información.
+En la actualidad, el auge de plataformas digitales y redes sociales ha facilitado la rápida difusión de información no verificada. Según la (UNESCO, 2021), la desinformación ha aumentado exponencialmente debido a la facilidad con la que se pueden generar y compartir noticias falsas. La (OCDE, 2019) destaca que la implementación de IA en la verificación de información es una estrategia clave para garantizar la transparencia informativa. Además, un estudio realizado por (WeLiveSecurity, 2024) resalta que los avances en IA han permitido la creación de contenido falso más convincente, lo que hace que sea más difícil su detección manual.
+Este proyecto tiene como objetivo desarrollar un sistema basado en IA que pueda detectar noticias falsas mediante técnicas de aprendizaje automático y procesamiento de lenguaje natural (NLP). Para ello, se analizarán diversas fuentes de información, permitiendo identificar patrones característicos de la desinformación. Este sistema busca contribuir a la reducción de la propagación de contenido falso, fortaleciendo la credibilidad de la información en entornos digitales.
+ 
+2.	PLANTEAMIENTO DEL PROBLEMA
+
+En Colombia, la desinformación en línea se ha convertido en un problema creciente, especialmente en el contexto de las elecciones y la pandemia de COVID-19. La propagación de noticias falsas ha generado desconfianza en las instituciones y ha polarizado el debate público. Según datos del (Comunicaciones, 2022), el 70% de los colombianos se informan a través de redes sociales, lo que aumenta la vulnerabilidad a la desinformación. Casos recientes de desinformación han tenido un impacto significativo en la toma de decisiones políticas y en la adopción de medidas de salud pública, lo que subraya la urgencia de desarrollar soluciones efectivas.
+Actualmente, el crecimiento del acceso a información digital ha llevado a la difusión masiva de noticias falsas, lo que representa un reto significativo para la sociedad. La información se propaga rápidamente a través de redes sociales, plataformas de mensajería instantánea y sitios web informativos, lo que dificulta la verificación de su autenticidad. Según la (UNESCO, 2021), las noticias falsas se han convertido en una amenaza global que impacta la toma de decisiones políticas, económicas y sanitarias. En el contexto de crisis, como la pandemia de COVID-19, la propagación de información errónea ha generado consecuencias negativas en la adopción de medidas de salud pública y en la desconfianza hacia las instituciones.
+El avance de las tecnologías de inteligencia artificial ha traído consigo una dualidad en el combate contra la desinformación. Si bien la IA puede ser utilizada para generar contenido falso más sofisticado, como los deepfakes y textos generados por modelos avanzados de procesamiento de lenguaje natural (WeLiveSecurity, 2024), también representa una oportunidad para desarrollar herramientas de detección automatizada. Investigaciones recientes, como las realizadas por la (Javeriana, 2023), han demostrado que el uso de modelos de aprendizaje automático para la clasificación de noticias falsas ha alcanzado niveles de precisión superiores al 85%.
+Sin embargo, a pesar de estos avances, aún existen desafíos importantes. La (OCDE, 2019) señala que uno de los principales problemas en la implementación de IA para la detección de noticias falsas es la falta de regulaciones y estándares globales que definan su uso ético y responsable. En algunos países, como España, se han aprobado leyes que obligan a las plataformas a identificar contenido generado por IA para evitar la difusión de información falsa
+ 
+(Post, 2025). No obstante, en Colombia, aunque el (Ministerio de Ciencia, 2021) ha propuesto marcos regulatorios, aún no se han implementado de manera efectiva mecanismos de control y sanción para mitigar la desinformación en línea.
+Otro aspecto relevante es la adaptabilidad de los modelos de IA a nuevas estrategias de desinformación. La velocidad con la que evolucionan las noticias falsas hace que muchos algoritmos de detección queden obsoletos en poco tiempo. Según la (Javeriana, 2023), uno de los principales retos en este campo es la actualización continua de los modelos de aprendizaje automático y la creación de bases de datos de entrenamiento que reflejen los patrones cambiantes de desinformación en distintos idiomas y contextos culturales.
+Por ello, el presente estudio se enfocará en desarrollar un sistema de detección de noticias falsas basado en inteligencia artificial que sea capaz de adaptarse dinámicamente a los cambios en la generación de contenido engañoso. La implementación de esta tecnología no solo contribuirá a reducir la desinformación en medios digitales, sino que también servirá como base para futuras regulaciones en el uso de IA en el ámbito informativo. La pregunta de investigación que guiará este estudio es: ¿Cómo puede un sistema basado en inteligencia artificial mejorar la detección y clasificación de noticias falsas en plataformas digitales y adaptarse a los cambios en las estrategias de desinformación? Según un informe de la (UNESCO, 2021), la desinformación ha incrementado exponencialmente en los últimos años, especialmente en redes sociales, donde el contenido falso se propaga más rápido que el contenido verificado. Además, un estudio de (WeLiveSecurity, 2024) resalta que los avances en IA han permitido la creación de deepfakes y contenido falso cada vez más convincente, dificultando su detección por parte de los usuarios y plataformas digitales. La falta de herramientas automatizadas para detectar contenido falso dificulta la verificación de la información por parte de los usuarios. La proliferación de información errónea puede afectar la toma de decisiones en sectores clave como la política, la salud y la economía. La (OCDE, 2019) señala que la implementación de IA puede mejorar significativamente la detección de contenido falso en medios digitales. Sin embargo, existen desafíos, como la adaptabilidad de los algoritmos a nuevas formas de desinformación. Según un estudio de la (Javeriana, 2023), la efectividad de los modelos de IA depende en gran medida de la disponibilidad de datos de entrenamiento precisos y actualizados.
+ 
+La falta de regulación clara también agrava el problema. En España, por ejemplo, se ha aprobado un anteproyecto de ley que obliga a identificar contenidos generados por IA para evitar la difusión de noticias falsas (Post, 2025). En Colombia, el (Ministerio de Ciencia, 2021)ha destacado la necesidad de establecer normativas que permitan el uso responsable de la IA en la verificación de información.
+Por ello, se plantea la creación de un sistema de detección de noticias falsas basado en IA que permita filtrar y categorizar la información de manera eficiente. Además, investigaciones recientes, como las realizadas por la (Javeriana, 2023), indican que la aplicación de modelos de aprendizaje automático en el procesamiento de noticias falsas ha logrado niveles de precisión superiores al 85% en la identificación de contenido engañoso. Sin embargo, existen desafíos en la actualización de los modelos debido a la constante evolución de las estrategias de desinformación (Post, 2025). La pregunta de investigación que guiará este estudio es: ¿Cómo puede un sistema basado en inteligencia artificial mejorar la detección y clasificación de noticias falsas en plataformas digitales?
+ 
+3.	FORMULACIÓN DE OBJETIVOS
+
+Objetivo General:
+
+Desarrollar un sistema basado en inteligencia artificial para la detección de noticias falsas, empleando algoritmos de aprendizaje automático y procesamiento de lenguaje natural, con capacidad de adaptación a nuevas estrategias de desinformación.
+Objetivos Específicos:
+
+1.	Recopilar y preprocesar un conjunto de datos etiquetados de noticias verdaderas y falsas provenientes de redes sociales y fuentes de noticias colombianas, para el entrenamiento del modelo de IA.
+2.	Desarrollar un modelo de clasificación basado en redes neuronales transformadoras (Transformers) y redes neuronales recurrentes (RNN), para identificar patrones lingüísticos característicos de las noticias falsas en el contexto colombiano.
+3.	Implementar un módulo de actualización continua del modelo, utilizando técnicas de aprendizaje por refuerzo, para adaptarlo a nuevas estrategias de desinformación y mantener su precisión a lo largo del tiempo.
+4.	Diseñar y desarrollar una interfaz web interactiva que permita a los usuarios verificar la autenticidad de noticias, proporcionar retroalimentación sobre la precisión del sistema y acceder a explicaciones sobre las decisiones del modelo.
+ 
+4.	JUSTIFICACIÓN DE LA INVESTIGACIÓN
+
+La propagación de noticias falsas representa un desafío crítico en el entorno digital actual, afectando la confianza en la información y la estabilidad social. Este proyecto busca ofrecer una solución innovadora mediante el desarrollo de un sistema de detección de noticias falsas basado en inteligencia artificial, contribuyendo a la mitigación del problema desde un enfoque tecnológico y académico.
+Desde una perspectiva tecnológica, la implementación de modelos avanzados de aprendizaje automático y procesamiento de lenguaje natural permitirá la identificación eficiente de patrones de desinformación. Investigaciones como las realizadas por la (Javeriana, 2023) han demostrado que estos modelos pueden mejorar significativamente la precisión en la detección de contenido falso, alcanzando niveles superiores al 85%. La capacidad de actualización automática del sistema propuesto garantizará su adaptabilidad frente a la evolución constante de las estrategias de desinformación.
+A nivel académico, el proyecto aportará al desarrollo de nuevas metodologías en la aplicación de IA para la verificación de información, sentando bases para futuras investigaciones en el área. Además, servirá como referencia para la creación de marcos normativos que regulen el uso de la IA en la validación de contenido digital, una necesidad cada vez más evidente en distintos países (Post, 2025).
+En el ámbito social, la implementación de este sistema fortalecerá la confianza en los medios digitales al proporcionar una herramienta fiable para la identificación de información engañosa. De acuerdo con la (UNESCO, 2021), combatir la desinformación es esencial para preservar la integridad del debate público y la toma de decisiones informadas en la sociedad. Por ello, este proyecto busca no solo desarrollar una solución técnica, sino también generar conciencia sobre la importancia de la verificación de la información.
+En conclusión, este trabajo representa un esfuerzo significativo para abordar el problema de las noticias falsas desde un enfoque interdisciplinario, integrando tecnología, investigación y regulación. Su impacto no solo beneficiará a usuarios y plataformas digitales, sino que también contribuirá al desarrollo de estrategias globales para la lucha contra la desinformación. La (UNESCO, 2021) enfatiza que la desinformación es un problema global que afecta la estabilidad
+ 
+política, social y económica, lo que resalta la importancia de desarrollar herramientas automatizadas para combatir este fenómeno.
+Este proyecto aborda los desafíos específicos de la desinformación en Colombia, centrándose en las plataformas de redes sociales y los temas de debate político y salud pública. Se alinea con las iniciativas del MinTIC para promover el uso responsable de la IA y la verificación de información en línea.
+La implementación de este sistema permitirá reducir la propagación de noticias falsas en un 30% en las plataformas de redes sociales analizadas, según las proyecciones basadas en estudios previos. Esto fortalecerá la confianza en la información digital y mejorará la calidad del debate público. Además, proporcionará a los usuarios una herramienta para verificar la autenticidad de las noticias, lo que les permitirá tomar decisiones más informadas.
+Organizaciones de verificación de datos y periodistas también podrán utilizar esta tecnología para agilizar sus procesos de comprobación.
+ 
+5.	MARCO TEÓRICO
+
+El marco teórico constituye la base conceptual y referencial que sustenta el desarrollo de la investigación. Permite contextualizar el problema de estudio a partir de teorías, modelos y antecedentes relevantes. En el caso del presente trabajo, se abordan cuatro aspectos fundamentales que permiten estructurar la propuesta: estado del arte, marco conceptual, marco contextual y marco legal y normativo.
+5.1	Estado del arte
+
+La detección de noticias falsas ha sido un tema de creciente interés en los últimos años, especialmente por su impacto en la opinión pública, los procesos democráticos y la estabilidad social. (Shu, Sliva, Wang, Tang, & & Liu, 2017) destacan que, en el ámbito digital, la detección de noticias falsas se ha abordado desde una perspectiva de minería de datos, utilizando modelos supervisados de aprendizaje automático (machine learning) y técnicas de procesamiento del lenguaje natural (PLN).
+Modelos como SVM, Random Forest y Naïve Bayes han sido aplicados en investigaciones iniciales, pero con la evolución de la inteligencia artificial, el aprendizaje profundo (deep learning) ha ganado protagonismo. Tecnologías como redes neuronales recurrentes (RNN), convolucionales (CNN) y transformers (como BERT y RoBERTa) han mejorado notablemente la precisión de la clasificación automática de contenido falso (Goodfellow, Bengio, & Courville, 2016). Estas soluciones permiten detectar patrones lingüísticos y contextuales más complejos, superando las limitaciones de los enfoques clásicos.
+Por otra parte, investigaciones como la de la (Javeriana, 2023) han demostrado la aplicabilidad de estos modelos en el contexto colombiano, logrando niveles de precisión superiores al 85 % en la detección de noticias falsas en medios digitales nacionales. Asimismo, (WeLiveSecurity, 2024) resalta el uso de herramientas de detección automatizada para identificar contenido manipulado, como imágenes alteradas o deepfakes.
+5.2	Marco referencial (conceptual)
+
+La comprensión conceptual del fenómeno de las noticias falsas parte de la definición de
+desinformación, entendida como información falsa o engañosa difundida deliberadamente para
+ 
+manipular percepciones (Wardle & & Derakhshan, 2017). En este sentido, se diferencian tipos de desinformación: sátira, contenido impostor, contenido fabricado, conexión falsa, contenido engañoso, entre otros (UNESCO, 2021).
+Desde el campo de la inteligencia artificial, los sistemas de detección se apoyan en algoritmos capaces de clasificar textos en categorías binarias (falso/verdadero), usando variables lingüísticas, metadatos, análisis de sentimientos y detección de anomalías. Según (Bishop, 2006), estos modelos se entrenan con grandes volúmenes de datos etiquetados y aprenden patrones que permiten identificar contenido sospechoso. La integración de modelos generativos (como GPT) y transformadores ha permitido aumentar la precisión y robustez de los sistemas (Goodfellow, Bengio, & Courville, 2016).
+En cuanto al PLN, herramientas como el análisis sintáctico, la lematización y el reconocimiento de entidades nombradas (NER) son esenciales para el análisis textual de noticias (Jurafsky & Martin, 2020). Estas técnicas, combinadas con motores de verificación automatizada, permiten cotejar el contenido con fuentes confiables.
+Teóricamente, este trabajo se enmarca en la teoría de la agenda-setting (McCombs & Shaw, 1972), que señala el poder de los medios para influir en la percepción de la realidad. También se retoman elementos de la teoría de la espiral del silencio y los sesgos cognitivos, que explican por qué ciertos contenidos falsos ganan tracción frente a información verificada (Wardle & & Derakhshan, 2017).
+5.3	Marco contextual
+
+El fenómeno de la desinformación se intensificó con el auge de las redes sociales y plataformas digitales, donde el control editorial es mínimo. Según (Newman, 2021), una proporción creciente de la población se informa exclusivamente a través de redes, sin verificar la autenticidad del contenido.
+En Colombia, el contexto digital se caracteriza por un consumo masivo de información a través de redes como Facebook, WhatsApp y Twitter. El (Comunicaciones, 2022) advierte sobre la necesidad de implementar mecanismos tecnológicos que combatan la desinformación. Eventos como las elecciones o la pandemia han evidenciado cómo la propagación de noticias falsas puede afectar la salud pública o alterar procesos democráticos.
+ 
+En este contexto, el uso de sistemas automatizados basados en IA ofrece una solución tecnológica eficaz. La (Javeriana, 2023) señala que adaptar modelos internacionales al contexto colombiano permite mayor eficacia al incorporar el análisis de lenguaje local, dialectos y dinámicas socioculturales propias.
+Además, la iniciativa gubernamental de establecer un marco nacional para el uso ético de la inteligencia artificial (Ministerio de Ciencia, 2021) fortalece el desarrollo de soluciones que consideren las particularidades legales, sociales y culturales del país.
+5.4	Marco legal y normativo
+
+La implementación de sistemas de IA para la detección de noticias falsas debe alinearse con los marcos legales que regulan el tratamiento de datos, la libertad de expresión y la protección de los derechos fundamentales.
+A nivel nacional, la (Colombia, 2009) establece el marco general de las políticas de tecnologías de la información, mientras que el “Marco Ético para la Inteligencia Artificial” (Ministerio de Ciencia, 2021) orienta sobre el uso responsable, transparente y explicable de estas tecnologías. Adicionalmente, el (RGPD, 2016) de la Unión Europea, aunque no de aplicación directa en Colombia, sirve como referencia en el tratamiento ético y seguro de los datos personales.
+Desde el enfoque internacional, la (UNESCO, 2021) y la (OCDE, 2019) han propuesto principios que promueven el uso ético de la inteligencia artificial, entre ellos, la equidad, la transparencia, la rendición de cuentas y la protección de los derechos humanos. Estas recomendaciones son especialmente relevantes cuando se desarrollan modelos que pueden afectar la reputación de personas u organizaciones al clasificar contenidos como falsos.
+Además, el uso de datos abiertos o la recuperación de noticias para entrenamiento del modelo deben ajustarse a las normativas sobre propiedad intelectual y licencias de uso, con el fin de evitar violaciones a los derechos de autor.
+La Estrategia Nacional de IA del Gobierno colombiano (Comunicaciones, 2022) incluye como uno de sus pilares la creación de soluciones que mejoren la confianza en la información digital. También contempla el desarrollo de marcos regulatorios que exijan a las plataformas
+ 
+identificar contenido generado por IA (Post, 2025), lo que impacta directamente en la difusión de noticias falsas.
+ 
+6.	METODOLOGÍA DEL PROYECTO
+
+La presente investigación tiene como objetivo desarrollar un sistema basado en inteligencia artificial (IA) para la detección de noticias falsas, respondiendo a la creciente necesidad de herramientas tecnológicas que contribuyan a combatir la desinformación en medios digitales. El proyecto adopta un enfoque cuantitativo, aplicado y experimental, ya que busca generar una solución tecnológica concreta mediante el uso de modelos de aprendizaje automático entrenados con grandes volúmenes de datos textuales (Goodfellow, Bengio, & Courville, 2016).
+La metodología seleccionada es de tipo experimental y sigue un diseño proyectivo, dado que contempla la creación, entrenamiento y validación de modelos de clasificación automática.
+Se emplearán técnicas de minería de texto, procesamiento de lenguaje natural (PLN) y algoritmos supervisados para identificar patrones en el lenguaje de noticias falsas y verdaderas (Jurafsky & Martin, 2020).
+La investigación se estructura en cinco fases: recolección y limpieza de datos, preprocesamiento del lenguaje, entrenamiento del modelo, evaluación del rendimiento y diseño de una interfaz de usuario funcional. Estas fases garantizan un proceso de desarrollo
+sistemático y replicable. El proyecto se desarrollará dentro de un periodo estimado de seis meses, considerando los recursos técnicos y humanos disponibles, lo cual lo hace viable y ejecutable dentro del tiempo académico estipulado.
+6.1	Diseño de investigación
+El diseño de investigación es de tipo cuantitativo experimental, en el que se manipulan variables independientes (características lingüísticas, tipo de algoritmo) para observar su efecto sobre la variable dependiente (precisión en la clasificación de noticias falsas).
+Se utilizará un conjunto de datos etiquetado (noticias verdaderas y falsas), que será dividido en subconjuntos para entrenamiento, validación y prueba. Los algoritmos seleccionados incluyen Support Vector Machines (SVM), Random Forest y redes neuronales profundas, los cuales serán comparados para determinar cuál ofrece mayor rendimiento (Bishop, 2006).
+El enfoque permite iterar sobre diferentes configuraciones, evaluar métricas objetivas y tomar decisiones basadas en evidencia cuantificable, tal como se recomienda en desarrollos aplicados de ingeniería de software (Russell & Norvig, 2016).
+ 
+6.2	Instrumentos de recolección de información
+Los datos a utilizar provienen de fuentes públicas y bases de datos previamente etiquetadas, como el conjunto “Fake and Real News Dataset” disponible en (Kaggle, s.f.), lo que garantiza diversidad y calidad. También se podrán complementar con datos extraídos de sitios verificados y servicios de fact-checking.
+Se aplicará minería de texto para extraer características relevantes como frecuencia de palabras, puntuación, número de caracteres y uso de adjetivos o expresiones emocionales. Para ello se utilizarán herramientas como Python, junto con bibliotecas como NLTK (Bird, Klein, & Loper, 2009) y Scikit-learn para modelado y análisis.
+La integración de estos instrumentos permite automatizar la recolección y preprocesamiento de grandes volúmenes de información, alineándose con los objetivos del proyecto y el enfoque experimental.
+6.3	Criterios éticos de la investigación
+La investigación no involucra directamente a personas ni recopila información personal sensible. No obstante, se cumplirán principios éticos esenciales:
+•	Uso exclusivo de datos públicos y respeto a las licencias y derechos de autor de los conjuntos de datos empleados.
+•	Protección de la privacidad: aunque los datos no identifican personas, se evitará cualquier forma de exposición no consentida.
+•	Transparencia y aplicabilidad: el modelo será documentado para garantizar que sus decisiones puedan ser comprendidas por los usuarios (Floridi & Cowls, 2019).
+•	Mitigación de sesgos algorítmicos, mediante balanceo de clases, selección equitativa de datos y revisión de resultados.
+•	Responsabilidad social, dado que la herramienta influirá en el consumo de información; por tanto, se desarrollará bajo un enfoque ético y con fines de bienestar colectivo (Ministerio de Ciencia, 2021).
+6.4	Criterios de validación, seguridad, pruebas del sistema
+La validación del sistema se realizará a través de pruebas técnicas orientadas a asegurar su funcionamiento, robustez y confiabilidad:
+•	Evaluación de desempeño del modelo IA: se usarán métricas como exactitud, recall, F1-score y matriz de confusión sobre el conjunto de prueba.
+ 
+•	Pruebas de integración: verificarán la conexión entre el modelo, los datos y la interfaz web.
+•	Pruebas de estrés y rendimiento: para validar que el sistema puede procesar múltiples consultas de manera eficiente.
+•	Seguridad: se establecerán mecanismos básicos de control de acceso y protección del sistema, aunque no se manipularán datos personales.
+•	Pruebas de usabilidad: se realizarán pruebas piloto con usuarios para verificar que la interfaz sea comprensible y funcional (Newman, 2021).
+ 
+7.	CRONOGRAMA DEL PROYECTO
+
+El cronograma del proyecto se estructura según un enfoque de desarrollo ágil y experimental, dividiendo las actividades en fases iterativas que incluyen análisis, diseño, desarrollo, pruebas, validación, depuración, revisión y entrega de informes. Esta planificación permite un seguimiento claro del avance del proyecto y garantiza una mejora continua del sistema mediante retroalimentación y evaluación técnica.
+A continuación, se presenta el cronograma estimado para el desarrollo del proyecto, organizado en cinco meses:
+Actividad	Mes 1	Mes 2	Mes 3	Mes 4	Mes 5
+Revisión bibliográfica y elaboración del marco teórico	X				
+Recolección y limpieza de datos	X	X			
+Preprocesamiento y análisis exploratorio		X			
+Desarrollo y entrenamiento del modelo de IA		X	X		
+Validación del modelo y ajuste de parámetros			X		
+Desarrollo de la interfaz web interactiva			X	X	
+Integración y pruebas de componentes				X	
+Pruebas funcionales, de rendimiento y seguridad				X	X
+Revisión y depuración del sistema				X	X
+Entrega de informes parciales y documentación técnica					X
+Presentación final del proyecto					X
+Este cronograma contempla tanto las tareas técnicas como las académicas, asegurando un desarrollo progresivo y estructurado del sistema propuesto.
+¹ Este apartado fue redactado con asistencia de inteligencia artificial mediante el uso de ChatGPT de OpenAI, revisado y ajustado por los autores para su adecuación académica.
+ 
+8.	COSTOS DEL PROYECTO
+
+La estimación de costos es fundamental para asegurar la viabilidad y sostenibilidad del proyecto. En este caso, se contemplan tanto los costos directos asociados al desarrollo y prueba del sistema, como los costos indirectos derivados del soporte operativo, revisiones, documentación y entregas formales.
+Se han priorizado herramientas de software libre y recursos propios para optimizar el presupuesto, sin comprometer la calidad del producto final. En este proyecto se consideran tanto los costos directos asociados al desarrollo técnico como los costos indirectos relacionados con el soporte operativo del equipo de trabajo (Pressman, 2017).
+
+Rubro	Tipo	Descripción	Costo (COP)
+Horas de trabajo de los investigadores	Directo	200 horas a $30.000 por hora	$6.000.000
+Computador personal	Directo	Uso proporcional de equipo propio durante el proyecto	$1.200.000
+Electricidad e internet	Indirecto	Servicios asociados durante 5 meses	$300.000
+Software libre (Python, spaCy, NLTK)	Directo	Herramientas sin costo por licenciamiento	$0
+Editor de documentos
+(Microsoft Office)	Indirecto	Licencia anual prorrateada al tiempo de
+desarrollo	$150.000
+Transporte ocasional	Indirecto	Movilidad para consultas académicas o presentación de avances	$100.000
+Impresión y encuadernación	Indirecto	Producción del informe final para entrega institucional	$80.000
+
+Costo total estimado del proyecto: $7.830.000 COP
+
+Esta estrategia presupuestal permite cumplir con los objetivos del proyecto de manera eficiente, incorporando actividades críticas como pruebas, depuración, revisión continua y la entrega oportuna de informes.
+¹ Este apartado fue redactado con asistencia de inteligencia artificial mediante el uso de ChatGPT de OpenAI, revisado y ajustado por los autores para su adecuación académica.
+ 
+9.	RESULTADOS ESPERADOS
+
+Con este proyecto esperamos crear una herramienta útil y accesible que permita detectar noticias falsas de forma automática en internet, especialmente en medios digitales y redes sociales. El sistema que desarrollaremos estará basado en inteligencia artificial y funcionará como un apoyo para las personas que deseen verificar la veracidad de la información que consumen.
+Uno de los principales resultados esperados es contar con un prototipo funcional que analice textos de noticias y determine si son verdaderos o falsos, ayudando así a reducir la propagación de desinformación. También queremos que esta herramienta esté disponible en una interfaz web sencilla, para que cualquier persona pueda utilizarla sin necesidad de tener conocimientos técnicos.
+Además, esperamos que este trabajo contribuya a la alfabetización digital, es decir, que más personas aprendan a identificar cuándo una noticia puede ser falsa y tomen decisiones más informadas. Creemos que, si se usa bien, nuestra propuesta puede convertirse en una ayuda real para combatir la desinformación en Colombia.
+Nos gustaría que este proyecto no solo sea un ejercicio académico, sino que también tenga un impacto positivo en la forma como las personas acceden y comparten información en internet.
+ 
+Bibliografía, Webgrafía y Cibergrafía
+
+Las siguientes referencias corresponden a las fuentes utilizadas y citadas a lo largo del proyecto. Se ha verificado su pertinencia, actualidad y validez académica conforme a la normativa APA (7.ª edición). Se diferencian las fuentes impresas de las digitales, considerando criterios de calidad académica, accesibilidad y relevancia.
+Bibliografía (Fuentes impresas y académicas)
+
+Bird, S., Klein, E., & Loper, E. (2009). Natural language processing with Python: Analyzing text with the Natural Language Toolkit. O’Reilly Media.
+Bishop, C. M. (2006). Pattern recognition and machine learning. Springer.
+
+Floridi, L., & Cowls, J. (2019). A unified framework of five principles for AI in society.
+
+Harvard Data Science Review, 1(1). https://doi.org/10.1162/99608f92.8cd550d1
+
+Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep learning. MIT Press. https://www.deeplearningbook.org/
+Jurafsky, D., & Martin, J. H. (2020). Speech and language processing (3rd ed.). Pearson. https://web.stanford.edu/~jurafsky/slp3/
+McCombs, M., & Shaw, D. L. (1972). The agenda-setting function of mass media. Public Opinion Quarterly, 36(2), 176–187. https://doi.org/10.1086/267990
+Pressman, R. S. (2017). Software engineering: A practitioner’s approach (7th ed.).
+
+McGraw-Hill.
+
+Russell, S. J., & Norvig, P. (2016). Artificial intelligence: A modern approach (3rd ed.).
+
+Pearson Education.
+ 
+Shu, K., Sliva, A., Wang, S., Tang, J., & Liu, H. (2017). Fake news detection on social media: A data mining perspective. ACM SIGKDD Explorations Newsletter, 19(1), 22–36. https://doi.org/10.1145/3137597.3137600
+Wardle, C., & Derakhshan, H. (2017). Information disorder: Toward an interdisciplinary framework for research and policy making. Council of Europe. https://rm.coe.int/information-
+disorder-toward-an-interdisciplinary-framework-for-researc/168076277c
+
+Webgrafía y Cibergrafía (Fuentes digitales, gubernamentales y de software)
+
+spaCy. (s.f.). spaCy: Industrial-strength natural language processing in Python. https://spacy.io
+Huffington Post. (2025). El gobierno pone el foco en la inteligencia artificial: obligará a identificar contenidos generados por IA y establecerá sanciones. Recuperado de https://www.huffingtonpost.es/politica/el-gobierno-pone-foco-inteligencia-artificial-obligara-
+identificar-contenidos-generados-ia-establecera-sanciones.html
+
+Kaggle. (s.f.). Fake and real news dataset. https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset
+Congreso de Colombia. (2009). Ley 1341 de 2009: Por la cual se definen principios y conceptos sobre la sociedad de la información y la organización de las Tecnologías de la
+Información y las Comunicaciones (TIC), se crea la Agencia Nacional de Espectro y se dictan otras disposiciones. Departamento Administrativo de la Función Pública. https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=36913
+ 
+Ministerio de Ciencia, Tecnología e Innovación. (2021). Marco ético para la inteligencia artificial en Colombia. https://minciencias.gov.co/sites/default/files/marco-etico-ia-colombia-
+2021.pdf
+
+Ministerio de Tecnologías de la Información y las Comunicaciones. (2022). Estrategia nacional de inteligencia artificial. https://mintic.gov.co/portal/715/w3-article-334120.html
+Newman, N. (2021). Digital news report 2021. Reuters Institute. https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2021
+UNESCO. (2021). Recomendación sobre la ética de la inteligencia artificial. https://unesdoc.unesco.org/ark:/48223/pf0000380455_spa
+OCDE. (2019). Principios de la OCDE sobre inteligencia artificial. https://www.oecd.org/going-digital/ai/principles/
+Pontificia Universidad Javeriana. (2023). Desarrollo de herramientas de IA para la detección de noticias falsas en medios digitales colombianos. https://repository.javeriana.edu.co/handle/10554/67392
+RGPD. (2016, abril 27). Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo. https://eur-lex.europa.eu/legal-content/ES/TXT/?uri=CELEX:32016R0679
+WeLiveSecurity. (2024). Verificar información: Fake news, deepfakes e inteligencia
+
+artificial.  https://www.welivesecurity.com/es/seguridad-digital/verificar-informacion-fakenews-
+
+deepfakes-ia/
+ 
+REFERENCIAS BIBLIOGRÁFICAS
+
+Jurafsky, D., & Martin, J. H. (2020). Speech and language processing (3rd ed.). Pearson. https://web.stanford.edu/~jurafsky/slp3/
+Congreso de Colombia. (2009). Ley 1341 de 2009: Por la cual se definen principios y conceptos sobre la sociedad de la información y la organización de las
+Tecnologías de la Información y las Comunicaciones (TIC), se crea la Agencia Nacional de Espectro y se dictan otras disposiciones. Departamento Administrativo de la Función Pública. https://www.funcionpublica.gov.co/eva/gestornormativo/norma.php?i=36913
+Ministerio de Tecnologías de la Información y las Comunicaciones. (2022). Estrategia nacional de inteligencia artificial. https://mintic.gov.co/portal/715/w3-article-
+334120.html
+
+Newman, N. (2021). Digital news report 2021. Reuters Institute. https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2021
+RGPD. (2016, abril 27). Reglamento (UE) 2016/679 del Parlamento Europeo y del Consejo. https://eur-lex.europa.eu/legal-
+content/ES/TXT/?uri=CELEX:32016R0679
+
+Russell, S. J., & Norvig, P. (2016). Artificial intelligence: A modern approach (3rd ed.).
+
+Pearson Education.
+ 
+Shu, K., Sliva, A., Wang, S., Tang, J., & Liu, H. (2017). Fake news detection on social media: A data mining perspective. ACM SIGKDD Explorations Newsletter, 19(1), 22–36. https://doi.org/10.1145/3137597.3137600
+Wardle, C., & Derakhshan, H. (2017). Information disorder: Toward an interdisciplinary framework for research and policy making. Council of Europe. https://rm.coe.int/information-disorder-toward-an-interdisciplinary-framework-
+for-researc/168076277c
+
+Huffington Post. (2025). El gobierno pone el foco en la inteligencia artificial: obligará a identificar contenidos generados por IA y establecerá sanciones. Recuperado de https://www.huffingtonpost.es/politica/el-gobierno-pone-foco-inteligencia-
+artificial-obligara-identificar-contenidos-generados-ia-establecera-sanciones.html
+
+Ministerio de Ciencia, Tecnología e Innovación. (2021). Marco ético para la inteligencia artificial en Colombia. https://minciencias.gov.co/sites/default/files/marco-etico-
+ia-colombia-2021.pdf
+
+OCDE. (2019). Principios de la OCDE sobre inteligencia artificial. https://www.oecd.org/going-digital/ai/principles/
+UNESCO. (2021). Recomendación sobre la ética de la inteligencia artificial. https://unesdoc.unesco.org/ark:/48223/pf0000380455_spa
+Pontificia Universidad Javeriana. (2023). Desarrollo de herramientas de IA para la detección de noticias falsas en medios digitales colombianos. Recuperado de https://repository.javeriana.edu.co/handle/10554/67392
+ 
+WeLiveSecurity. (2024). Verificar información: Fake news, deepfakes e inteligencia artificial. https://www.welivesecurity.com/es/seguridad-digital/verificar-
+informacion-fakenews-deepfakes-ia/
+
+McCombs, M., & Shaw, D. L. (1972). The agenda-setting function of mass media. Public Opinion Quarterly, 36(2), 176–187. https://doi.org/10.1086/267990
+Bird, S., Klein, E., & Loper, E. (2009). Natural language processing with Python: Analyzing text with the Natural Language Toolkit. O’Reilly Media.
+Bishop, C. M. (2006). Pattern recognition and machine learning. Springer.
+
+spaCy. (s.f.). spaCy: Industrial-strength natural language processing in Python. https://spacy.io
+Floridi, L., & Cowls, J. (2019). A unified framework of five principles for AI in society. Harvard Data Science Review, 1(1). https://doi.org/10.1162/99608f92.8cd550d1
+Goodfellow, I., Bengio, Y., & Courville, A. (2016). Deep learning. MIT Press. https://www.deeplearningbook.org/
+Kaggle. (s.f.). Fake and real news dataset. https://www.kaggle.com/datasets/clmentbisaillon/fake-and-real-news-dataset
+Pressman, R. S. (2017). Software engineering: A practitioner’s approach (7th ed.).
+
+McGraw-Hill.
