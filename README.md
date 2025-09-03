@@ -28,17 +28,20 @@
 ## 🚀 Instalación Rápida
 
 ### Prerrequisitos
-- Node.js 16+ 
+
+- Node.js 16+
 - npm o yarn
 - Cuentas en las APIs (gratuitas)
 
 ### 1. Clonar el repositorio
+
 ```bash
 git clone https://github.com/SGSoftworks/DetectorAI.git
 cd DetectorAI
 ```
 
 ### 2. Instalar dependencias
+
 ```bash
 npm install
 # o
@@ -46,6 +49,7 @@ yarn install
 ```
 
 ### 3. Configurar variables de entorno
+
 ```bash
 # Copiar el archivo de ejemplo
 cp env.example .env.local
@@ -58,6 +62,7 @@ VITE_GOOGLE_SEARCH_ENGINE_ID=tu_engine_id_aqui
 ```
 
 ### 4. Ejecutar en desarrollo
+
 ```bash
 npm run dev
 # o
@@ -69,16 +74,19 @@ La aplicación estará disponible en `http://localhost:3000`
 ## 🔑 Configuración de APIs
 
 ### Google Gemini API (Requerido)
+
 1. Ve a [Google AI Studio](https://makersuite.google.com/app/apikey)
 2. Crea una nueva API key
 3. Agrega la clave a `VITE_GEMINI_API_KEY`
 
 ### Hugging Face API (Requerido)
+
 1. Ve a [Hugging Face Settings](https://huggingface.co/settings/tokens)
 2. Crea un nuevo token
 3. Agrega el token a `VITE_HUGGING_FACE_API_KEY`
 
 ### Google Custom Search API (Opcional)
+
 1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
 2. Habilita Custom Search API
 3. Crea credenciales de API
@@ -109,11 +117,13 @@ DetectorAI/
 ### Despliegue en Vercel (Recomendado)
 
 1. **Conectar con GitHub**:
+
    - Ve a [Vercel](https://vercel.com)
    - Conecta tu cuenta de GitHub
    - Importa el repositorio `DetectorAI`
 
 2. **Configurar variables de entorno**:
+
    - En el dashboard de Vercel, ve a Settings > Environment Variables
    - Agrega todas las variables de `VITE_*`
 
@@ -122,6 +132,7 @@ DetectorAI/
    - Vercel detectará que es un proyecto Vite/React
 
 ### Despliegue Manual
+
 ```bash
 # Construir para producción
 npm run build
@@ -132,30 +143,35 @@ npm run build
 ## 📊 Funcionalidades
 
 ### 🔍 Análisis de Texto
+
 - Detección de patrones lingüísticos
 - Análisis de sentimientos
 - Verificación de contenido con Google Search
 - Pipeline de análisis paso a paso
 
 ### 🖼️ Análisis de Imágenes
+
 - Detección de deepfakes
 - Análisis de metadatos
 - Verificación de autenticidad
 - Integración con Gemini Vision
 
 ### 🎥 Análisis de Video
+
 - Análisis de frames
 - Detección de manipulación
 - Análisis de audio
 - Indicadores de deepfake
 
 ### 📄 Análisis de Documentos
+
 - Extracción de texto
 - Análisis de estructura
 - Verificación de contenido
 - Detección de patrones de IA
 
 ### 📈 Dashboard
+
 - Estadísticas en tiempo real
 - Estado de las APIs
 - Historial de análisis
