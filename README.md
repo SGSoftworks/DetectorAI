@@ -34,7 +34,7 @@
 
 ### 1. Clonar el repositorio
 ```bash
-git clone https://github.com/tu-usuario/DetectorAI.git
+git clone https://github.com/SGSoftworks/DetectorAI.git
 cd DetectorAI
 ```
 
@@ -185,11 +185,11 @@ Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) par
 Si tienes alguna pregunta o necesitas ayuda:
 
 - 📧 **Email**: [tu-email@ejemplo.com]
-- 🐛 **Issues**: [GitHub Issues](https://github.com/tu-usuario/DetectorAI/issues)
-- 📖 **Documentación**: [Wiki del proyecto](https://github.com/tu-usuario/DetectorAI/wiki)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/SGSoftworks/DetectorAI/issues)
+- 📖 **Documentación**: [Wiki del proyecto](https://github.com/SGSoftworks/DetectorAI/wiki)
 
 ---
 
 **⭐ Si te gusta este proyecto, ¡dale una estrella en GitHub!**
 
-**🔗 [Demo en vivo](https://detector-ai.vercel.app) | [Documentación](https://github.com/tu-usuario/DetectorAI/wiki)**
+**🔗 [Demo en vivo](https://detector-ai.vercel.app) | [Documentación](https://github.com/SGSoftworks/DetectorAI/wiki)**
