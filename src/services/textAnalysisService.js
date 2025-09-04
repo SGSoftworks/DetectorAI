@@ -272,8 +272,9 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
 
     // Análisis de estructura
     const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
-    const avgSentenceLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
-    
+    const avgSentenceLength =
+      sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
+
     if (avgSentenceLength > 80 && patterns.formality > 0.5) {
       isAI = true;
       confidence += 0.1;
