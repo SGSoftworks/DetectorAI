@@ -1040,33 +1040,84 @@ class AnalysisService {
     let aiScore = 0;
     let humanScore = 0;
     let totalConfidence = 0;
-    let explanations = [];
+    
+    // Estructura de explicación detallada
+    const detailedExplanation = {
+      gemini: {
+        available: false,
+        result: null,
+        confidence: 0,
+        reasoning: "",
+        indicators: [],
+        languagePatterns: "",
+        suggestions: "",
+        fallback: false
+      },
+      huggingface: {
+        available: false,
+        result: null,
+        confidence: 0,
+        explanation: "",
+        complexity: null,
+        readability: 0,
+        patterns: {},
+        fallback: false
+      },
+      webSearch: {
+        available: false,
+        keywords: [],
+        similarity: 0,
+        totalResults: 0,
+        topSources: [],
+        analysis: null
+      },
+      finalAnalysis: {
+        conclusion: "",
+        confidence: 0,
+        recommendation: "",
+        factors: []
+      }
+    };
 
     // Analizar resultados de Gemini (REAL)
     if (results.gemini && results.gemini.result) {
       const geminiResult = results.gemini.result;
       const geminiConfidence = results.gemini.confidence || 0.5;
       
+      detailedExplanation.gemini.available = true;
+      detailedExplanation.gemini.result = geminiResult;
+      detailedExplanation.gemini.confidence = geminiConfidence;
+      detailedExplanation.gemini.reasoning = results.gemini.reasoning || results.gemini.explanation || "Análisis completado";
+      detailedExplanation.gemini.indicators = results.gemini.indicators || [];
+      detailedExplanation.gemini.languagePatterns = results.gemini.languagePatterns || "";
+      detailedExplanation.gemini.suggestions = results.gemini.suggestions || "";
+      
       if (geminiResult === "IA") {
         aiScore += geminiConfidence;
-        explanations.push(`Gemini: ${results.gemini.explanation} (${Math.round(geminiConfidence * 100)}% confianza)`);
       } else if (geminiResult === "HUMANO") {
         humanScore += geminiConfidence;
-        explanations.push(`Gemini: ${results.gemini.explanation} (${Math.round(geminiConfidence * 100)}% confianza)`);
       }
       totalConfidence += geminiConfidence;
     } else if (results.gemini && results.gemini.error) {
-      explanations.push(`Gemini: ${results.gemini.error} - Usando análisis de respaldo`);
+      detailedExplanation.gemini.fallback = true;
+      detailedExplanation.gemini.reasoning = `Error: ${results.gemini.error} - Usando análisis de respaldo`;
       totalConfidence += 0.3; // Confianza reducida por fallback
     } else if (results.gemini && results.gemini.isAI !== undefined) {
       // Si Gemini devuelve isAI en lugar de result
       const geminiConfidence = results.gemini.confidence || 0.7;
+      
+      detailedExplanation.gemini.available = true;
+      detailedExplanation.gemini.result = results.gemini.isAI ? "IA" : "HUMANO";
+      detailedExplanation.gemini.confidence = geminiConfidence;
+      detailedExplanation.gemini.reasoning = results.gemini.reasoning || "Análisis completado con Gemini 2.0 Flash";
+      detailedExplanation.gemini.indicators = results.gemini.indicators || [];
+      detailedExplanation.gemini.languagePatterns = results.gemini.languagePatterns || "";
+      detailedExplanation.gemini.suggestions = results.gemini.suggestions || "";
+      
       if (results.gemini.isAI) {
         aiScore += geminiConfidence;
-        explanations.push(`Gemini: Análisis sugiere IA (${Math.round(geminiConfidence * 100)}% confianza)`);
       } else {
         humanScore += geminiConfidence;
-        explanations.push(`Gemini: Análisis sugiere HUMANO (${Math.round(geminiConfidence * 100)}% confianza)`);
       }
       totalConfidence += geminiConfidence;
     }
@@ -1077,24 +1128,19 @@ class AnalysisService {
       const hfConfidence = results.huggingface.confidence || 0.5;
       const apiStatus = results.huggingface.apiStatus;
       
+      detailedExplanation.huggingface.available = true;
+      detailedExplanation.huggingface.result = hfResult;
+      detailedExplanation.huggingface.confidence = hfConfidence;
+      detailedExplanation.huggingface.explanation = results.huggingface.explanation || "Análisis completado";
+      detailedExplanation.huggingface.complexity = results.huggingface.complexity || null;
+      detailedExplanation.huggingface.readability = results.huggingface.readability || 0;
+      detailedExplanation.huggingface.patterns = results.huggingface.patterns || {};
+      detailedExplanation.huggingface.fallback = apiStatus && apiStatus.fallbackUsed;
+      
       if (hfResult === "IA") {
         aiScore += hfConfidence;
-        let explanation = `Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`;
-        
-        if (apiStatus && apiStatus.fallbackUsed) {
-          explanation += " [ANÁLISIS DE RESPALDO]";
-        }
-        
-        explanations.push(explanation);
       } else if (hfResult === "HUMANO") {
         humanScore += hfConfidence;
-        let explanation = `Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`;
-        
-        if (apiStatus && apiStatus.fallbackUsed) {
-          explanation += " [ANÁLISIS DE RESPALDO]";
-        }
-        
-        explanations.push(explanation);
       }
       
       // Ajustar confianza basado en si se usó fallback
@@ -1104,7 +1150,10 @@ class AnalysisService {
         totalConfidence += hfConfidence;
       }
     } else if (results.huggingface && results.huggingface.fallback) {
-      explanations.push(`Hugging Face: Análisis de respaldo - ${results.huggingface.explanation}`);
+      detailedExplanation.huggingface.fallback = true;
+      detailedExplanation.huggingface.explanation = `Análisis de respaldo: ${results.huggingface.explanation}`;
+      detailedExplanation.huggingface.complexity = results.huggingface.complexity || null;
+      detailedExplanation.huggingface.readability = results.huggingface.readability || 0;
       totalConfidence += 0.4; // Confianza moderada por fallback
     }
 
@@ -1115,27 +1164,27 @@ class AnalysisService {
       const searchResults = results.googleSearch.searchResults || [];
       const keywords = results.googleSearch.keywords || [];
       
-      // Análisis detallado de búsqueda
-      let searchAnalysis = `Búsqueda web: "${keywords.join(", ")}" - Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados`;
-      
-      if (searchResults.length > 0) {
-        const topResults = searchResults.slice(0, 3);
-        const sources = topResults.map(r => r.displayLink).join(", ");
-        searchAnalysis += ` | Fuentes principales: ${sources}`;
-      }
+      detailedExplanation.webSearch.available = true;
+      detailedExplanation.webSearch.keywords = keywords;
+      detailedExplanation.webSearch.similarity = similarity;
+      detailedExplanation.webSearch.totalResults = totalResults;
+      detailedExplanation.webSearch.topSources = searchResults.slice(0, 5).map(r => ({
+        title: r.title,
+        link: r.link,
+        source: r.displayLink,
+        relevance: Math.round(r.relevance * 100)
+      }));
+      detailedExplanation.webSearch.analysis = results.googleSearch.analysis || null;
       
       if (similarity > 0.7 && totalResults > 0) {
         humanScore += 0.8;
         aiScore += 0.2;
-        explanations.push(`${searchAnalysis} (probablemente humano)`);
       } else if (similarity < 0.3 || totalResults === 0) {
         aiScore += 0.8;
         humanScore += 0.2;
-        explanations.push(`${searchAnalysis} (probablemente IA)`);
       } else {
         aiScore += 0.5;
         humanScore += 0.5;
-        explanations.push(`${searchAnalysis} (indeterminado)`);
       }
       totalConfidence += 0.6;
     }
@@ -1150,7 +1199,6 @@ class AnalysisService {
       
       // Calcular confianza basada en la diferencia entre scores
       const scoreDifference = Math.abs(aiScore - humanScore);
-      const maxPossibleScore = Math.max(aiScore, humanScore);
       
       // Normalizar scores para evitar valores excesivos
       const normalizedAiScore = Math.min(aiScore, 1.0);
@@ -1191,17 +1239,38 @@ class AnalysisService {
       }
     }
 
-    // Agregar contexto adicional para PRODUCCIÓN
-    let contextInfo = "";
-    if (results.googleSearch && results.googleSearch.detailedResults && results.googleSearch.detailedResults.length > 0) {
-      const topResult = results.googleSearch.detailedResults[0];
-      contextInfo = ` | Fuente principal: ${topResult.source} (${topResult.relevanceScore}% relevancia)`;
+    // Generar explicación final estructurada
+    const finalResult = isAI ? "IA" : "HUMANO";
+    detailedExplanation.finalAnalysis.conclusion = finalResult;
+    detailedExplanation.finalAnalysis.confidence = Math.round(confidence * 100) / 100;
+    
+    // Generar recomendación basada en confianza
+    if (confidence > 0.8) {
+      detailedExplanation.finalAnalysis.recommendation = "La alta confianza del análisis sugiere que este resultado es muy confiable.";
+    } else if (confidence > 0.6) {
+      detailedExplanation.finalAnalysis.recommendation = "La confianza moderada sugiere que este resultado es confiable pero se recomienda verificación adicional.";
+    } else {
+      detailedExplanation.finalAnalysis.recommendation = "La baja confianza sugiere que se requiere verificación manual del contenido.";
     }
+    
+    // Agregar factores que influyeron en la decisión
+    const factors = [];
+    if (detailedExplanation.gemini.available) {
+      factors.push(`Análisis con Gemini 2.0 Flash: ${detailedExplanation.gemini.result} (${Math.round(detailedExplanation.gemini.confidence * 100)}% confianza)`);
+    }
+    if (detailedExplanation.huggingface.available) {
+      const fallbackText = detailedExplanation.huggingface.fallback ? " [Análisis de respaldo]" : "";
+      factors.push(`Análisis con Hugging Face: ${detailedExplanation.huggingface.result} (${Math.round(detailedExplanation.huggingface.confidence * 100)}% confianza)${fallbackText}`);
+    }
+    if (detailedExplanation.webSearch.available) {
+      factors.push(`Verificación web: ${detailedExplanation.webSearch.totalResults} resultados, ${Math.round(detailedExplanation.webSearch.similarity * 100)}% similitud`);
+    }
+    detailedExplanation.finalAnalysis.factors = factors;
 
     return {
-      result: isAI ? "IA" : "HUMANO",
+      result: finalResult,
       confidence: Math.round(confidence * 100) / 100,
-      explanation: explanations.join(" | ") + contextInfo,
+      explanation: detailedExplanation, // Ahora es un objeto estructurado
       scores: {
         ai: Math.round(aiScore * 100) / 100,
         human: Math.round(humanScore * 100) / 100,
