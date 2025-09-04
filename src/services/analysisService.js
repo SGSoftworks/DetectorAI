@@ -231,8 +231,10 @@ class AnalysisService {
         throw new Error("API key de Hugging Face no configurada");
       }
 
-      // Análisis de sentimientos (solo modelos VERIFICADOS)
+      // Análisis de sentimientos con fallback inteligente
       let sentimentResponse;
+      let sentimentFallback = false;
+      
       try {
         sentimentResponse = await this.axios.post(
           `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT}`,
@@ -244,11 +246,14 @@ class AnalysisService {
         );
       } catch (error) {
         console.warn("Modelo de sentimientos falló, usando análisis de fallback...");
-        throw new Error("API de sentimientos no disponible");
+        sentimentFallback = true;
+        // No lanzar error, continuar con fallback
       }
 
-      // Clasificación de texto (solo modelos VERIFICADOS)
+      // Clasificación de texto con fallback inteligente
       let classificationResponse;
+      let classificationFallback = false;
+      
       try {
         classificationResponse = await this.axios.post(
           `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.TEXT_CLASSIFICATION}`,
@@ -271,50 +276,88 @@ class AnalysisService {
         );
       } catch (error) {
         console.warn("Modelo de clasificación falló, usando análisis de fallback...");
-        throw new Error("API de clasificación no disponible");
+        classificationFallback = true;
+        // No lanzar error, continuar con fallback
+      }
+
+      // Si ambos fallaron, usar análisis de fallback completo
+      if (sentimentFallback && classificationFallback) {
+        console.warn("Todas las APIs de Hugging Face fallaron, usando análisis de fallback...");
+        return this.fallbackTextAnalysis(text);
       }
 
       // Procesar resultados con manejo de errores robusto
       let sentiment, classification;
       
-      try {
-        sentiment = sentimentResponse.data[0];
-      } catch (error) {
-        console.warn("Error procesando sentimientos:", error);
-        sentiment = { label: "neutral", score: 0.5 };
+      // Procesar sentimientos
+      if (!sentimentFallback && sentimentResponse) {
+        try {
+          sentiment = sentimentResponse.data[0];
+        } catch (error) {
+          console.warn("Error procesando sentimientos:", error);
+          sentiment = { label: "neutral", score: 0.5 };
+        }
+      } else {
+        sentiment = { label: "neutral", score: 0.5, fallback: true };
       }
 
-      try {
-        classification = classificationResponse.data;
-      } catch (error) {
-        console.warn("Error procesando clasificación:", error);
-        classification = { labels: ["Texto escrito por humano"], scores: [0.5] };
+      // Procesar clasificación
+      if (!classificationFallback && classificationResponse) {
+        try {
+          classification = classificationResponse.data;
+        } catch (error) {
+          console.warn("Error procesando clasificación:", error);
+          classification = { labels: ["Texto escrito por humano"], scores: [0.5] };
+        }
+      } else {
+        classification = { labels: ["Texto escrito por humano"], scores: [0.5], fallback: true };
       }
 
       // Determinar si es IA basado en clasificación
       const isAI = classification.labels && classification.labels[0] === "Texto generado por IA";
       const confidence = classification.scores && classification.scores[0] ? classification.scores[0] : 0.5;
 
+      // Crear explicación que indique fallbacks
+      let explanation = `Clasificación: ${classification.labels ? classification.labels[0] : "No disponible"} (${Math.round(confidence * 100)}% confianza)`;
+      
+      if (classification.fallback) {
+        explanation += " [FALLBACK]";
+      }
+      
+      explanation += ` | Sentimiento: ${sentiment.label || "No disponible"} (${Math.round((sentiment.score || 0.5) * 100)}% confianza)`;
+      
+      if (sentiment.fallback) {
+        explanation += " [FALLBACK]";
+      }
+
       return {
         result: isAI ? "IA" : "HUMANO",
         confidence: confidence,
-        explanation: `Clasificación: ${classification.labels ? classification.labels[0] : "No disponible"} (${Math.round(confidence * 100)}% confianza) | Sentimiento: ${sentiment.label || "No disponible"} (${Math.round((sentiment.score || 0.5) * 100)}% confianza)`,
+        explanation: explanation,
         sentiment: {
           label: sentiment.label || "neutral",
           score: sentiment.score || 0.5,
+          fallback: sentiment.fallback || false,
         },
         classification: {
           label: classification.labels ? classification.labels[0] : "No disponible",
           score: classification.scores ? classification.scores[0] : 0.5,
           allLabels: classification.labels || ["No disponible"],
           allScores: classification.scores || [0.5],
+          fallback: classification.fallback || false,
         },
         // Análisis adicional para PRODUCCIÓN
         textLength: text.length,
         wordCount: text.split(" ").length,
         complexity: this.calculateTextComplexity(text),
         patterns: this.detectLanguagePatterns(text),
-        readability: this.calculateReadabilityScore(text)
+        readability: this.calculateReadabilityScore(text),
+        // Indicar qué APIs fallaron
+        apiStatus: {
+          sentiment: !sentimentFallback,
+          classification: !classificationFallback,
+          fallbackUsed: sentimentFallback || classificationFallback
+        }
       };
     } catch (error) {
       console.error("Error en análisis Hugging Face:", error);
@@ -943,15 +986,34 @@ class AnalysisService {
     if (results.huggingface && results.huggingface.result) {
       const hfResult = results.huggingface.result;
       const hfConfidence = results.huggingface.confidence || 0.5;
+      const apiStatus = results.huggingface.apiStatus;
       
       if (hfResult === "IA") {
         aiScore += hfConfidence;
-        explanations.push(`Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`);
+        let explanation = `Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`;
+        
+        if (apiStatus && apiStatus.fallbackUsed) {
+          explanation += " [ANÁLISIS DE RESPALDO]";
+        }
+        
+        explanations.push(explanation);
       } else if (hfResult === "HUMANO") {
         humanScore += hfConfidence;
-        explanations.push(`Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`);
+        let explanation = `Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`;
+        
+        if (apiStatus && apiStatus.fallbackUsed) {
+          explanation += " [ANÁLISIS DE RESPALDO]";
+        }
+        
+        explanations.push(explanation);
       }
-      totalConfidence += hfConfidence;
+      
+      // Ajustar confianza basado en si se usó fallback
+      if (apiStatus && apiStatus.fallbackUsed) {
+        totalConfidence += hfConfidence * 0.7; // Reducir confianza por fallback
+      } else {
+        totalConfidence += hfConfidence;
+      }
     } else if (results.huggingface && results.huggingface.fallback) {
       explanations.push(`Hugging Face: Análisis de respaldo - ${results.huggingface.explanation}`);
       totalConfidence += 0.4; // Confianza moderada por fallback
@@ -1027,7 +1089,14 @@ class AnalysisService {
           complexity: results.huggingface.complexity?.level || "No disponible",
           readability: results.huggingface.readability || 0,
           patterns: results.huggingface.patterns ? Object.keys(results.huggingface.patterns).filter(k => results.huggingface.patterns[k] > 0.5) : []
-        } : null
+        } : null,
+        // Estado de las APIs
+        apiStatus: {
+          gemini: results.gemini && !results.gemini.error,
+          huggingface: results.huggingface && !results.huggingface.fallback,
+          googleSearch: results.googleSearch && results.googleSearch.searchResults?.length > 0,
+          fallbacksUsed: (results.huggingface && results.huggingface.apiStatus?.fallbackUsed) || false
+        }
       }
     };
   }
