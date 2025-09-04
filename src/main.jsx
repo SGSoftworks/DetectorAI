@@ -6,8 +6,13 @@ import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import { DatabaseService } from "./config/firebase.js";
 
-// Inicializar Firebase
-DatabaseService.initializeAuth();
+// Inicializar Firebase (con manejo de errores)
+try {
+  DatabaseService.initializeAuth();
+} catch (error) {
+  console.warn('Firebase initialization warning:', error);
+  // Continuar sin Firebase para que la app funcione
+}
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

@@ -118,10 +118,16 @@ export class DatabaseService {
   // Initialize anonymous auth
   static async initializeAuth() {
     try {
-      await signInAnonymously(auth);
-      console.log('Anonymous authentication successful');
+      // Solo intentar autenticación si está habilitada
+      if (auth) {
+        await signInAnonymously(auth);
+        console.log('Anonymous authentication successful');
+      } else {
+        console.log('Auth not configured, continuing without authentication');
+      }
     } catch (error) {
-      console.error('Error initializing auth:', error);
+      console.warn('Error initializing auth (continuing without auth):', error.message);
+      // Continuar sin autenticación para que la app funcione
     }
   }
 }
