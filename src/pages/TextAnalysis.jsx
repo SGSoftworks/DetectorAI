@@ -680,7 +680,7 @@ const TextAnalysis = () => {
             <h3 className="font-semibold text-blue-900 mb-4 text-lg">
               Proceso de Análisis en 4 Pasos
             </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="text-center">
                 <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-3">
                   <Target className="w-6 h-6 text-blue-600" />
@@ -941,9 +941,15 @@ const TextAnalysis = () => {
                                   }`}>
                                     {results.explanation.gemini.result === "IA" ? "🤖 IA" : "👤 Humano"}
                                   </span>
-                                  <span className="text-sm text-blue-700 font-medium">
-                                    ({Math.round(results.explanation.gemini.confidence * 100)}% confianza)
-                                  </span>
+                                                    <span className="text-sm text-blue-700 font-medium">
+                    ({Math.round(results.explanation.gemini.confidence * 100)}% confianza)
+                  </span>
+                  <div className="w-16 bg-gray-200 rounded-full h-1.5 ml-2">
+                    <div
+                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
+                      style={{ width: `${results.explanation.gemini.confidence * 100}%` }}
+                    ></div>
+                  </div>
                                 </div>
                               )}
                               
@@ -1015,6 +1021,12 @@ const TextAnalysis = () => {
                                   <span className="text-sm text-purple-700 font-medium">
                                     ({Math.round(results.explanation.huggingface.confidence * 100)}% confianza)
                                   </span>
+                                  <div className="w-16 bg-gray-200 rounded-full h-1.5 ml-2">
+                                    <div
+                                      className="bg-purple-600 h-1.5 rounded-full transition-all duration-300"
+                                      style={{ width: `${results.explanation.huggingface.confidence * 100}%` }}
+                                    ></div>
+                                  </div>
                                 </div>
                               )}
                               
@@ -1092,9 +1104,11 @@ const TextAnalysis = () => {
                               
                               {results.explanation.webSearch.topSources && results.explanation.webSearch.topSources.length > 0 && (
                                 <div>
-                                  <span className="font-medium text-gray-700 block mb-2">🔍 Fuentes Encontradas:</span>
+                                  <span className="font-medium text-gray-700 block mb-2">
+                                    🔍 Fuentes Encontradas ({results.explanation.webSearch.topSources.length} de {results.explanation.webSearch.totalResults} total):
+                                  </span>
                                   <div className="space-y-2">
-                                    {results.explanation.webSearch.topSources.slice(0, 3).map((source, idx) => (
+                                    {results.explanation.webSearch.topSources.map((source, idx) => (
                                       <div key={idx} className="bg-white p-3 rounded border border-gray-200">
                                         <a
                                           href={source.link}
