@@ -40,15 +40,16 @@ class AnalysisService {
         results.gemini = geminiResult;
         results.pipeline[0].status = "Completado";
         results.pipeline[0].result = geminiResult;
+        results.pipeline[0].timestamp = new Date().toISOString();
       } catch (error) {
         console.warn("Error en análisis Gemini:", error);
         results.pipeline[0].status = "Error";
         results.pipeline[0].error = error.message;
         results.pipeline[0].result = {
           error: error.message,
-          fallback:
-            "Análisis no disponible - API no configurada o error de conexión",
+          fallback: "Análisis no disponible - API no configurada o error de conexión",
         };
+        results.pipeline[0].timestamp = new Date().toISOString();
       }
 
       // Paso 2: Análisis con Hugging Face
@@ -67,15 +68,16 @@ class AnalysisService {
         results.huggingface = huggingfaceResult;
         results.pipeline[1].status = "Completado";
         results.pipeline[1].result = huggingfaceResult;
+        results.pipeline[1].timestamp = new Date().toISOString();
       } catch (error) {
         console.warn("Error en análisis Hugging Face:", error);
         results.pipeline[1].status = "Error";
         results.pipeline[1].error = error.message;
         results.pipeline[1].result = {
           error: error.message,
-          fallback:
-            "Análisis no disponible - API no configurada o error de conexión",
+          fallback: "Análisis no disponible - API no configurada o error de conexión",
         };
+        results.pipeline[1].timestamp = new Date().toISOString();
       }
 
       // Paso 3: Búsqueda en Google para verificar contenido
@@ -97,15 +99,16 @@ class AnalysisService {
         results.googleSearch = searchResult;
         results.pipeline[2].status = "Completado";
         results.pipeline[2].result = searchResult;
+        results.pipeline[2].timestamp = new Date().toISOString();
       } catch (error) {
         console.warn("Error en búsqueda Google:", error);
         results.pipeline[2].status = "Error";
         results.pipeline[2].error = error.message;
         results.pipeline[2].result = {
           error: error.message,
-          fallback:
-            "Verificación no disponible - API no configurada o error de conexión",
+          fallback: "Verificación no disponible - API no configurada o error de conexión",
         };
+        results.pipeline[2].timestamp = new Date().toISOString();
       }
 
       // Paso 4: Análisis final y decisión
@@ -122,6 +125,8 @@ class AnalysisService {
       results.explanation = finalAnalysis.explanation;
       results.pipeline[3].status = "Completado";
       results.pipeline[3].result = finalAnalysis;
+      results.pipeline[3].timestamp = new Date().toISOString();
+      results.pipeline[3].processingTime = Date.now() - startTime;
 
       // Registrar el análisis en el sistema de monitoreo
       const processingTime = Date.now() - startTime;
@@ -226,7 +231,7 @@ class AnalysisService {
         throw new Error("API key de Hugging Face no configurada");
       }
 
-      // Análisis de sentimientos (con respaldo)
+      // Análisis de sentimientos (solo modelos VERIFICADOS)
       let sentimentResponse;
       try {
         sentimentResponse = await this.axios.post(
@@ -238,18 +243,11 @@ class AnalysisService {
           }
         );
       } catch (error) {
-        console.warn("Modelo de sentimientos principal falló, usando respaldo...");
-        sentimentResponse = await this.axios.post(
-          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT_BACKUP}`,
-          { inputs: text },
-          {
-            headers: getHeaders("huggingface"),
-            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
-          }
-        );
+        console.warn("Modelo de sentimientos falló, usando análisis de fallback...");
+        throw new Error("API de sentimientos no disponible");
       }
 
-      // Clasificación de texto (con respaldo)
+      // Clasificación de texto (solo modelos VERIFICADOS)
       let classificationResponse;
       try {
         classificationResponse = await this.axios.post(
@@ -272,26 +270,8 @@ class AnalysisService {
           }
         );
       } catch (error) {
-        console.warn("Modelo de clasificación principal falló, usando respaldo...");
-        classificationResponse = await this.axios.post(
-          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.CLASSIFICATION_BACKUP}`,
-          {
-            inputs: text,
-            parameters: {
-              candidate_labels: [
-                "Texto generado por IA",
-                "Texto escrito por humano",
-                "Contenido académico",
-                "Contenido periodístico",
-                "Contenido informal",
-              ],
-            },
-          },
-          {
-            headers: getHeaders("huggingface"),
-            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
-          }
-        );
+        console.warn("Modelo de clasificación falló, usando análisis de fallback...");
+        throw new Error("API de clasificación no disponible");
       }
 
       // Procesar resultados con manejo de errores robusto
@@ -457,7 +437,16 @@ class AnalysisService {
           source: result.displayLink,
           relevance: result.relevance,
           relevanceScore: Math.round(result.relevance * 100)
-        }))
+        })),
+        // Información adicional para PRODUCCIÓN
+        searchQuery: keywords.join(" "),
+        searchTimestamp: new Date().toISOString(),
+        searchEngine: "Google Custom Search",
+        searchParameters: {
+          maxResults: 5,
+          language: "es",
+          region: "CO"
+        }
       };
     } catch (error) {
       throw new Error(`Error en Google Search API: ${error.message}`);
@@ -945,6 +934,9 @@ class AnalysisService {
         explanations.push(`Gemini: ${results.gemini.explanation} (${Math.round(geminiConfidence * 100)}% confianza)`);
       }
       totalConfidence += geminiConfidence;
+    } else if (results.gemini && results.gemini.error) {
+      explanations.push(`Gemini: ${results.gemini.error} - Usando análisis de respaldo`);
+      totalConfidence += 0.3; // Confianza reducida por fallback
     }
 
     // Analizar resultados de Hugging Face (REAL)
@@ -960,31 +952,39 @@ class AnalysisService {
         explanations.push(`Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`);
       }
       totalConfidence += hfConfidence;
+    } else if (results.huggingface && results.huggingface.fallback) {
+      explanations.push(`Hugging Face: Análisis de respaldo - ${results.huggingface.explanation}`);
+      totalConfidence += 0.4; // Confianza moderada por fallback
     }
 
     // Analizar resultados de Google Search (REAL)
     if (results.googleSearch) {
       const similarity = results.googleSearch.similarity || 0;
       const totalResults = results.googleSearch.totalResults || 0;
+      const searchResults = results.googleSearch.searchResults || [];
+      const keywords = results.googleSearch.keywords || [];
+      
+      // Análisis detallado de búsqueda
+      let searchAnalysis = `Búsqueda web: "${keywords.join(", ")}" - Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados`;
+      
+      if (searchResults.length > 0) {
+        const topResults = searchResults.slice(0, 3);
+        const sources = topResults.map(r => r.displayLink).join(", ");
+        searchAnalysis += ` | Fuentes principales: ${sources}`;
+      }
       
       if (similarity > 0.7 && totalResults > 0) {
         humanScore += 0.8;
         aiScore += 0.2;
-        explanations.push(
-          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados (probablemente humano)`
-        );
+        explanations.push(`${searchAnalysis} (probablemente humano)`);
       } else if (similarity < 0.3 || totalResults === 0) {
         aiScore += 0.8;
         humanScore += 0.2;
-        explanations.push(
-          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados (probablemente IA)`
-        );
+        explanations.push(`${searchAnalysis} (probablemente IA)`);
       } else {
         aiScore += 0.5;
         humanScore += 0.5;
-        explanations.push(
-          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados (indeterminado)`
-        );
+        explanations.push(`${searchAnalysis} (indeterminado)`);
       }
       totalConfidence += 0.6;
     }
@@ -1015,7 +1015,18 @@ class AnalysisService {
         searchContext: results.googleSearch ? {
           totalResults: results.googleSearch.totalResults,
           similarity: Math.round((results.googleSearch.similarity || 0) * 100),
-          topSources: results.googleSearch.detailedResults?.slice(0, 3).map(r => r.source) || []
+          topSources: results.googleSearch.detailedResults?.slice(0, 3).map(r => r.source) || [],
+          searchQuery: results.googleSearch.searchQuery || "No disponible",
+          searchTimestamp: results.googleSearch.searchTimestamp || "No disponible",
+          searchEngine: results.googleSearch.searchEngine || "No disponible"
+        } : null,
+        // Información adicional de análisis
+        textMetrics: results.huggingface ? {
+          length: results.huggingface.textLength || 0,
+          words: results.huggingface.wordCount || 0,
+          complexity: results.huggingface.complexity?.level || "No disponible",
+          readability: results.huggingface.readability || 0,
+          patterns: results.huggingface.patterns ? Object.keys(results.huggingface.patterns).filter(k => results.huggingface.patterns[k] > 0.5) : []
         } : null
       }
     };

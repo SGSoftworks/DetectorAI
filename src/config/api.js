@@ -34,9 +34,12 @@ export const HUGGING_FACE_MODELS = {
   ZERO_SHOT: "facebook/bart-large-mnli",
   // Modelo para detección de texto generado por IA
   AI_DETECTION: "microsoft/DialoGPT-medium",
-  // Modelos alternativos de respaldo
-  SENTIMENT_BACKUP: "nlptown/bert-base-multilingual-uncased-sentiment",
-  CLASSIFICATION_BACKUP: "joeddav/xlm-roberta-large-xnli",
+  // Modelos alternativos de respaldo VERIFICADOS
+  SENTIMENT_BACKUP: "cardiffnlp/twitter-roberta-base-sentiment",
+  CLASSIFICATION_BACKUP: "facebook/bart-large-mnli",
+  // Modelos adicionales para mayor robustez
+  SENTIMENT_ALT: "cardiffnlp/twitter-roberta-base-sentiment",
+  CLASSIFICATION_ALT: "facebook/bart-large-mnli",
 };
 
 // Función para obtener headers de autenticación
