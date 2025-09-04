@@ -24,18 +24,18 @@ class SystemMonitoringService {
   // Obtener estadísticas reales del sistema
   async getSystemStats() {
     try {
-      // Intentar obtener datos del backend si existe y es válido
-      if (API_CONFIG.BACKEND_URL && API_CONFIG.BACKEND_URL !== 'https://tu-backend.com/api') {
-        try {
-          const response = await this.axios.get(
-            `${API_CONFIG.BACKEND_URL}/api/stats`
-          );
-          this.stats = response.data;
-          return this.stats;
-        } catch (error) {
-          console.warn("Error conectando al backend:", error.message);
-        }
-      }
+      // Intentar obtener datos del backend si existe y es válido (deshabilitado temporalmente)
+      // if (API_CONFIG.BACKEND_URL && API_CONFIG.BACKEND_URL !== 'https://tu-backend.com/api') {
+      //   try {
+      //     const response = await this.axios.get(
+      //       `${API_CONFIG.BACKEND_URL}/api/stats`
+      //     );
+      //     this.stats = response.data;
+      //     return this.stats;
+      //   } catch (error) {
+      //     console.warn("Error conectando al backend:", error.message);
+      //   }
+      // }
 
       // Si no hay backend, usar localStorage para persistir datos
       const storedStats = localStorage.getItem("systemStats");
@@ -56,17 +56,17 @@ class SystemMonitoringService {
   // Obtener análisis recientes reales
   async getRecentAnalyses(limit = 10) {
     try {
-      if (API_CONFIG.BACKEND_URL && API_CONFIG.BACKEND_URL !== 'https://tu-backend.com/api') {
-        try {
-          const response = await this.axios.get(
-            `${API_CONFIG.BACKEND_URL}/api/analyses?limit=${limit}`
-          );
-          this.analyses = response.data;
-          return this.analyses;
-        } catch (error) {
-          console.warn("Error conectando al backend:", error.message);
-        }
-      }
+      // if (API_CONFIG.BACKEND_URL && API_CONFIG.BACKEND_URL !== 'https://tu-backend.com/api') {
+      //   try {
+      //     const response = await this.axios.get(
+      //       `${API_CONFIG.BACKEND_URL}/api/analyses?limit=${limit}`
+      //     );
+      //     this.analyses = response.data;
+      //     return this.analyses;
+      //   } catch (error) {
+      //     console.warn("Error conectando al backend:", error.message);
+      //   }
+      // }
 
       // Usar localStorage para análisis recientes
       const storedAnalyses = localStorage.getItem("recentAnalyses");
@@ -372,17 +372,17 @@ class SystemMonitoringService {
       console.warn("No se pudo guardar en localStorage:", error.message);
     }
 
-    // Intentar enviar al backend si existe
-    if (API_CONFIG.BACKEND_URL) {
-      try {
-        await this.axios.post(
-          `${API_CONFIG.BACKEND_URL}/api/analyses`,
-          analysis
-        );
-      } catch (error) {
-        console.warn("No se pudo enviar al backend:", error.message);
-      }
-    }
+    // Intentar enviar al backend si existe (deshabilitado temporalmente)
+    // if (API_CONFIG.BACKEND_URL) {
+    //   try {
+    //     await this.axios.post(
+    //       `${API_CONFIG.BACKEND_URL}/api/analyses`,
+    //       analysis
+    //     );
+    //   } catch (error) {
+    //     console.warn("No se pudo enviar al backend:", error.message);
+    //   }
+    // }
 
     // Intentar guardar en Firebase si está disponible
     try {
