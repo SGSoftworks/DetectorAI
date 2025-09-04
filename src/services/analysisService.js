@@ -219,31 +219,75 @@ class AnalysisService {
     }
   }
 
-  // Análisis con Hugging Face
+  // Análisis con Hugging Face (PRODUCCIÓN REAL)
   async analyzeWithHuggingFace(text) {
     try {
+      if (!API_CONFIG.HUGGING_FACE_API_KEY) {
+        throw new Error("API key de Hugging Face no configurada");
+      }
+
       // Análisis de sentimientos
       const sentimentResponse = await this.axios.post(
-        `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT_ANALYSIS}`,
+        `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT}`,
         { inputs: text },
-        { headers: getHeaders("huggingface") }
+        {
+          headers: getHeaders("huggingface"),
+          timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+        }
       );
 
       // Clasificación de texto
       const classificationResponse = await this.axios.post(
         `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.TEXT_CLASSIFICATION}`,
-        { inputs: text },
-        { headers: getHeaders("huggingface") }
+        {
+          inputs: text,
+          parameters: {
+            candidate_labels: [
+              "Texto generado por IA",
+              "Texto escrito por humano",
+              "Contenido académico",
+              "Contenido periodístico",
+              "Contenido informal",
+            ],
+          },
+        },
+        {
+          headers: getHeaders("huggingface"),
+          timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+        }
       );
 
+      // Procesar resultados
+      const sentiment = sentimentResponse.data[0];
+      const classification = classificationResponse.data;
+
+      // Determinar si es IA basado en clasificación
+      const isAI = classification.labels[0] === "Texto generado por IA";
+      const confidence = classification.scores[0];
+
       return {
-        sentiment: sentimentResponse.data[0],
-        classification: classificationResponse.data[0],
+        result: isAI ? "IA" : "HUMANO",
+        confidence: confidence,
+        explanation: `Clasificación: ${classification.labels[0]} (${Math.round(confidence * 100)}% confianza) | Sentimiento: ${sentiment.label} (${Math.round(sentiment.score * 100)}% confianza)`,
+        sentiment: {
+          label: sentiment.label,
+          score: sentiment.score,
+        },
+        classification: {
+          label: classification.labels[0],
+          score: classification.scores[0],
+          allLabels: classification.labels,
+          allScores: classification.scores,
+        },
+        // Análisis adicional para PRODUCCIÓN
         textLength: text.length,
         wordCount: text.split(" ").length,
         complexity: this.calculateTextComplexity(text),
+        patterns: this.detectLanguagePatterns(text),
+        readability: this.calculateReadabilityScore(text)
       };
     } catch (error) {
+      console.error("Error en análisis Hugging Face:", error);
       throw new Error(`Error en Hugging Face API: ${error.message}`);
     }
   }
@@ -282,6 +326,14 @@ class AnalysisService {
         keywords: keywords,
         similarity: this.calculateSimilarity(text, searchResults),
         analysis: this.analyzeSearchResults(formattedResults, text),
+        detailedResults: formattedResults.map(result => ({
+          title: result.title,
+          link: result.link,
+          snippet: result.snippet,
+          source: result.displayLink,
+          relevance: result.relevance,
+          relevanceScore: Math.round(result.relevance * 100)
+        }))
       };
     } catch (error) {
       throw new Error(`Error en Google Search API: ${error.message}`);
@@ -452,7 +504,7 @@ class AnalysisService {
     }
   }
 
-  // Funciones auxiliares
+  // Funciones auxiliares para PRODUCCIÓN
   calculateTextComplexity(text) {
     const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
     const words = text.split(/\s+/).filter((w) => w.length > 0);
@@ -460,11 +512,80 @@ class AnalysisService {
       words.reduce((sum, word) => sum + word.length, 0) / words.length;
     const avgSentenceLength = words.length / sentences.length;
 
+    // Análisis avanzado de complejidad para PRODUCCIÓN
+    const complexity = this.analyzeAdvancedComplexity(text, avgWordLength, avgSentenceLength);
+
     return {
       avgWordLength: Math.round(avgWordLength * 100) / 100,
       avgSentenceLength: Math.round(avgSentenceLength * 100) / 100,
-      complexity:
-        avgWordLength > 6 || avgSentenceLength > 20 ? "Alta" : "Normal",
+      complexity: complexity.level,
+      score: complexity.score,
+      indicators: complexity.indicators,
+      readability: this.calculateReadabilityScore(text)
+    };
+  }
+
+  analyzeAdvancedComplexity(text, avgWordLength, avgSentenceLength) {
+    let score = 0;
+    const indicators = [];
+
+    // Evaluar longitud de palabras
+    if (avgWordLength > 8) {
+      score += 0.8;
+      indicators.push("Palabras muy largas");
+    } else if (avgWordLength > 6) {
+      score += 0.6;
+      indicators.push("Palabras largas");
+    } else if (avgWordLength > 4) {
+      score += 0.4;
+      indicators.push("Palabras medianas");
+    } else {
+      score += 0.2;
+      indicators.push("Palabras cortas");
+    }
+
+    // Evaluar longitud de oraciones
+    if (avgSentenceLength > 25) {
+      score += 0.8;
+      indicators.push("Oraciones muy largas");
+    } else if (avgSentenceLength > 20) {
+      score += 0.6;
+      indicators.push("Oraciones largas");
+    } else if (avgSentenceLength > 15) {
+      score += 0.4;
+      indicators.push("Oraciones medianas");
+    } else {
+      score += 0.2;
+      indicators.push("Oraciones cortas");
+    }
+
+    // Evaluar vocabulario
+    const uniqueWords = new Set(text.toLowerCase().split(/\s+/));
+    const totalWords = text.split(/\s+/).length;
+    const vocabularyDiversity = uniqueWords.size / totalWords;
+
+    if (vocabularyDiversity < 0.3) {
+      score += 0.8;
+      indicators.push("Vocabulario repetitivo");
+    } else if (vocabularyDiversity < 0.5) {
+      score += 0.6;
+      indicators.push("Vocabulario moderado");
+    } else {
+      score += 0.2;
+      indicators.push("Vocabulario diverso");
+    }
+
+    // Determinar nivel de complejidad
+    let level = "Normal";
+    if (score > 2.0) level = "Muy Alta";
+    else if (score > 1.5) level = "Alta";
+    else if (score > 1.0) level = "Moderada";
+    else level = "Baja";
+
+    return {
+      level,
+      score: Math.round(score * 100) / 100,
+      indicators
     };
   }
 
@@ -520,6 +641,75 @@ class AnalysisService {
     });
 
     return Math.round((totalSimilarity / searchResults.length) * 100) / 100;
+  }
+
+  // Métodos auxiliares para PRODUCCIÓN
+  detectLanguagePatterns(text) {
+    const patterns = {
+      repetition: 0,
+      formality: 0,
+      structure: 0
+    };
+
+    // Detectar repetición de palabras
+    const words = text.toLowerCase().split(/\s+/);
+    const wordCount = {};
+    words.forEach(word => {
+      wordCount[word] = (wordCount[word] || 0) + 1;
+    });
+    
+    const repeatedWords = Object.values(wordCount).filter(count => count > 2).length;
+    patterns.repetition = Math.min(repeatedWords / words.length, 1);
+
+    // Detectar formalidad
+    const formalWords = ['por consiguiente', 'en consecuencia', 'así mismo', 'de igual manera'];
+    const formalCount = formalWords.filter(word => text.toLowerCase().includes(word)).length;
+    patterns.formality = formalCount / formalWords.length;
+
+    // Detectar estructura
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const avgSentenceLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
+    patterns.structure = avgSentenceLength > 100 ? 0.8 : avgSentenceLength > 50 ? 0.5 : 0.2;
+
+    return patterns;
+  }
+
+  calculateReadabilityScore(text) {
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 0);
+    const words = text.split(/\s+/);
+    const syllables = this.countSyllables(text);
+
+    if (sentences.length === 0 || words.length === 0) return 0;
+
+    const avgSentenceLength = words.length / sentences.length;
+    const avgSyllablesPerWord = syllables / words.length;
+
+    // Fórmula de Flesch Reading Ease
+    const fleschScore = 206.835 - (1.015 * avgSentenceLength) - (84.6 * avgSyllablesPerWord);
+    
+    return Math.max(0, Math.min(100, fleschScore));
+  }
+
+  countSyllables(text) {
+    const words = text.toLowerCase().split(/\s+/);
+    let totalSyllables = 0;
+
+    words.forEach(word => {
+      totalSyllables += this.countWordSyllables(word);
+    });
+
+    return totalSyllables;
+  }
+
+  countWordSyllables(word) {
+    word = word.toLowerCase().replace(/[^a-z]/g, '');
+    if (word.length <= 3) return 1;
+
+    word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+    word = word.replace(/^y/, '');
+
+    const syllables = word.toLowerCase().match(/[aeiouy]{1,2}/g);
+    return syllables ? syllables.length : 1;
   }
 
   // Calcular relevancia de cada resultado de búsqueda
@@ -618,53 +808,58 @@ class AnalysisService {
     let totalConfidence = 0;
     let explanations = [];
 
-    // Analizar resultados de Gemini
-    if (results.gemini) {
-      if (results.gemini.isAI) {
-        aiScore += results.gemini.confidence || 0.7;
-      } else {
-        humanScore += results.gemini.confidence || 0.7;
-      }
-      totalConfidence += results.gemini.confidence || 0.7;
-      explanations.push(`Gemini: ${results.gemini.reasoning}`);
-    }
-
-    // Analizar resultados de Hugging Face
-    if (results.huggingface) {
-      const complexity = results.huggingface.complexity;
-      if (complexity === "Alta") {
-        aiScore += 0.6;
-        humanScore += 0.4;
-      } else {
-        aiScore += 0.4;
-        humanScore += 0.6;
-      }
-      totalConfidence += 0.5;
-      explanations.push(`Análisis lingüístico: Complejidad ${complexity}`);
-    }
-
-    // Analizar resultados de Google Search
-    if (results.googleSearch) {
-      const similarity = results.googleSearch.similarity;
-      const searchAnalysis = results.googleSearch.analysis;
+    // Analizar resultados de Gemini (REAL)
+    if (results.gemini && results.gemini.result) {
+      const geminiResult = results.gemini.result;
+      const geminiConfidence = results.gemini.confidence || 0.5;
       
-      if (similarity > 0.7) {
+      if (geminiResult === "IA") {
+        aiScore += geminiConfidence;
+        explanations.push(`Gemini: ${results.gemini.explanation} (${Math.round(geminiConfidence * 100)}% confianza)`);
+      } else if (geminiResult === "HUMANO") {
+        humanScore += geminiConfidence;
+        explanations.push(`Gemini: ${results.gemini.explanation} (${Math.round(geminiConfidence * 100)}% confianza)`);
+      }
+      totalConfidence += geminiConfidence;
+    }
+
+    // Analizar resultados de Hugging Face (REAL)
+    if (results.huggingface && results.huggingface.result) {
+      const hfResult = results.huggingface.result;
+      const hfConfidence = results.huggingface.confidence || 0.5;
+      
+      if (hfResult === "IA") {
+        aiScore += hfConfidence;
+        explanations.push(`Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`);
+      } else if (hfResult === "HUMANO") {
+        humanScore += hfConfidence;
+        explanations.push(`Hugging Face: ${results.huggingface.explanation} (${Math.round(hfConfidence * 100)}% confianza)`);
+      }
+      totalConfidence += hfConfidence;
+    }
+
+    // Analizar resultados de Google Search (REAL)
+    if (results.googleSearch) {
+      const similarity = results.googleSearch.similarity || 0;
+      const totalResults = results.googleSearch.totalResults || 0;
+      
+      if (similarity > 0.7 && totalResults > 0) {
         humanScore += 0.8;
         aiScore += 0.2;
         explanations.push(
-          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${searchAnalysis.conclusion}`
+          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados (probablemente humano)`
         );
-      } else if (similarity < 0.3) {
+      } else if (similarity < 0.3 || totalResults === 0) {
         aiScore += 0.8;
         humanScore += 0.2;
         explanations.push(
-          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${searchAnalysis.conclusion}`
+          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados (probablemente IA)`
         );
       } else {
         aiScore += 0.5;
         humanScore += 0.5;
         explanations.push(
-          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${searchAnalysis.conclusion}`
+          `Búsqueda web: Similitud ${Math.round(similarity * 100)}% - ${totalResults} resultados encontrados (indeterminado)`
         );
       }
       totalConfidence += 0.6;
@@ -675,14 +870,30 @@ class AnalysisService {
     const isAI = finalScore > 0.6;
     const confidence = Math.min(totalConfidence / 3, 0.95);
 
+    // Agregar contexto adicional para PRODUCCIÓN
+    let contextInfo = "";
+    if (results.googleSearch && results.googleSearch.detailedResults && results.googleSearch.detailedResults.length > 0) {
+      const topResult = results.googleSearch.detailedResults[0];
+      contextInfo = ` | Fuente principal: ${topResult.source} (${topResult.relevanceScore}% relevancia)`;
+    }
+
     return {
-      result: isAI ? "IA" : "Humano",
+      result: isAI ? "IA" : "HUMANO",
       confidence: Math.round(confidence * 100) / 100,
-      explanation: explanations.join(" | "),
+      explanation: explanations.join(" | ") + contextInfo,
       scores: {
         ai: Math.round(aiScore * 100) / 100,
         human: Math.round(humanScore * 100) / 100,
       },
+      context: {
+        geminiAnalysis: results.gemini?.explanation || "No disponible",
+        huggingfaceAnalysis: results.huggingface?.explanation || "No disponible",
+        searchContext: results.googleSearch ? {
+          totalResults: results.googleSearch.totalResults,
+          similarity: Math.round((results.googleSearch.similarity || 0) * 100),
+          topSources: results.googleSearch.detailedResults?.slice(0, 3).map(r => r.source) || []
+        } : null
+      }
     };
   }
 
