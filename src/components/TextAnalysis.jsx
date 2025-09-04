@@ -219,7 +219,10 @@ const TextAnalysis = () => {
             {results.gemini && (
               <AnalysisResultCard
                 title="Análisis de IA Avanzado"
-                result={results.gemini}
+                result={{
+                  result: results.gemini.isAI ? 'IA' : 'HUMANO',
+                  ...results.gemini
+                }}
                 confidence={results.gemini.confidence}
                 explanation={results.gemini.reasoning}
                 indicators={results.gemini.indicators}

@@ -77,6 +77,10 @@ const AnalysisResultCard = ({ title, result, confidence, explanation, indicators
     
     // Si es un objeto, extraer la explicación
     if (typeof explanation === 'object') {
+      // Si es un objeto con reasoning anidado
+      if (explanation.reasoning && typeof explanation.reasoning === 'object') {
+        return explanation.reasoning.reasoning || explanation.reasoning.explanation || 'Análisis completado';
+      }
       return explanation.explanation || explanation.reasoning || 'Análisis completado';
     }
     
@@ -88,6 +92,10 @@ const AnalysisResultCard = ({ title, result, confidence, explanation, indicators
     
     // Si es un objeto, extraer los indicadores
     if (typeof indicators === 'object') {
+      // Si es un objeto con reasoning anidado
+      if (indicators.reasoning && typeof indicators.reasoning === 'object') {
+        return indicators.reasoning.indicators || indicators.indicators || [];
+      }
       return indicators.indicators || indicators.patterns || [];
     }
     
@@ -168,6 +176,16 @@ const AnalysisResultCard = ({ title, result, confidence, explanation, indicators
         </div>
       )}
 
+      {/* Sugerencias si están disponibles */}
+      {result && typeof result === 'object' && result.suggestions && (
+        <div className="mt-4 pt-4 border-t border-gray-100">
+          <span className="text-sm font-medium text-gray-700">Sugerencias:</span>
+          <p className="text-sm text-gray-600 mt-1 leading-relaxed">
+            {result.suggestions}
+          </p>
+        </div>
+      )}
+
       {/* Información adicional si es un objeto */}
       {typeof result === 'object' && result && (
         <div className="mt-4 pt-4 border-t border-gray-100">
@@ -193,7 +211,9 @@ const AnalysisResultCard = ({ title, result, confidence, explanation, indicators
             {result.complexity && (
               <div>
                 <span className="font-medium text-gray-700">Complejidad:</span>
-                <p className="text-gray-600">{result.complexity}</p>
+                <p className="text-gray-600">
+                  {typeof result.complexity === 'object' ? result.complexity.level : result.complexity}
+                </p>
               </div>
             )}
             {result.readability && (

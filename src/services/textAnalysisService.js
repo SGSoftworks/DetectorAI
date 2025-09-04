@@ -72,7 +72,33 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
     const result = response.data.candidates[0].content.parts[0].text;
 
     try {
-      return JSON.parse(result);
+      // Intentar parsear el JSON principal
+      const parsedResult = JSON.parse(result);
+      
+      // Si hay un campo 'reasoning' que es un string JSON, parsearlo también
+      if (parsedResult.reasoning && typeof parsedResult.reasoning === 'string') {
+        try {
+          parsedResult.reasoning = JSON.parse(parsedResult.reasoning);
+        } catch {
+          // Si no se puede parsear, mantener como string
+        }
+      }
+      
+      // Normalizar la estructura para que sea consistente
+      return {
+        isAI: parsedResult.isAI || false,
+        confidence: parsedResult.confidence || 0.5,
+        reasoning: parsedResult.reasoning || result,
+        indicators: parsedResult.indicators || [],
+        languagePatterns: parsedResult.languagePatterns || "Análisis completado",
+        suggestions: parsedResult.suggestions || "Sin sugerencias específicas",
+        // Agregar metadatos adicionales
+        textLength: text.length,
+        wordCount: text.split(" ").length,
+        sentenceCount: text.split(/[.!?]+/).filter((s) => s.trim().length > 0).length,
+        complexity: this.calculateTextComplexity(text),
+        readability: this.calculateReadability(text)
+      };
     } catch {
       // Si no es JSON válido, extraer información del texto
       return {
@@ -84,6 +110,12 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
         indicators: ["Respuesta no estructurada"],
         languagePatterns: "Análisis basado en texto libre",
         suggestions: "Mejorar el prompt para obtener respuestas estructuradas",
+        // Agregar metadatos adicionales
+        textLength: text.length,
+        wordCount: text.split(" ").length,
+        sentenceCount: text.split(/[.!?]+/).filter((s) => s.trim().length > 0).length,
+        complexity: this.calculateTextComplexity(text),
+        readability: this.calculateReadability(text)
       };
     }
   }
