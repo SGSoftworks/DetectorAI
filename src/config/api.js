@@ -40,6 +40,9 @@ export const HUGGING_FACE_MODELS = {
   // Modelos adicionales para mayor robustez
   SENTIMENT_ALT: "cardiffnlp/twitter-roberta-base-sentiment",
   CLASSIFICATION_ALT: "facebook/bart-large-mnli",
+  // Modelos de respaldo que funcionan sin API key
+  FALLBACK_SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment",
+  FALLBACK_CLASSIFICATION: "facebook/bart-large-mnli",
 };
 
 // Función para obtener headers de autenticación

@@ -62,9 +62,6 @@ class AnalysisService {
       });
 
       try {
-        if (!API_CONFIG.HUGGING_FACE_API_KEY) {
-          throw new Error("API key de Hugging Face no configurada");
-        }
         const huggingfaceResult = await this.analyzeWithHuggingFace(text);
         results.huggingface = huggingfaceResult;
         results.pipeline[1].status = "Completado";
@@ -76,8 +73,10 @@ class AnalysisService {
         results.pipeline[1].error = error.message;
         results.pipeline[1].result = {
           error: error.message,
-          fallback:
-            "Análisis no disponible - API no configurada o error de conexión",
+          fallback: true,
+          result: "HUMANO", // Asumir humano por defecto en caso de error
+          confidence: 0.3,
+          explanation: "Análisis no disponible - usando análisis de fallback",
         };
         results.pipeline[1].timestamp = new Date().toISOString();
       }
@@ -108,8 +107,17 @@ class AnalysisService {
         results.pipeline[2].error = error.message;
         results.pipeline[2].result = {
           error: error.message,
-          fallback:
-            "Verificación no disponible - API no configurada o error de conexión",
+          fallback: true,
+          searchResults: [],
+          totalResults: 0,
+          similarity: 0,
+          analysis: {
+            summary: "Búsqueda no disponible",
+            conclusion: "No se pudo verificar contenido en la web",
+            recommendation: "Verificar manualmente la información",
+            confidence: 0.2,
+            evidenceStrength: "Muy baja",
+          },
         };
         results.pipeline[2].timestamp = new Date().toISOString();
       }
@@ -231,7 +239,10 @@ class AnalysisService {
   async analyzeWithHuggingFace(text) {
     try {
       if (!API_CONFIG.HUGGING_FACE_API_KEY) {
-        throw new Error("API key de Hugging Face no configurada");
+        console.warn(
+          "API key de Hugging Face no configurada, usando análisis de fallback"
+        );
+        return this.createFallbackAnalysis(text);
       }
 
       // Análisis de sentimientos con fallback inteligente
@@ -281,18 +292,19 @@ class AnalysisService {
         );
       } catch (error) {
         console.warn(
-          "Modelo de clasificación falló, usando análisis de fallback..."
+          "Modelo de clasificación falló, usando análisis de fallback...",
+          error.message
         );
         classificationFallback = true;
         // No lanzar error, continuar con fallback
       }
 
-      // Si ambos fallaron, usar análisis de fallback completo
+      // Si ambos modelos fallaron, usar análisis de fallback completo
       if (sentimentFallback && classificationFallback) {
         console.warn(
-          "Todas las APIs de Hugging Face fallaron, usando análisis de fallback..."
+          "Todos los modelos de Hugging Face fallaron, usando análisis de fallback completo"
         );
-        return this.fallbackTextAnalysis(text);
+        return this.createFallbackAnalysis(text);
       }
 
       // Procesar resultados con manejo de errores robusto
@@ -2154,6 +2166,93 @@ class AnalysisService {
     }
 
     return indicators;
+  }
+
+  // Crear análisis de fallback cuando Hugging Face no está disponible
+  createFallbackAnalysis(text) {
+    const textLength = text.length;
+    const words = text.split(/\s+/);
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+
+    // Análisis básico de patrones
+    const patterns = this.detectLanguagePatterns(text);
+
+    // Determinar si es probable que sea IA basado en patrones simples
+    let isAI = false;
+    let confidence = 0.4; // Confianza baja para análisis de fallback
+
+    // Indicadores simples de IA
+    if (patterns.repetition > 0.6) {
+      isAI = true;
+      confidence += 0.2;
+    }
+
+    if (patterns.formality > 0.8) {
+      isAI = true;
+      confidence += 0.1;
+    }
+
+    if (textLength < 100) {
+      confidence -= 0.1; // Textos muy cortos son difíciles de analizar
+    }
+
+    // Normalizar confianza
+    confidence = Math.max(0.2, Math.min(confidence, 0.7));
+
+    return {
+      result: isAI ? "IA" : "HUMANO",
+      confidence: confidence,
+      explanation: `Análisis de fallback basado en patrones lingüísticos básicos. ${
+        isAI
+          ? "Se detectaron indicadores de texto generado por IA."
+          : "No se detectaron indicadores claros de IA."
+      }`,
+      indicators: isAI
+        ? ["Patrones repetitivos detectados", "Formalidad excesiva"]
+        : ["Patrones naturales detectados"],
+      languagePatterns: `Repetición: ${Math.round(
+        patterns.repetition * 100
+      )}%, Formalidad: ${Math.round(patterns.formality * 100)}%`,
+      suggestions:
+        "Para un análisis más preciso, configure la API key de Hugging Face",
+      fallback: true,
+      apiStatus: {
+        huggingFaceAvailable: false,
+        fallbackUsed: true,
+        reason: "API no disponible o modelos no funcionando",
+      },
+      textLength: textLength,
+      wordCount: words.length,
+      sentenceCount: sentences.length,
+      complexity:
+        textLength > 500 ? "Alta" : textLength > 200 ? "Media" : "Baja",
+      readability: this.calculateReadability(text),
+    };
+  }
+
+  // Calcular legibilidad básica
+  calculateReadability(text) {
+    const words = text.split(/\s+/);
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+    const syllables = words.reduce(
+      (total, word) => total + this.countWordSyllables(word),
+      0
+    );
+
+    if (sentences.length === 0) return 0;
+
+    const avgWordsPerSentence = words.length / sentences.length;
+    const avgSyllablesPerWord = syllables / words.length;
+
+    // Fórmula simplificada de legibilidad
+    const readability =
+      206.835 - 1.015 * avgWordsPerSentence - 84.6 * avgSyllablesPerWord;
+
+    if (readability >= 80) return "Muy fácil";
+    if (readability >= 60) return "Fácil";
+    if (readability >= 40) return "Moderada";
+    if (readability >= 20) return "Difícil";
+    return "Muy difícil";
   }
 }
 
