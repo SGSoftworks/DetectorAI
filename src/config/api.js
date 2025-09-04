@@ -29,12 +29,15 @@ export const API_CONFIG = {
     API_KEY: import.meta.env.VITE_HUGGING_FACE_API_KEY,
     BASE_URL: "https://api-inference.huggingface.co",
     MODELS: {
-      SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment",
+      SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment-latest",
       TEXT_CLASSIFICATION: "facebook/bart-large-mnli",
       ZERO_SHOT: "facebook/bart-large-mnli",
       AI_DETECTION: "microsoft/DialoGPT-medium",
       LANGUAGE_DETECTION: "papluca/xlm-roberta-base-language-detection",
-      TEXT_GENERATION: "gpt2"
+      TEXT_GENERATION: "gpt2",
+      // Modelos alternativos que funcionan
+      ALTERNATIVE_SENTIMENT: "nlptown/bert-base-multilingual-uncased-sentiment",
+      ALTERNATIVE_CLASSIFICATION: "distilbert-base-uncased"
     },
     TIMEOUT: 25000,
     MAX_RETRIES: 3

@@ -7,6 +7,7 @@
 import React, { useState } from 'react';
 import { FileText, Brain, Search, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import mainAnalysisService from '../services/mainAnalysisService.js';
+import AnalysisResultCard from './AnalysisResultCard';
 
 const TextAnalysis = () => {
   const [text, setText] = useState('');
@@ -214,101 +215,48 @@ const TextAnalysis = () => {
           </div>
 
           {/* Detailed Results */}
-          {results.gemini && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Brain className="w-5 h-5" />
-                Análisis de IA Avanzado
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Resultado:</span>
-                    <p className="text-sm text-gray-900">
-                      {results.gemini.isAI ? 'Generado por IA' : 'Escrito por Humano'}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Confianza:</span>
-                    <p className="text-sm text-gray-900">
-                      {Math.round((results.gemini.confidence || 0) * 100)}%
-                    </p>
-                  </div>
-                </div>
-                
-                {results.gemini.reasoning && (
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Explicación:</span>
-                    <p className="text-sm text-gray-900 mt-1">{results.gemini.reasoning}</p>
-                  </div>
-                )}
-                
-                {results.gemini.indicators && results.gemini.indicators.length > 0 && (
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Indicadores:</span>
-                    <div className="flex flex-wrap gap-2 mt-1">
-                      {results.gemini.indicators.map((indicator, idx) => (
-                        <span key={idx} className="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-                          {indicator}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+          <div className="space-y-6">
+            {results.gemini && (
+              <AnalysisResultCard
+                title="Análisis de IA Avanzado"
+                result={results.gemini}
+                confidence={results.gemini.confidence}
+                explanation={results.gemini.reasoning}
+                indicators={results.gemini.indicators}
+                type="gemini"
+                status="Completado"
+              />
+            )}
+
+            {results.huggingface && (
+              <AnalysisResultCard
+                title="Análisis de Patrones Lingüísticos"
+                result={results.huggingface}
+                confidence={results.huggingface.confidence}
+                explanation={results.huggingface.explanation}
+                indicators={results.huggingface.indicators}
+                type="huggingface"
+                status="Completado"
+              />
+            )}
+          </div>
 
           {/* Web Search Results */}
           {results.webSearch && results.webSearch.searchResults && results.webSearch.searchResults.length > 0 && (
-            <div className="bg-white rounded-lg border border-gray-200 p-6">
-              <h3 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                <Search className="w-5 h-5" />
-                Verificación de Contenido
-              </h3>
-              
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Resultados encontrados:</span>
-                    <p className="text-sm text-gray-900">{results.webSearch.totalResults}</p>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Similitud:</span>
-                    <p className="text-sm text-gray-900">
-                      {Math.round((results.webSearch.similarity || 0) * 100)}%
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-gray-700">Fuentes relevantes:</span>
-                    <p className="text-sm text-gray-900">{results.webSearch.searchResults.length}</p>
-                  </div>
-                </div>
-                
-                {results.webSearch.searchResults.map((result, idx) => (
-                  <div key={idx} className="border border-gray-200 rounded-lg p-4">
-                    <h4 className="font-medium text-gray-900 mb-2">
-                      <a 
-                        href={result.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="hover:text-blue-600 transition-colors"
-                      >
-                        {result.title}
-                      </a>
-                    </h4>
-                    <p className="text-sm text-gray-600 mb-2">{result.snippet}</p>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">{result.displayLink}</span>
-                      <span className="text-xs text-gray-500">
-                        Relevancia: {Math.round(result.relevance * 100)}%
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <AnalysisResultCard
+              title="Verificación de Contenido"
+              result={{
+                result: 'VERIFICADO',
+                totalResults: results.webSearch.totalResults,
+                similarity: results.webSearch.similarity,
+                searchResults: results.webSearch.searchResults
+              }}
+              confidence={results.webSearch.similarity}
+              explanation={`Se encontraron ${results.webSearch.totalResults} resultados relacionados con el contenido analizado.`}
+              indicators={results.webSearch.searchResults.slice(0, 3).map(r => r.title)}
+              type="webSearch"
+              status="Completado"
+            />
           )}
         </div>
       )}

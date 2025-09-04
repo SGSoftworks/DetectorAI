@@ -90,36 +90,65 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
     }
 
     try {
-      // Análisis de sentimientos
-      const sentimentResponse = await this.axios.post(
-        `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.SENTIMENT}`,
-        { inputs: text },
-        {
-          headers: getAuthHeaders('huggingface'),
-          timeout: API_CONFIG.HUGGING_FACE.TIMEOUT
-        }
-      );
-
-      // Análisis de clasificación
-      const classificationResponse = await this.axios.post(
-        `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.TEXT_CLASSIFICATION}`,
-        {
-          inputs: text,
-          parameters: {
-            candidate_labels: [
-              'Texto generado por IA',
-              'Texto escrito por humano',
-              'Contenido académico',
-              'Contenido periodístico',
-              'Contenido informal'
-            ]
+      // Intentar con el modelo principal primero
+      let sentimentResponse, classificationResponse;
+      
+      try {
+        // Análisis de sentimientos con modelo principal
+        sentimentResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.SENTIMENT}`,
+          { inputs: text },
+          {
+            headers: getAuthHeaders('huggingface'),
+            timeout: API_CONFIG.HUGGING_FACE.TIMEOUT
           }
-        },
-        {
-          headers: getAuthHeaders('huggingface'),
-          timeout: API_CONFIG.HUGGING_FACE.TIMEOUT
-        }
-      );
+        );
+      } catch (error) {
+        console.warn('Modelo principal de sentimientos no disponible, usando alternativo');
+        // Usar modelo alternativo
+        sentimentResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.ALTERNATIVE_SENTIMENT}`,
+          { inputs: text },
+          {
+            headers: getAuthHeaders('huggingface'),
+            timeout: API_CONFIG.HUGGING_FACE.TIMEOUT
+          }
+        );
+      }
+
+      try {
+        // Análisis de clasificación con modelo principal
+        classificationResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.TEXT_CLASSIFICATION}`,
+          {
+            inputs: text,
+            parameters: {
+              candidate_labels: [
+                'Texto generado por IA',
+                'Texto escrito por humano',
+                'Contenido académico',
+                'Contenido periodístico',
+                'Contenido informal'
+              ]
+            }
+          },
+          {
+            headers: getAuthHeaders('huggingface'),
+            timeout: API_CONFIG.HUGGING_FACE.TIMEOUT
+          }
+        );
+      } catch (error) {
+        console.warn('Modelo principal de clasificación no disponible, usando alternativo');
+        // Usar modelo alternativo
+        classificationResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.ALTERNATIVE_CLASSIFICATION}`,
+          { inputs: text },
+          {
+            headers: getAuthHeaders('huggingface'),
+            timeout: API_CONFIG.HUGGING_FACE.TIMEOUT
+          }
+        );
+      }
 
       const sentiment = sentimentResponse.data[0];
       const classification = classificationResponse.data;
