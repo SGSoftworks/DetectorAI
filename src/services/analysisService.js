@@ -980,6 +980,17 @@ class AnalysisService {
     } else if (results.gemini && results.gemini.error) {
       explanations.push(`Gemini: ${results.gemini.error} - Usando análisis de respaldo`);
       totalConfidence += 0.3; // Confianza reducida por fallback
+    } else if (results.gemini && results.gemini.isAI !== undefined) {
+      // Si Gemini devuelve isAI en lugar de result
+      const geminiConfidence = results.gemini.confidence || 0.7;
+      if (results.gemini.isAI) {
+        aiScore += geminiConfidence;
+        explanations.push(`Gemini: Análisis sugiere IA (${Math.round(geminiConfidence * 100)}% confianza)`);
+      } else {
+        humanScore += geminiConfidence;
+        explanations.push(`Gemini: Análisis sugiere HUMANO (${Math.round(geminiConfidence * 100)}% confianza)`);
+      }
+      totalConfidence += geminiConfidence;
     }
 
     // Analizar resultados de Hugging Face (REAL)
@@ -1051,10 +1062,34 @@ class AnalysisService {
       totalConfidence += 0.6;
     }
 
-    // Calcular resultado final
-    const finalScore = aiScore / (aiScore + humanScore);
+    // Calcular resultado final con lógica mejorada
+    const totalScore = aiScore + humanScore;
+    let finalScore = 0;
+    let confidence = 0;
+    
+    if (totalScore > 0) {
+      finalScore = aiScore / totalScore;
+      
+      // Calcular confianza basada en la diferencia entre scores
+      const scoreDifference = Math.abs(aiScore - humanScore);
+      const maxPossibleScore = Math.max(aiScore, humanScore);
+      
+      if (scoreDifference > 0.5) {
+        // Alta confianza cuando hay una diferencia clara
+        confidence = Math.min(maxPossibleScore * 0.9, 0.95);
+      } else if (scoreDifference > 0.2) {
+        // Confianza moderada
+        confidence = Math.min(maxPossibleScore * 0.7, 0.85);
+      } else {
+        // Baja confianza cuando los scores están muy cerca
+        confidence = Math.min(maxPossibleScore * 0.5, 0.6);
+      }
+    } else {
+      // Fallback si no hay scores
+      confidence = 0.5;
+    }
+    
     const isAI = finalScore > 0.6;
-    const confidence = Math.min(totalConfidence / 3, 0.95);
 
     // Agregar contexto adicional para PRODUCCIÓN
     let contextInfo = "";

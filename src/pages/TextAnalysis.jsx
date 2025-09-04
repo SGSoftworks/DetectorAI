@@ -88,6 +88,171 @@ const TextAnalysis = () => {
     }
   };
 
+  // Función para renderizar resultados detallados del pipeline
+  const renderStepResult = (result, stepName) => {
+    if (typeof result === "string") {
+      return <span className="font-medium">{result}</span>;
+    }
+
+    if (typeof result === "object") {
+      // Paso 1: Análisis con Google Gemini
+      if (stepName.includes("Gemini")) {
+        return (
+          <div className="space-y-2">
+            {result.isAI !== undefined && (
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Resultado:</span>
+                <span className={`px-2 py-1 rounded text-xs ${result.isAI ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                  {result.isAI ? 'IA' : 'HUMANO'}
+                </span>
+              </div>
+            )}
+            {result.confidence && (
+              <div>
+                <span className="font-medium">Confianza:</span> {Math.round(result.confidence * 100)}%
+              </div>
+            )}
+            {result.reasoning && (
+              <div>
+                <span className="font-medium">Razonamiento:</span>
+                <p className="mt-1 text-gray-600 text-xs leading-relaxed">{result.reasoning}</p>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // Paso 2: Análisis con Hugging Face
+      if (stepName.includes("Hugging Face")) {
+        return (
+          <div className="space-y-2">
+            {result.result && (
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Clasificación:</span>
+                <span className={`px-2 py-1 rounded text-xs ${result.result === 'IA' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                  {result.result}
+                </span>
+              </div>
+            )}
+            {result.confidence && (
+              <div>
+                <span className="font-medium">Confianza:</span> {Math.round(result.confidence * 100)}%
+              </div>
+            )}
+            {result.explanation && (
+              <div>
+                <span className="font-medium">Explicación:</span>
+                <p className="mt-1 text-gray-800 text-xs leading-relaxed">{result.explanation}</p>
+              </div>
+            )}
+            {result.complexity && (
+              <div>
+                <span className="font-medium">Complejidad:</span> {result.complexity.level} (Score: {result.complexity.score})
+              </div>
+            )}
+            {result.readability && (
+              <div>
+                <span className="font-medium">Legibilidad:</span> {Math.round(result.readability)}%
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // Paso 3: Verificación de Contenido
+      if (stepName.includes("Verificación")) {
+        return (
+          <div className="space-y-2">
+            {result.totalResults && (
+              <div>
+                <span className="font-medium">Total de resultados:</span> {result.totalResults}
+              </div>
+            )}
+            {result.similarity && (
+              <div>
+                <span className="font-medium">Similitud:</span> {Math.round(result.similarity * 100)}%
+              </div>
+            )}
+            {result.searchResults && Array.isArray(result.searchResults) && (
+              <div>
+                <span className="font-medium">Resultados encontrados:</span> {result.searchResults.length}
+                {result.searchResults.length > 0 && (
+                  <div className="mt-2 space-y-1">
+                    {result.searchResults.slice(0, 3).map((item, idx) => (
+                      <div key={idx} className="text-xs bg-gray-50 p-2 rounded">
+                        <div className="font-medium">{item.title}</div>
+                        <div className="text-gray-600">{item.displayLink}</div>
+                        <div className="text-gray-500">{item.snippet.substring(0, 100)}...</div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // Paso 4: Análisis Final
+      if (stepName.includes("Final")) {
+        return (
+          <div className="space-y-2">
+            {result.result && (
+              <div className="flex items-center gap-2">
+                <span className="font-medium">Decisión final:</span>
+                <span className={`px-2 py-1 rounded text-xs ${result.result === 'IA' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
+                  {result.result}
+                </span>
+              </div>
+            )}
+            {result.confidence && (
+              <div>
+                <span className="font-medium">Confianza final:</span> {Math.round(result.confidence * 100)}%
+              </div>
+            )}
+            {result.scores && (
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div>
+                  <span className="font-medium">Score IA:</span> {Math.round(result.scores.ai * 100)}%
+                </div>
+                <div>
+                  <span className="font-medium">Score Humano:</span> {Math.round(result.scores.human * 100)}%
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      }
+
+      // Para otros objetos, mostrar propiedades clave
+      const simpleProps = Object.keys(result).filter(
+        key => typeof result[key] === "string" || typeof result[key] === "number" || typeof result[key] === "boolean"
+      );
+
+      if (simpleProps.length > 0) {
+        return (
+          <div className="space-y-1">
+            {simpleProps.map(key => (
+              <div key={key}>
+                <span className="font-medium">{key}:</span> {String(result[key])}
+              </div>
+            ))}
+          </div>
+        );
+      }
+
+      // Si no hay propiedades simples, usar JSON.stringify
+      return (
+        <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto">
+          {JSON.stringify(result, null, 2)}
+        </pre>
+      );
+    }
+
+    // Para otros tipos, convertir a string
+    return <span className="font-medium">{String(result)}</span>;
+  };
+
   return (
     <div className="space-section">
       {/* Header mejorado */}
@@ -353,71 +518,47 @@ const TextAnalysis = () => {
                   </h3>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${
-                      step.status === "completed"
+                      step.status === "Completado"
                         ? "bg-green-100 text-green-800"
-                        : step.status === "error"
+                        : step.status === "Error"
                         ? "bg-red-100 text-red-800"
+                        : step.status === "Iniciando"
+                        ? "bg-blue-100 text-blue-800"
                         : "bg-gray-100 text-gray-800"
                     }`}
                   >
-                    {step.status === "completed"
-                      ? "Completado"
-                      : step.status === "error"
-                      ? "Error"
-                      : "Pendiente"}
+                    {step.status}
                   </span>
                 </div>
                 <p className="text-gray-600 text-sm mb-3">{step.description}</p>
+                
+                {/* Mostrar resultado detallado */}
                 {step.result && (
-                  <div className="bg-white border border-gray-200 rounded-lg p-3">
-                    <div className="text-xs text-gray-500 mb-1">Resultado:</div>
-                    <div className="text-sm text-gray-700 font-mono break-words">
-                      {(() => {
-                        if (typeof step.result === "string") {
-                          return step.result;
-                        }
-
-                        if (typeof step.result === "object") {
-                          // Si tiene propiedades específicas que sabemos cómo mostrar
-                          if (step.result.result) return step.result.result;
-                          if (step.result.confidence)
-                            return `${step.result.confidence}%`;
-                          if (step.result.explanation)
-                            return step.result.explanation;
-
-                          // Si tiene searchResults, mostrar solo el número de resultados
-                          if (
-                            step.result.searchResults &&
-                            Array.isArray(step.result.searchResults)
-                          ) {
-                            return `${step.result.searchResults.length} resultados encontrados`;
-                          }
-
-                          if (step.result.totalResults)
-                            return `${step.result.totalResults} resultados totales`;
-
-                          // Para otros objetos, mostrar propiedades clave o stringify
-                          const simpleProps = Object.keys(step.result).filter(
-                            (key) =>
-                              typeof step.result[key] === "string" ||
-                              typeof step.result[key] === "number" ||
-                              typeof step.result[key] === "boolean"
-                          );
-
-                          if (simpleProps.length > 0) {
-                            return simpleProps
-                              .map((key) => `${key}: ${step.result[key]}`)
-                              .join(", ");
-                          }
-
-                          // Si no hay propiedades simples, usar JSON.stringify
-                          return JSON.stringify(step.result, null, 2);
-                        }
-
-                        // Para otros tipos, convertir a string
-                        return String(step.result);
-                      })()}
+                  <div className="bg-white border border-gray-200 rounded-lg p-4">
+                    <div className="text-xs text-gray-500 mb-2 font-medium">Resultado:</div>
+                    <div className="text-sm text-gray-700">
+                      {renderStepResult(step.result, step.name)}
                     </div>
+                  </div>
+                )}
+
+                {/* Mostrar error si existe */}
+                {step.error && (
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
+                    <div className="text-xs text-red-500 mb-1 font-medium">Error:</div>
+                    <p className="text-sm text-red-600">{step.error}</p>
+                  </div>
+                )}
+
+                {/* Mostrar timestamp y tiempo de procesamiento */}
+                {step.timestamp && (
+                  <div className="mt-3 text-xs text-gray-500">
+                    Timestamp: {new Date(step.timestamp).toLocaleString()}
+                  </div>
+                )}
+                {step.processingTime && (
+                  <div className="mt-1 text-xs text-gray-500">
+                    Tiempo: {step.processingTime}ms
                   </div>
                 )}
               </div>
