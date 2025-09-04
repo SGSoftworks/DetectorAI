@@ -1,215 +1,92 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+/**
+ * Estilos principales de la aplicación
+ * Sistema de Detección de Contenido Generado por IA
+ * Versión: 2.0.0
+ */
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Estilos base personalizados */
 @layer base {
   html {
-    font-family: "Inter", system-ui, sans-serif;
-    scroll-behavior: smooth;
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
-
+  
   body {
     @apply text-gray-900 bg-gray-50;
-    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
-
-  /* Mejoras de scrollbar */
-  ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400;
+  
+  * {
+    @apply border-gray-200;
   }
 }
 
+/* Componentes personalizados */
 @layer components {
-  /* Botones mejorados */
   .btn-primary {
-    @apply inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md transform hover:-translate-y-0.5;
+    @apply bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors;
   }
-
+  
   .btn-secondary {
-    @apply inline-flex items-center justify-center px-6 py-3 border border-gray-300 text-base font-medium rounded-xl text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 shadow-sm hover:shadow-md;
+    @apply bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-medium hover:bg-gray-300 focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors;
   }
-
-  .btn-outline {
-    @apply inline-flex items-center justify-center px-6 py-3 border-2 border-blue-600 text-base font-medium rounded-xl text-blue-600 bg-transparent hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200;
-  }
-
-  .btn-ghost {
-    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-medium rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200;
-  }
-
-  /* Tarjetas mejoradas */
+  
   .card {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-md transition-all duration-200;
+    @apply bg-white rounded-lg border border-gray-200 p-6 shadow-sm;
   }
-
-  .card-hover {
-    @apply bg-white rounded-2xl shadow-sm border border-gray-200 p-6 hover:shadow-lg hover:border-gray-300 transition-all duration-300 transform hover:-translate-y-1;
+  
+  .input-field {
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors;
   }
-
-  /* Inputs mejorados */
-  .input-primary {
-    @apply block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200;
+  
+  .status-badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
   }
-
-  .input-secondary {
-    @apply block w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent focus:bg-white transition-all duration-200;
+  
+  .status-success {
+    @apply bg-green-100 text-green-800;
   }
-
-  /* Selects mejorados */
-  .select-primary {
-    @apply block w-full px-4 py-3 border border-gray-300 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white;
+  
+  .status-warning {
+    @apply bg-yellow-100 text-yellow-800;
   }
-
-  /* Badges mejorados */
-  .badge {
-    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  
+  .status-error {
+    @apply bg-red-100 text-red-800;
   }
-
-  .badge-success {
-    @apply bg-green-100 text-green-800 border border-green-200;
+  
+  .status-info {
+    @apply bg-blue-100 text-blue-800;
   }
+}
 
-  .badge-warning {
-    @apply bg-yellow-100 text-yellow-800 border border-yellow-200;
+/* Utilidades personalizadas */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
   }
-
-  .badge-error {
-    @apply bg-red-100 text-red-800 border border-red-200;
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
   }
-
-  .badge-info {
-    @apply bg-blue-100 text-blue-800 border border-blue-200;
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
-
-  /* Gradientes personalizados */
-  .gradient-primary {
-    @apply bg-gradient-to-r from-blue-600 to-purple-600;
-  }
-
-  .gradient-secondary {
-    @apply bg-gradient-to-r from-gray-600 to-gray-800;
-  }
-
-  .gradient-success {
-    @apply bg-gradient-to-r from-green-500 to-emerald-600;
-  }
-
-  .gradient-warning {
-    @apply bg-gradient-to-r from-yellow-500 to-orange-500;
-  }
-
-  /* Sombras personalizadas */
-  .shadow-soft {
-    box-shadow: 0 2px 15px -3px rgba(0, 0, 0, 0.07),
-      0 10px 20px -2px rgba(0, 0, 0, 0.04);
-  }
-
-  .shadow-medium {
-    box-shadow: 0 4px 25px -5px rgba(0, 0, 0, 0.1),
-      0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  }
-
-  /* Animaciones personalizadas */
+  
   .animate-fade-in {
-    animation: fadeIn 0.5s ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
   }
-
+  
   .animate-slide-up {
     animation: slideUp 0.3s ease-out;
   }
-
-  .animate-bounce-soft {
-    animation: bounceSoft 2s infinite;
-  }
-
-  /* Estados de hover mejorados */
-  .hover-lift {
-    @apply transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg;
-  }
-
-  .hover-scale {
-    @apply transition-all duration-300 transform hover:scale-105;
-  }
-
-  /* Grid responsivo mejorado */
-  .grid-auto-fit {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  }
-
-  .grid-auto-fill {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-}
-
-@layer utilities {
-  /* Espaciado personalizado */
-  .space-section {
-    @apply space-y-8;
-  }
-
-  .space-content {
-    @apply space-y-6;
-  }
-
-  .space-items {
-    @apply space-y-4;
-  }
-
-  /* Textos responsivos */
-  .text-responsive-xl {
-    @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl;
-  }
-
-  .text-responsive-lg {
-    @apply text-xl sm:text-2xl lg:text-3xl;
-  }
-
-  .text-responsive-md {
-    @apply text-lg sm:text-xl lg:text-2xl;
-  }
-
-  /* Contenedores responsivos */
-  .container-responsive {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .container-narrow {
-    @apply max-w-4xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  .container-wide {
-    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
-  }
-
-  /* Flexbox utilities */
-  .flex-center {
-    @apply flex items-center justify-center;
-  }
-
-  .flex-between {
-    @apply flex items-center justify-between;
-  }
-
-  .flex-start {
-    @apply flex items-center justify-start;
-  }
-
-  .flex-end {
-    @apply flex items-center justify-end;
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }
 
@@ -217,11 +94,9 @@
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
   }
 }
 
@@ -236,97 +111,236 @@
   }
 }
 
-@keyframes bounceSoft {
-  0%,
-  20%,
-  53%,
-  80%,
-  100% {
-    transform: translate3d(0, 0, 0);
+/* Estilos para el modal de consentimiento */
+.consent-modal {
+  backdrop-filter: blur(4px);
+}
+
+.consent-modal-content {
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* Estilos para el pipeline de análisis */
+.pipeline-step {
+  @apply relative;
+}
+
+.pipeline-step::before {
+  content: '';
+  @apply absolute left-4 top-8 w-0.5 h-full bg-gray-200;
+}
+
+.pipeline-step:last-child::before {
+  @apply hidden;
+}
+
+/* Estilos para resultados de análisis */
+.result-card {
+  @apply transition-all duration-200 hover:shadow-md;
+}
+
+.result-card-ai {
+  @apply border-red-200 bg-red-50;
+}
+
+.result-card-human {
+  @apply border-green-200 bg-green-50;
+}
+
+/* Estilos para indicadores de progreso */
+.progress-bar {
+  @apply w-full bg-gray-200 rounded-full h-2;
+}
+
+.progress-fill {
+  @apply bg-blue-600 h-2 rounded-full transition-all duration-300 ease-out;
+}
+
+/* Estilos para tooltips */
+.tooltip {
+  @apply absolute z-10 px-3 py-2 text-sm text-white bg-gray-900 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-200;
+}
+
+.tooltip.show {
+  @apply opacity-100;
+}
+
+/* Estilos para el modo oscuro (preparado para futuras implementaciones) */
+@media (prefers-color-scheme: dark) {
+  .dark-mode {
+    @apply bg-gray-900 text-gray-100;
   }
-  40%,
-  43% {
-    transform: translate3d(0, -8px, 0);
+  
+  .dark-mode .card {
+    @apply bg-gray-800 border-gray-700;
   }
-  70% {
-    transform: translate3d(0, -4px, 0);
-  }
-  90% {
-    transform: translate3d(0, -2px, 0);
+  
+  .dark-mode .input-field {
+    @apply bg-gray-800 border-gray-600 text-gray-100;
   }
 }
 
-/* Mejoras para dispositivos móviles */
+/* Estilos responsivos personalizados */
 @media (max-width: 640px) {
-  .card {
-    @apply p-4 rounded-xl;
+  .mobile-padding {
+    @apply px-4;
   }
-
-  .btn-primary,
-  .btn-secondary {
-    @apply px-4 py-2.5 text-sm;
-  }
-
-  .input-primary,
-  .input-secondary,
-  .select-primary {
-    @apply px-3 py-2.5 text-sm;
+  
+  .mobile-text {
+    @apply text-sm;
   }
 }
 
-/* Mejoras para tablets */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .card {
-    @apply p-5;
-  }
+/* Estilos para accesibilidad */
+.focus-visible {
+  @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
 }
 
-/* Mejoras para pantallas grandes */
-@media (min-width: 1025px) {
-  .container-responsive {
-    @apply px-8;
-  }
-
-  .card {
-    @apply p-8;
-  }
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
 }
 
-/* Estados de focus mejorados para accesibilidad */
-*:focus {
-  @apply outline-none;
+/* Estilos para el loading spinner */
+.spinner {
+  @apply animate-spin rounded-full border-2 border-gray-300 border-t-blue-600;
 }
 
-.btn-primary:focus,
-.btn-secondary:focus,
-.input-primary:focus,
-.input-secondary:focus,
-.select-primary:focus {
-  @apply ring-2 ring-blue-500 ring-offset-2;
+/* Estilos para las barras de progreso del análisis */
+.analysis-progress {
+  @apply w-full bg-gray-200 rounded-full h-1.5;
 }
 
-/* Transiciones suaves para todos los elementos interactivos */
-button,
-a,
-input,
-select,
-textarea {
-  @apply transition-all duration-200;
+.analysis-progress-fill {
+  @apply bg-gradient-to-r from-blue-500 to-blue-600 h-1.5 rounded-full transition-all duration-500 ease-out;
 }
 
-/* Mejoras para elementos de formulario */
-input:disabled,
-select:disabled,
-textarea:disabled {
-  @apply opacity-50 cursor-not-allowed;
+/* Estilos para los badges de estado */
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
 }
 
-/* Estados de loading */
-.loading {
-  @apply opacity-75 cursor-wait;
+.badge-success {
+  @apply bg-green-100 text-green-800;
 }
 
-.loading::after {
-  content: "";
-  @apply absolute inset-0 bg-gray-200 animate-pulse rounded;
+.badge-warning {
+  @apply bg-yellow-100 text-yellow-800;
+}
+
+.badge-error {
+  @apply bg-red-100 text-red-800;
+}
+
+.badge-info {
+  @apply bg-blue-100 text-blue-800;
+}
+
+.badge-neutral {
+  @apply bg-gray-100 text-gray-800;
+}
+
+/* Estilos para las tarjetas de resultados de búsqueda */
+.search-result-card {
+  @apply border border-gray-200 rounded-lg p-4 hover:border-blue-300 hover:shadow-sm transition-all duration-200;
+}
+
+.search-result-title {
+  @apply font-medium text-gray-900 hover:text-blue-600 transition-colors;
+}
+
+.search-result-snippet {
+  @apply text-sm text-gray-600 mt-1;
+}
+
+.search-result-meta {
+  @apply text-xs text-gray-500 mt-2 flex justify-between items-center;
+}
+
+/* Estilos para el indicador de confianza */
+.confidence-indicator {
+  @apply relative w-full bg-gray-200 rounded-full h-2;
+}
+
+.confidence-fill {
+  @apply h-2 rounded-full transition-all duration-500 ease-out;
+}
+
+.confidence-high {
+  @apply bg-green-500;
+}
+
+.confidence-medium {
+  @apply bg-yellow-500;
+}
+
+.confidence-low {
+  @apply bg-red-500;
+}
+
+/* Estilos para el sistema de notificaciones */
+.notification {
+  @apply fixed top-4 right-4 z-50 max-w-sm w-full bg-white rounded-lg shadow-lg border border-gray-200 p-4 transform transition-all duration-300 ease-out;
+}
+
+.notification-enter {
+  @apply translate-x-full opacity-0;
+}
+
+.notification-enter-active {
+  @apply translate-x-0 opacity-100;
+}
+
+.notification-exit {
+  @apply translate-x-0 opacity-100;
+}
+
+.notification-exit-active {
+  @apply translate-x-full opacity-0;
+}
+
+/* Estilos para el sistema de tabs */
+.tab-list {
+  @apply flex border-b border-gray-200;
+}
+
+.tab-button {
+  @apply px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-colors;
+}
+
+.tab-button.active {
+  @apply text-blue-600 border-b-2 border-blue-600 bg-blue-50;
+}
+
+.tab-button.disabled {
+  @apply text-gray-400 cursor-not-allowed;
+}
+
+/* Estilos para el sistema de métricas */
+.metric-card {
+  @apply bg-white rounded-lg border border-gray-200 p-6 text-center;
+}
+
+.metric-value {
+  @apply text-3xl font-bold text-gray-900;
+}
+
+.metric-label {
+  @apply text-sm text-gray-600 mt-1;
+}
+
+.metric-change {
+  @apply text-xs mt-1;
+}
+
+.metric-change.positive {
+  @apply text-green-600;
+}
+
+.metric-change.negative {
+  @apply text-red-600;
+}
+
+.metric-change.neutral {
+  @apply text-gray-600;
 }
