@@ -91,31 +91,53 @@ const TextAnalysis = () => {
   // Función para renderizar resultados detallados del pipeline
   const renderStepResult = (result, stepName) => {
     if (typeof result === "string") {
-      return <span className="font-medium">{result}</span>;
+      return <span className="font-medium text-gray-700">{result}</span>;
     }
 
     if (typeof result === "object") {
       // Paso 1: Análisis con Google Gemini
       if (stepName.includes("Gemini")) {
         return (
-          <div className="space-y-2">
+          <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="flex items-center gap-2">
+              <Target className="w-4 h-4 text-blue-600" />
+              <span className="font-semibold text-blue-900">Análisis Gemini</span>
+            </div>
+            
             {result.isAI !== undefined && (
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Resultado:</span>
-                <span className={`px-2 py-1 rounded text-xs ${result.isAI ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                  {result.isAI ? 'IA' : 'HUMANO'}
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-700">Clasificación:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  result.isAI ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-green-100 text-green-800 border border-green-300'
+                }`}>
+                  {result.isAI ? '🤖 Generado por IA' : '👤 Escrito por Humano'}
                 </span>
               </div>
             )}
+            
             {result.confidence && (
-              <div>
-                <span className="font-medium">Confianza:</span> {Math.round(result.confidence * 100)}%
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-700">Nivel de Confianza:</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${result.confidence * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-semibold text-blue-700">
+                    {Math.round(result.confidence * 100)}%
+                  </span>
+                </div>
               </div>
             )}
+            
             {result.reasoning && (
               <div>
-                <span className="font-medium">Razonamiento:</span>
-                <p className="mt-1 text-gray-600 text-xs leading-relaxed">{result.reasoning}</p>
+                <span className="font-medium text-gray-700 block mb-2">Razonamiento:</span>
+                <div className="bg-white p-3 rounded border border-gray-200">
+                  <p className="text-gray-700 text-sm leading-relaxed">{result.reasoning}</p>
+                </div>
               </div>
             )}
           </div>
@@ -125,34 +147,79 @@ const TextAnalysis = () => {
       // Paso 2: Análisis con Hugging Face
       if (stepName.includes("Hugging Face")) {
         return (
-          <div className="space-y-2">
+          <div className="space-y-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+            <div className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-purple-600" />
+              <span className="font-semibold text-purple-900">Análisis Hugging Face</span>
+            </div>
+            
             {result.result && (
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Clasificación:</span>
-                <span className={`px-2 py-1 rounded text-xs ${result.result === 'IA' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                  {result.result}
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-700">Clasificación:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  result.result === 'IA' ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-green-100 text-green-800 border border-green-300'
+                }`}>
+                  {result.result === 'IA' ? '🤖 IA' : '👤 Humano'}
                 </span>
               </div>
             )}
+            
             {result.confidence && (
-              <div>
-                <span className="font-medium">Confianza:</span> {Math.round(result.confidence * 100)}%
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-700">Confianza:</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-20 bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                      style={{ width: `${result.confidence * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-semibold text-purple-700">
+                    {Math.round(result.confidence * 100)}%
+                  </span>
+                </div>
               </div>
             )}
+            
             {result.explanation && (
               <div>
-                <span className="font-medium">Explicación:</span>
-                <p className="mt-1 text-gray-800 text-xs leading-relaxed">{result.explanation}</p>
+                <span className="font-medium text-gray-700 block mb-2">Explicación:</span>
+                <div className="bg-white p-3 rounded border border-gray-200">
+                  <p className="text-gray-700 text-sm leading-relaxed">{result.explanation}</p>
+                </div>
               </div>
             )}
+            
             {result.complexity && (
-              <div>
-                <span className="font-medium">Complejidad:</span> {result.complexity.level} (Score: {result.complexity.score})
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                  <span className="font-medium text-gray-700 block text-xs mb-1">Nivel de Complejidad:</span>
+                  <span className="text-lg font-bold text-purple-700">{result.complexity.level}</span>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {result.complexity.level === 'Baja' ? 'Fácil de entender' : 
+                     result.complexity.level === 'Media' ? 'Comprensión moderada' : 'Requiere atención especial'}
+                  </div>
+                </div>
+                <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                  <span className="font-medium text-gray-700 block text-xs mb-1">Score de Complejidad:</span>
+                  <span className="text-lg font-bold text-purple-700">{Math.round(result.complexity.score * 100)}%</span>
+                  <div className="text-xs text-gray-500 mt-1">
+                    {result.complexity.score < 0.3 ? 'Muy simple' : 
+                     result.complexity.score < 0.7 ? 'Complejidad moderada' : 'Muy complejo'}
+                  </div>
+                </div>
               </div>
             )}
+            
             {result.readability && (
-              <div>
-                <span className="font-medium">Legibilidad:</span> {Math.round(result.readability)}%
+              <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
+                <span className="font-medium text-gray-700 block text-xs mb-1">Índice de Legibilidad:</span>
+                <span className="text-lg font-bold text-purple-700">{Math.round(result.readability)}%</span>
+                <div className="text-xs text-gray-500 mt-1">
+                  {result.readability >= 80 ? 'Muy fácil de leer' : 
+                   result.readability >= 60 ? 'Fácil de leer' : 
+                   result.readability >= 40 ? 'Moderadamente difícil' : 'Difícil de leer'}
+                </div>
               </div>
             )}
           </div>
@@ -162,31 +229,65 @@ const TextAnalysis = () => {
       // Paso 3: Verificación de Contenido
       if (stepName.includes("Verificación")) {
         return (
-          <div className="space-y-2">
-            {result.totalResults && (
+          <div className="space-y-3 p-3 bg-green-50 rounded-lg border border-green-200">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4 text-green-600" />
+              <span className="font-semibold text-green-900">Verificación de Contenido</span>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {result.totalResults && (
+                <div className="bg-white p-2 rounded border border-gray-200">
+                  <span className="font-medium text-gray-700 block text-xs">Total de Resultados:</span>
+                  <span className="text-sm font-semibold text-green-700">{result.totalResults}</span>
+                </div>
+              )}
+              {result.similarity && (
+                <div className="bg-white p-2 rounded border border-gray-200">
+                  <span className="font-medium text-gray-700 block text-xs">Similitud:</span>
+                  <span className="text-sm font-semibold text-green-700">{Math.round(result.similarity * 100)}%</span>
+                </div>
+              )}
+            </div>
+            
+            {result.searchResults && Array.isArray(result.searchResults) && result.searchResults.length > 0 && (
               <div>
-                <span className="font-medium">Total de resultados:</span> {result.totalResults}
-              </div>
-            )}
-            {result.similarity && (
-              <div>
-                <span className="font-medium">Similitud:</span> {Math.round(result.similarity * 100)}%
-              </div>
-            )}
-            {result.searchResults && Array.isArray(result.searchResults) && (
-              <div>
-                <span className="font-medium">Resultados encontrados:</span> {result.searchResults.length}
-                {result.searchResults.length > 0 && (
-                  <div className="mt-2 space-y-1">
-                    {result.searchResults.slice(0, 3).map((item, idx) => (
-                      <div key={idx} className="text-xs bg-gray-50 p-2 rounded">
-                        <div className="font-medium">{item.title}</div>
-                        <div className="text-gray-600">{item.displayLink}</div>
-                        <div className="text-gray-500">{item.snippet.substring(0, 100)}...</div>
+                <span className="font-medium text-gray-700 block mb-3">🔍 Fuentes Relacionadas Encontradas:</span>
+                <div className="space-y-3">
+                  {result.searchResults.slice(0, 3).map((item, idx) => (
+                    <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
+                      <a 
+                        href={item.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="block group"
+                      >
+                        <div className="font-bold text-blue-700 text-sm mb-2 group-hover:text-blue-800 transition-colors">
+                          📄 {item.title}
+                        </div>
+                      </a>
+                      <div className="text-xs text-gray-500 mb-2 font-medium">
+                        🌐 {item.displayLink}
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <div className="text-sm text-gray-700 leading-relaxed">
+                        {item.snippet.length > 150 ? `${item.snippet.substring(0, 150)}...` : item.snippet}
+                      </div>
+                      <div className="mt-3 flex justify-end">
+                        <a 
+                          href={item.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
+                        >
+                          <span>Ver fuente</span>
+                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                        </a>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -196,27 +297,63 @@ const TextAnalysis = () => {
       // Paso 4: Análisis Final
       if (stepName.includes("Final")) {
         return (
-          <div className="space-y-2">
+          <div className="space-y-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4 text-orange-600" />
+              <span className="font-semibold text-orange-900">Análisis Final</span>
+            </div>
+            
             {result.result && (
-              <div className="flex items-center gap-2">
-                <span className="font-medium">Decisión final:</span>
-                <span className={`px-2 py-1 rounded text-xs ${result.result === 'IA' ? 'bg-red-100 text-red-800' : 'bg-green-100 text-green-800'}`}>
-                  {result.result}
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-700">Decisión Final:</span>
+                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                  result.result === 'IA' ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-green-100 text-green-800 border border-green-300'
+                }`}>
+                  {result.result === 'IA' ? '🤖 CONTENIDO GENERADO POR IA' : '👤 CONTENIDO HUMANO'}
                 </span>
               </div>
             )}
+            
             {result.confidence && (
-              <div>
-                <span className="font-medium">Confianza final:</span> {Math.round(result.confidence * 100)}%
+              <div className="flex items-center gap-3">
+                <span className="font-medium text-gray-700">Confianza Final:</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-24 bg-gray-200 rounded-full h-3">
+                    <div 
+                      className="bg-orange-600 h-3 rounded-full transition-all duration-300" 
+                      style={{ width: `${result.confidence * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-semibold text-orange-700">
+                    {Math.round(result.confidence * 100)}%
+                  </span>
+                </div>
               </div>
             )}
+            
             {result.scores && (
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="font-medium">Score IA:</span> {Math.round(result.scores.ai * 100)}%
+              <div className="grid grid-cols-2 gap-4">
+                <div className="bg-white p-4 rounded-lg border border-gray-200 text-center shadow-sm">
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-2xl">🤖</span>
+                  </div>
+                  <span className="font-medium text-gray-700 block text-sm mb-2">Probabilidad IA</span>
+                  <span className="text-3xl font-bold text-red-600">{Math.round(result.scores.ai * 100)}%</span>
+                  <div className="text-xs text-gray-500 mt-2">
+                    {result.scores.ai > 0.7 ? 'Alta probabilidad' : 
+                     result.scores.ai > 0.4 ? 'Probabilidad moderada' : 'Baja probabilidad'}
+                  </div>
                 </div>
-                <div>
-                  <span className="font-medium">Score Humano:</span> {Math.round(result.scores.human * 100)}%
+                <div className="bg-white p-4 rounded-lg border border-gray-200 text-center shadow-sm">
+                  <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <span className="text-2xl">👤</span>
+                  </div>
+                  <span className="font-medium text-gray-700 block text-sm mb-2">Probabilidad Humano</span>
+                  <span className="text-3xl font-bold text-green-600">{Math.round(result.scores.human * 100)}%</span>
+                  <div className="text-xs text-gray-500 mt-2">
+                    {result.scores.human > 0.7 ? 'Alta probabilidad' : 
+                     result.scores.human > 0.4 ? 'Probabilidad moderada' : 'Baja probabilidad'}
+                  </div>
                 </div>
               </div>
             )}
@@ -231,10 +368,11 @@ const TextAnalysis = () => {
 
       if (simpleProps.length > 0) {
         return (
-          <div className="space-y-1">
+          <div className="space-y-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
             {simpleProps.map(key => (
-              <div key={key}>
-                <span className="font-medium">{key}:</span> {String(result[key])}
+              <div key={key} className="flex justify-between">
+                <span className="font-medium text-gray-700 capitalize">{key}:</span>
+                <span className="text-gray-900">{String(result[key])}</span>
               </div>
             ))}
           </div>
@@ -243,14 +381,23 @@ const TextAnalysis = () => {
 
       // Si no hay propiedades simples, usar JSON.stringify
       return (
-        <pre className="text-xs bg-gray-50 p-2 rounded overflow-auto">
-          {JSON.stringify(result, null, 2)}
-        </pre>
+        <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+          <pre className="text-xs text-gray-700 overflow-auto whitespace-pre-wrap">
+            {JSON.stringify(result, null, 2)}
+          </pre>
+        </div>
       );
     }
 
     // Para otros tipos, convertir a string
-    return <span className="font-medium">{String(result)}</span>;
+    return <span className="font-medium text-gray-700">{String(result)}</span>;
+  };
+
+  // Función para limpiar y hacer nuevo análisis
+  const handleNewAnalysis = () => {
+    setText("");
+    setResults(null);
+    setShowMethodology(false);
   };
 
   return (
@@ -372,23 +519,35 @@ const TextAnalysis = () => {
                   Tiempo estimado: 2-5 segundos
                 </span>
               </div>
-              <button
-                onClick={handleAnalyze}
-                disabled={isAnalyzing || !text.trim()}
-                className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Analizando...
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-5 h-5 mr-2" />
-                    Iniciar Análisis
-                  </>
+              <div className="flex gap-3">
+                <button
+                  onClick={handleAnalyze}
+                  disabled={isAnalyzing || !text.trim()}
+                  className="btn-primary flex-1 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Analizando...
+                    </>
+                  ) : (
+                    <>
+                      <Play className="w-5 h-5 mr-2" />
+                      Iniciar Análisis
+                    </>
+                  )}
+                </button>
+                
+                {results && (
+                  <button
+                    onClick={handleNewAnalysis}
+                    className="btn-secondary px-4 py-2"
+                    title="Hacer nuevo análisis"
+                  >
+                    <Zap className="w-4 h-4" />
+                  </button>
                 )}
-              </button>
+              </div>
             </div>
           </div>
 
@@ -426,68 +585,112 @@ const TextAnalysis = () => {
             {results && (
               <div className="space-y-6">
                 {/* Resultado principal */}
-                <div className="bg-white border-2 border-gray-200 rounded-2xl p-6">
-                  <div className="flex items-center justify-between mb-4">
-                    <h4 className="text-lg font-semibold text-gray-900">
-                      Resultado Final
+                <div className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-2xl p-6 shadow-lg">
+                  <div className="flex items-center justify-between mb-6">
+                    <h4 className="text-xl font-bold text-gray-900">
+                      🎯 Resultado Final del Análisis
                     </h4>
                     {getResultIcon(results.finalResult)}
                   </div>
                   <div className="text-center">
-                    <span
-                      className={`inline-block px-4 py-2 rounded-full text-sm font-semibold border ${getResultColor(
-                        results.finalResult
-                      )}`}
-                    >
-                      {results.finalResult}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Nivel de confianza */}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                    Nivel de Confianza
-                  </h4>
-                  <div className="text-center">
-                    <div
-                      className={`text-4xl font-bold mb-2 ${getConfidenceColor(
-                        results.confidence
-                      )}`}
-                    >
-                      {results.confidence}%
+                    <div className="mb-4">
+                      <span
+                        className={`inline-block px-6 py-3 rounded-full text-lg font-bold border-2 shadow-lg ${getResultColor(
+                          results.finalResult
+                        )}`}
+                      >
+                        {results.finalResult === "IA" ? "🤖 CONTENIDO GENERADO POR IA" : "👤 CONTENIDO HUMANO"}
+                      </span>
                     </div>
-                    <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
-                      <div
-                        className={`h-3 rounded-full transition-all duration-1000 ${
-                          results.confidence >= 80
-                            ? "bg-green-500"
-                            : results.confidence >= 60
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                        }`}
-                        style={{ width: `${results.confidence}%` }}
-                      ></div>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      {results.confidence >= 80
-                        ? "Alta confianza en el resultado"
-                        : results.confidence >= 60
-                        ? "Confianza moderada"
-                        : "Baja confianza - se recomienda revisión manual"}
+                    <p className="text-gray-600 text-sm">
+                      {results.finalResult === "IA" 
+                        ? "El sistema ha detectado características típicas de contenido generado por inteligencia artificial"
+                        : "El sistema ha identificado patrones característicos de contenido escrito por humanos"
+                      }
                     </p>
                   </div>
                 </div>
 
-                {/* Explicación */}
-                <div className="bg-white border border-gray-200 rounded-2xl p-6">
-                  <h4 className="text-lg font-semibold text-gray-900 mb-4">
-                    Explicación del Resultado
+                {/* Nivel de confianza */}
+                <div className="bg-gradient-to-br from-white to-blue-50 border border-blue-200 rounded-2xl p-6 shadow-lg">
+                  <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <BarChart3 className="w-6 h-6 text-blue-600" />
+                    Nivel de Confianza del Sistema
                   </h4>
-                  <p className="text-gray-700 leading-relaxed">
-                    {results.explanation}
-                  </p>
+                  <div className="text-center">
+                    <div className="mb-4">
+                      <div
+                        className={`text-5xl font-bold mb-3 ${getConfidenceColor(
+                          results.confidence
+                        )}`}
+                      >
+                        {results.confidence}%
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-4 mb-4 shadow-inner">
+                        <div
+                          className={`h-4 rounded-full transition-all duration-1000 shadow-lg ${
+                            results.confidence >= 80
+                              ? "bg-gradient-to-r from-green-400 to-green-600"
+                              : results.confidence >= 60
+                              ? "bg-gradient-to-r from-yellow-400 to-yellow-600"
+                              : "bg-gradient-to-r from-red-400 to-red-600"
+                          }`}
+                          style={{ width: `${results.confidence}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                    <div className="bg-white p-4 rounded-lg border border-blue-200">
+                      <p className="text-sm text-gray-700 font-medium">
+                        {results.confidence >= 80
+                          ? "✅ Alta confianza - El resultado es muy confiable"
+                          : results.confidence >= 60
+                          ? "⚠️ Confianza moderada - El resultado es confiable pero se recomienda revisión"
+                          : "❌ Baja confianza - Se recomienda análisis manual adicional"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
+                {/* Explicación detallada */}
+                <div className="bg-gradient-to-br from-white to-green-50 border border-green-200 rounded-2xl p-6 shadow-lg">
+                  <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    <Info className="w-6 h-6 text-green-600" />
+                    Explicación Detallada del Resultado
+                  </h4>
+                  <div className="bg-white p-4 rounded-lg border border-green-200">
+                    <p className="text-gray-700 leading-relaxed text-base">
+                      {results.explanation}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Métricas adicionales si están disponibles */}
+                {results.textMetrics && (
+                  <div className="bg-gradient-to-br from-white to-purple-50 border border-purple-200 rounded-2xl p-6 shadow-lg">
+                    <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                      <Target className="w-6 h-6 text-purple-600" />
+                      Métricas del Texto Analizado
+                    </h4>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
+                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.length}</div>
+                        <div className="text-xs text-gray-600">Caracteres</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
+                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.words}</div>
+                        <div className="text-xs text-gray-600">Palabras</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
+                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.complexity}</div>
+                        <div className="text-xs text-gray-600">Complejidad</div>
+                      </div>
+                      <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
+                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.readability}%</div>
+                        <div className="text-xs text-gray-600">Legibilidad</div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -497,45 +700,78 @@ const TextAnalysis = () => {
       {/* Pipeline de análisis */}
       {results && (
         <div className="card">
-          <h2 className="text-responsive-md font-bold text-gray-900 mb-8">
-            Pipeline de Análisis Detallado
-          </h2>
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-responsive-md font-bold text-gray-900">
+              Pipeline de Análisis Detallado
+            </h2>
+            <div className="flex items-center gap-2 text-sm text-gray-600">
+              <Clock className="w-4 h-4" />
+              <span>Tiempo total: {results.pipeline.reduce((total, step) => total + (step.processingTime || 0), 0)}ms</span>
+            </div>
+          </div>
+          
           <div className="space-y-6">
             {results.pipeline.map((step, index) => (
               <div
                 key={index}
-                className={`border-l-4 pl-6 py-4 ${
-                  step.status === "completed"
+                className={`border-l-4 pl-6 py-4 transition-all duration-300 ${
+                  step.status === "Completado"
                     ? "border-green-500 bg-green-50"
-                    : step.status === "error"
+                    : step.status === "Error"
                     ? "border-red-500 bg-red-50"
+                    : step.status === "Iniciando"
+                    ? "border-blue-500 bg-blue-50"
                     : "border-gray-300 bg-gray-50"
                 }`}
               >
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-semibold text-gray-900">
-                    {index + 1}. {step.name}
-                  </h3>
-                  <span
-                    className={`px-3 py-1 rounded-full text-xs font-medium ${
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
                       step.status === "Completado"
-                        ? "bg-green-100 text-green-800"
+                        ? "bg-green-500"
                         : step.status === "Error"
-                        ? "bg-red-100 text-red-800"
+                        ? "bg-red-500"
                         : step.status === "Iniciando"
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-gray-100 text-gray-800"
-                    }`}
-                  >
-                    {step.status}
-                  </span>
+                        ? "bg-blue-500"
+                        : "bg-gray-500"
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-lg">
+                        {step.name}
+                      </h3>
+                      <p className="text-gray-600 text-sm">{step.description}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center gap-3">
+                    <span
+                      className={`px-3 py-1 rounded-full text-xs font-medium ${
+                        step.status === "Completado"
+                          ? "bg-green-100 text-green-800 border border-green-300"
+                          : step.status === "Error"
+                          ? "bg-red-100 text-red-800 border border-red-300"
+                          : step.status === "Iniciando"
+                          ? "bg-blue-100 text-blue-800 border border-blue-300"
+                          : "bg-gray-100 text-gray-800 border border-gray-300"
+                      }`}
+                    >
+                      {step.status}
+                    </span>
+                    
+                    {step.processingTime && (
+                      <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded border">
+                        {step.processingTime}ms
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <p className="text-gray-600 text-sm mb-3">{step.description}</p>
                 
                 {/* Mostrar resultado detallado */}
                 {step.result && (
-                  <div className="bg-white border border-gray-200 rounded-lg p-4">
-                    <div className="text-xs text-gray-500 mb-2 font-medium">Resultado:</div>
+                  <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div className="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wide">Resultado del Paso:</div>
                     <div className="text-sm text-gray-700">
                       {renderStepResult(step.result, step.name)}
                     </div>
@@ -544,21 +780,20 @@ const TextAnalysis = () => {
 
                 {/* Mostrar error si existe */}
                 {step.error && (
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-2">
-                    <div className="text-xs text-red-500 mb-1 font-medium">Error:</div>
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-3">
+                    <div className="flex items-center gap-2 text-red-500 mb-2">
+                      <AlertCircle className="w-4 h-4" />
+                      <span className="text-xs font-medium uppercase tracking-wide">Error:</span>
+                    </div>
                     <p className="text-sm text-red-600">{step.error}</p>
                   </div>
                 )}
 
-                {/* Mostrar timestamp y tiempo de procesamiento */}
+                {/* Mostrar timestamp */}
                 {step.timestamp && (
-                  <div className="mt-3 text-xs text-gray-500">
-                    Timestamp: {new Date(step.timestamp).toLocaleString()}
-                  </div>
-                )}
-                {step.processingTime && (
-                  <div className="mt-1 text-xs text-gray-500">
-                    Tiempo: {step.processingTime}ms
+                  <div className="mt-3 text-xs text-gray-500 flex items-center gap-2">
+                    <Clock className="w-3 h-3" />
+                    <span>{new Date(step.timestamp).toLocaleString()}</span>
                   </div>
                 )}
               </div>
