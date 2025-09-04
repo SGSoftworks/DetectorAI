@@ -115,9 +115,6 @@ class AnalysisService {
       .map(([word]) => word);
   }
 
-  private generateId(): string {
-    return `analysis_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  }
 
   async getSystemStatus(): Promise<any> {
     const [geminiStatus, huggingFaceStatus, googleSearchStatus] = await Promise.allSettled([
