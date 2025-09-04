@@ -244,10 +244,10 @@ class FirebaseService {
         recentAnalyses: [],
         systemHealth: {
           apis: {
-            gemini: 'unknown',
-            huggingFace: 'unknown',
-            googleSearch: 'unknown',
-            firebase: 'error'
+            gemini: 'offline',
+            huggingFace: 'offline',
+            googleSearch: 'offline',
+            firebase: 'offline'
           },
           performance: {
             averageResponseTime: 0,
