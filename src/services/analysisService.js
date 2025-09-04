@@ -1,6 +1,7 @@
 import axios from "axios";
 import { API_CONFIG, getHeaders, HUGGING_FACE_MODELS } from "../config/api";
 import systemMonitoringService from "./systemMonitoringService";
+import { DatabaseService } from "../config/firebase.js";
 
 class AnalysisService {
   constructor() {
@@ -130,6 +131,24 @@ class AnalysisService {
         confidence: results.confidence,
         processingTime: processingTime,
       });
+
+      // Guardar en Firestore
+      try {
+        await DatabaseService.saveAnalysis({
+          type: "texto",
+          content: text.substring(0, 500), // Solo primeros 500 caracteres por privacidad
+          result: results.finalResult,
+          confidence: results.confidence,
+          explanation: results.explanation,
+          processingTime: processingTime,
+          pipeline: results.pipeline,
+          geminiResult: results.gemini,
+          huggingfaceResult: results.huggingface,
+          googleSearchResult: results.googleSearch
+        });
+      } catch (error) {
+        console.warn("Error guardando en Firestore:", error);
+      }
 
       return results;
     } catch (error) {

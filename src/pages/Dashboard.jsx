@@ -18,21 +18,50 @@ import {
   Image,
   Video,
   File,
+  Database,
+  Server,
 } from "lucide-react";
 import { getAPIUsageInfo, validateAPIConfig } from "../config/api";
+import { DatabaseService } from "../config/firebase.js";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [apiInfo, setApiInfo] = useState({});
   const [apiValidation, setApiValidation] = useState({});
   const [showApiConfig, setShowApiConfig] = useState(false);
+  const [firebaseData, setFirebaseData] = useState({
+    recentAnalyses: [],
+    totalAnalyses: 0,
+    loading: true
+  });
 
   useEffect(() => {
     const info = getAPIUsageInfo();
     const validation = validateAPIConfig();
     setApiInfo(info);
     setApiValidation(validation);
+    
+    // Cargar datos de Firebase
+    loadFirebaseData();
   }, []);
+
+  const loadFirebaseData = async () => {
+    try {
+      const recentAnalyses = await DatabaseService.getRecentAnalyses(10);
+      setFirebaseData({
+        recentAnalyses,
+        totalAnalyses: recentAnalyses.length,
+        loading: false
+      });
+    } catch (error) {
+      console.error("Error cargando datos de Firebase:", error);
+      setFirebaseData({
+        recentAnalyses: [],
+        totalAnalyses: 0,
+        loading: false
+      });
+    }
+  };
 
   const mockStats = {
     totalAnalyses: 1247,
@@ -515,6 +544,93 @@ const Dashboard = () => {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Base de Datos - Firebase */}
+      <div className="card">
+        <h2 className="text-responsive-md font-bold text-gray-900 mb-8">
+          Base de Datos - Firebase
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-6 bg-blue-50 rounded-2xl border border-blue-200">
+            <div className="flex items-center mb-4">
+              <Database className="w-8 h-8 text-blue-600 mr-3" />
+              <h3 className="font-semibold text-blue-800 text-lg">
+                Análisis Almacenados
+              </h3>
+            </div>
+            <div className="text-3xl font-bold text-blue-600 mb-2">
+              {firebaseData.loading ? "..." : firebaseData.totalAnalyses}
+            </div>
+            <p className="text-blue-700 text-sm">
+              Análisis guardados en Firestore
+            </p>
+            <button 
+              onClick={loadFirebaseData}
+              className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm"
+            >
+              <RefreshCw className="w-4 h-4 inline mr-2" />
+              Actualizar
+            </button>
+          </div>
+
+          <div className="p-6 bg-green-50 rounded-2xl border border-green-200">
+            <div className="flex items-center mb-4">
+              <Server className="w-8 h-8 text-green-600 mr-3" />
+              <h3 className="font-semibold text-green-800 text-lg">
+                Estado de Conexión
+              </h3>
+            </div>
+            <div className="flex items-center mb-2">
+              <CheckCircle className="w-6 h-6 text-green-600 mr-2" />
+              <span className="text-green-700 font-medium">
+                {firebaseData.loading ? "Conectando..." : "Conectado"}
+              </span>
+            </div>
+            <p className="text-green-700 text-sm">
+              Firestore operativo y sincronizado
+            </p>
+          </div>
+        </div>
+
+        {/* Análisis Recientes de Firebase */}
+        {firebaseData.recentAnalyses.length > 0 && (
+          <div className="mt-8">
+            <h3 className="font-semibold text-gray-800 mb-4">
+              Análisis Recientes (Firebase)
+            </h3>
+            <div className="space-y-3">
+              {firebaseData.recentAnalyses.slice(0, 5).map((analysis, index) => (
+                <div key={analysis.id || index} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                  <div className="flex items-center">
+                    <div className="w-3 h-3 bg-blue-600 rounded-full mr-3"></div>
+                    <div>
+                      <div className="font-medium text-gray-900">
+                        {analysis.type || 'texto'}
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        {analysis.content ? analysis.content.substring(0, 50) + '...' : 'Sin contenido'}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <div className={`px-2 py-1 rounded-full text-xs font-medium ${
+                      analysis.result === 'IA' 
+                        ? 'bg-red-100 text-red-800' 
+                        : 'bg-green-100 text-green-800'
+                    }`}>
+                      {analysis.result || 'N/A'}
+                    </div>
+                    <div className="text-xs text-gray-500 mt-1">
+                      {Math.round((analysis.confidence || 0) * 100)}%
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Quick Actions mejorado */}

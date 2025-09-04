@@ -4,6 +4,10 @@ import App from "./App.jsx";
 import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
+import { DatabaseService } from "./config/firebase.js";
+
+// Inicializar Firebase
+DatabaseService.initializeAuth();
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
