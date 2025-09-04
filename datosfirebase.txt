@@ -1,20 +1,20 @@
 confidence
-0.38
+0.95
 (número)
 
 
 content
-"No, la informacion contextual ya esta dentro del pretzi lo que yo quiero saer si asi esta bien de informacion o se le puede agregar mas, la idea es poner cosas para que alguien que no sepa del tema lo entienda al explicar de forma facil"
+"Saltar al contenido Menú Facebook Twitter Instagram YouTube Spotify TikTok La Silla Vacía La Silla Vacía Hágase SuperAmigo Open Search HistoriasOpen dropdown menu En Vivo Detector de Mentiras Opinión Silla Amazonía Silla Académica Red de ExpertosOpen dropdown menu PódcastsOpen dropdown menu CursosOpen dropdown menu LabAI Publicado enEn Vivo Gobierno Petro pide renuncias a tres ministros tras victoria de Camargo por La Silla Vacía hace 4 horas Más Los tres que salen del gabinete son el ministro "
 (cadena)
 
 
 createdAt
-"2025-09-04T04:38:15.515Z"
+"2025-09-04T05:13:40.789Z"
 (cadena)
 
 
 explanation
-"Hugging Face: Análisis de fallback: Complejidad normal, Vocabulario diverso, Baja legibilidad (53% confianza) (53% confianza) | Búsqueda web: "informacion, contextual, dentro, pretzi, quiero" - Similitud 3% - 3760 resultados encontrados | Fuentes principales: publications.iom.int, www.biblioteca.cij.gob.mx, 5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com (probablemente IA) | Fuente principal: publications.iom.int (4% relevancia)"
+"Gemini: Análisis sugiere IA (70% confianza) | Hugging Face: Análisis de fallback: Complejidad alta, Vocabulario diverso, Baja legibilidad (47% confianza) (47% confianza) | Búsqueda web: "silla, hace, horas, vivo, gobierno" - Similitud 1% - 6570000 resultados encontrados | Fuentes principales: www.lasillavacia.com, www.usa.gov, www.lasillavacia.com (probablemente IA) | Fuente principal: www.lasillavacia.com (3% relevancia)"
 (cadena)
 
 
@@ -49,7 +49,7 @@ languagePatterns
 
 
 reasoning
-"```json { "isAI": false, "confidence": 0.95, "reasoning": "El texto exhibe varias características que sugieren un origen humano, específicamente una comunicación informal y probablemente rápida. La presencia de errores ortográficos (como 'saer' en lugar de 'saber', 'pretzi' probablemente refiriéndose a 'Prezi') y gramaticales (ausencia de tildes, construcción de frases poco cuidadosa), la falta de puntuación adecuada, y el uso de lenguaje coloquial ('asi esta bien') son más indicativos de una escritura humana apresurada que de un texto generado por IA. La preocupación por la claridad para un público no especializado también sugiere una intención comunicativa humana directa.", "indicators": [ "Errores ortográficos ('saer', 'pretzi').", "Errores gramaticales (ausencia de tildes, estructura de frases imperfecta).", "Lenguaje coloquial ('asi esta bien').", "Falta de puntuación adecuada.", "Preocupación por la comprensión del público no especializado.", "Estilo conversacional e informal." ], "languagePatterns": "El patrón lingüístico muestra una mezcla de español estándar con errores típicos de la escritura informal en línea. Se observa un intento de simplificar la explicación, pero la falta de corrección dificulta la comprensión. La sintaxis es básica y directa, propia de una conversación espontánea.", "suggestions": "Para mejorar la detección, se podría entrenar un modelo con más ejemplos de textos informales, errores ortográficos comunes y variaciones dialectales del español. Analizar el uso de jerga específica o acrónimos también podría ser útil. Considerar la probabilidad de errores tipográficos en relación con errores gramaticales más profundos podría ayudar a distinguir mejor entre la escritura humana apresurada y las limitaciones de modelos de IA menos avanzados en el dominio específico del español informal." } ``` "
+"```json { "isAI": false, "confidence": 0.95, "reasoning": "El texto presenta características propias de un artículo de noticias real, incluyendo detalles específicos sobre personas, eventos y fuentes. La estructura, el estilo de redacción y la inclusión de elementos como 'La Silla lo pudo confirmar con fuentes del alto gobierno' son típicos del periodismo investigativo. Además, la referencia a fechas específicas (3 de septiembre de 2025) y la mención de entidades y figuras políticas colombianas (Gobierno Petro, Carlos Camargo, Partido Verde, etc.) sugieren que fue escrito por alguien con conocimiento del contexto político colombiano. Aunque la repetición de elementos de navegación web como menús y links sugiere una posible copia directa de una página web, el contenido principal del artículo es coherente y informativo de una manera que es difícil de replicar completamente por una IA sin información de entrenamiento específica.", "indicators": [ "Referencia a fuentes gubernamentales específicas ('La Silla lo pudo confirmar con fuentes del alto gobierno')", "Mención de figuras políticas y partidos específicos con roles y contextos claros (Gobierno Petro, Carlos Camargo, Partido Verde, La U, Liberal)", "Inclusión de detalles específicos sobre el proceso de votación y las reacciones políticas a él.", "Estilo de redacción periodística con frases y estructuras comunes en noticias.", "Referencias temporales y eventos concretos que denotan actualidad y especificidad." ], "languagePatterns": "El lenguaje es formal, informativo y objetivo, típico del periodismo. Se utilizan frases complejas y un vocabulario preciso para describir la situación política. Se observa el uso de citas indirectas y referencias a fuentes para respaldar la información.", "suggestions": "Para mejorar la detección, se podría analizar si la información presentada es consistente con otras fuentes de noticias sobre el mismo tema. También, buscar posibles inconsistencias o errores factuales que podrían indicar una generación artificial." } ```"
 (cadena)
 
 
@@ -114,32 +114,32 @@ detailedResults
 
 
 link
-"https://publications.iom.int/system/files/pdf/wmr_2020_es.pdf"
+"https://www.lasillavacia.com/"
 (cadena)
 
 
 relevance
-0.04
+0.03
 (número)
 
 
 relevanceScore
-4
+3
 (número)
 
 
 snippet
-"Sep 17, 2019 ... ... dentro de y desde África,1990-2019 ... contextual que comprende datos demográficos y sobre el empleo. Cuando existen, se incluyen ..."
+"En Vivo ; Duerma informado con las claves del 3 de septiembre de 2025. 2 horas antes ; Gobierno Petro pide renuncias a tres ministros tras victoria de Camargo. 2 ..."
 (cadena)
 
 
 source
-"publications.iom.int"
+"www.lasillavacia.com"
 (cadena)
 
 
 title
-"INFORME SOBRE LAS MIGRACIONES EN EL MUNDO 2020"
+"La Silla Vacía"
 (cadena)
 
 
@@ -149,32 +149,32 @@ title
 
 
 link
-"http://www.biblioteca.cij.gob.mx/archivos/materiales_de_consulta/drogas_de_abuso/articulos/metodologiainvestigacionnaupas.pdf"
+"https://www.usa.gov/es/servicios-personas-con-discapacidades"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 relevanceScore
-8
+2
 (número)
 
 
 snippet
-"... dentro de líneas de inves- tigación. Buscar teorías, principios, leyes o ... quiero enfatizar en tres ideas centra- les para superar la castración de ..."
+"Encuentre ayuda económica y beneficios del Gobierno para personas con discapacidades y sepa cómo seguir recibiéndolos si trabaja o le pagan por cuidar a un ..."
 (cadena)
 
 
 source
-"www.biblioteca.cij.gob.mx"
+"www.usa.gov"
 (cadena)
 
 
 title
-"Metodología de la investigación cuantitativa-cualitativa y redacción ..."
+"Servicios para personas con discapacidades | USAGov"
 (cadena)
 
 
@@ -184,32 +184,32 @@ title
 
 
 link
-"https://5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com/Analisis_de_datos_cualitativos_con_MAXQDA.pdf"
+"https://www.lasillavacia.com/en-vivo/habra-retiro-espiritual-del-gobierno-petro-en-visperas-de-otro-remezon/"
 (cadena)
 
 
 relevance
-0.06
+0.03
 (número)
 
 
 relevanceScore
-6
+3
 (número)
 
 
 snippet
-"nerse en cuenta que la información contextual potencialmente ... vestigación dentro de un contexto más amplio y la discusión dentro de la comunidad cien-."
+"Jan 9, 2025 ... Como contó La Silla, el gabinete de Petro vive una nueva etapa de inestabilidad. ... gobierno hace fuerzas para que su salida se vuelva realidad."
 (cadena)
 
 
 source
-"5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com"
+"www.lasillavacia.com"
 (cadena)
 
 
 title
-"Análisis de Datos Cualitativos con MAXQDA"
+"Habrá retiro espiritual del gobierno Petro en vísperas de otro ..."
 (cadena)
 
 
@@ -219,32 +219,32 @@ title
 
 
 link
-"https://repositorio.ufps.edu.co/bitstream/handle/ufps/9273/opac-retrieve-file.pl%20%281%29.pdf?sequence=1&isAllowed=y"
+"https://dpss.lacounty.gov/es/senior-and-disabled/ihss.html"
 (cadena)
 
 
 relevance
-0.04
+0.02
 (número)
 
 
 relevanceScore
-4
+2
 (número)
 
 
 snippet
-"May 31, 2025 ... Finalmente, quiero dedicar este trabajo a mi familia, cuyo amor y ... dentro de un estudio dentro de un contexto amplio. Esto implica ..."
+"Según su capacidad para realizar ciertas tareas de manera segura, el trabajador social evaluará los tipos de servicios que necesita y la cantidad de horas que ..."
 (cadena)
 
 
 source
-"repositorio.ufps.edu.co"
+"dpss.lacounty.gov"
 (cadena)
 
 
 title
-"RESUMEN TRABAJO DE GRADO"
+"Servicios de Apoyo en el Hogar (IHSS)"
 (cadena)
 
 
@@ -254,32 +254,32 @@ title
 
 
 link
-"https://openaccess.uoc.edu/bitstream/10609/98606/1/Modelo%2Bana__lisis%2Baplicaciones%2Beducativas%2Ben%2BRA.%2BGERMAN%2BGALLEGO-1.pdf"
+"https://www.infobae.com/mexico/2024/09/30/toma-de-protesta-de-claudia-sheinbaum-hora-y-donde-ver-en-vivo/"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 relevanceScore
-8
+2
 (número)
 
 
 snippet
-"En el contexto latinoamericano, la comunicación para el desarrollo se inscribe dentro de ... A su vez, dentro del medio masivo de comunicación e información de la ..."
+"Oct 1, 2024 ... La morenista llegará a la silla presidencial luego de haber ... La exjefa de Gobierno de la CDMX iniciará sus actividades rindiendo ..."
 (cadena)
 
 
 source
-"openaccess.uoc.edu"
+"www.infobae.com"
 (cadena)
 
 
 title
-"Modelo para el análisis de aplicaciones visuales educativas en ..."
+"Toma de protesta de Claudia Sheinbaum: hora y dónde ver en vivo ..."
 (cadena)
 
 
@@ -289,27 +289,27 @@ keywords
 
 
 0
-"informacion"
+"silla"
 (cadena)
 
 
 1
-"contextual"
+"hace"
 (cadena)
 
 
 2
-"dentro"
+"horas"
 (cadena)
 
 
 3
-"pretzi"
+"vivo"
 (cadena)
 
 
 4
-"quiero"
+"gobierno"
 (cadena)
 
 
@@ -339,7 +339,7 @@ region
 
 
 searchQuery
-"informacion contextual dentro pretzi quiero"
+"silla hace horas vivo gobierno"
 (cadena)
 
 
@@ -354,7 +354,7 @@ searchResults
 
 
 displayLink
-"publications.iom.int"
+"www.lasillavacia.com"
 (cadena)
 
 
@@ -364,22 +364,22 @@ id
 
 
 link
-"https://publications.iom.int/system/files/pdf/wmr_2020_es.pdf"
+"https://www.lasillavacia.com/"
 (cadena)
 
 
 relevance
-0.04
+0.03
 (número)
 
 
 snippet
-"Sep 17, 2019 ... ... dentro de y desde África,1990-2019 ... contextual que comprende datos demográficos y sobre el empleo. Cuando existen, se incluyen ..."
+"En Vivo ; Duerma informado con las claves del 3 de septiembre de 2025. 2 horas antes ; Gobierno Petro pide renuncias a tres ministros tras victoria de Camargo. 2 ..."
 (cadena)
 
 
 title
-"INFORME SOBRE LAS MIGRACIONES EN EL MUNDO 2020"
+"La Silla Vacía"
 (cadena)
 
 
@@ -389,7 +389,7 @@ title
 
 
 displayLink
-"www.biblioteca.cij.gob.mx"
+"www.usa.gov"
 (cadena)
 
 
@@ -399,22 +399,22 @@ id
 
 
 link
-"http://www.biblioteca.cij.gob.mx/archivos/materiales_de_consulta/drogas_de_abuso/articulos/metodologiainvestigacionnaupas.pdf"
+"https://www.usa.gov/es/servicios-personas-con-discapacidades"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 snippet
-"... dentro de líneas de inves- tigación. Buscar teorías, principios, leyes o ... quiero enfatizar en tres ideas centra- les para superar la castración de ..."
+"Encuentre ayuda económica y beneficios del Gobierno para personas con discapacidades y sepa cómo seguir recibiéndolos si trabaja o le pagan por cuidar a un ..."
 (cadena)
 
 
 title
-"Metodología de la investigación cuantitativa-cualitativa y redacción ..."
+"Servicios para personas con discapacidades | USAGov"
 (cadena)
 
 
@@ -424,7 +424,7 @@ title
 
 
 displayLink
-"5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com"
+"www.lasillavacia.com"
 (cadena)
 
 
@@ -434,22 +434,22 @@ id
 
 
 link
-"https://5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com/Analisis_de_datos_cualitativos_con_MAXQDA.pdf"
+"https://www.lasillavacia.com/en-vivo/habra-retiro-espiritual-del-gobierno-petro-en-visperas-de-otro-remezon/"
 (cadena)
 
 
 relevance
-0.06
+0.03
 (número)
 
 
 snippet
-"nerse en cuenta que la información contextual potencialmente ... vestigación dentro de un contexto más amplio y la discusión dentro de la comunidad cien-."
+"Jan 9, 2025 ... Como contó La Silla, el gabinete de Petro vive una nueva etapa de inestabilidad. ... gobierno hace fuerzas para que su salida se vuelva realidad."
 (cadena)
 
 
 title
-"Análisis de Datos Cualitativos con MAXQDA"
+"Habrá retiro espiritual del gobierno Petro en vísperas de otro ..."
 (cadena)
 
 
@@ -459,7 +459,7 @@ title
 
 
 displayLink
-"repositorio.ufps.edu.co"
+"dpss.lacounty.gov"
 (cadena)
 
 
@@ -469,22 +469,22 @@ id
 
 
 link
-"https://repositorio.ufps.edu.co/bitstream/handle/ufps/9273/opac-retrieve-file.pl%20%281%29.pdf?sequence=1&isAllowed=y"
+"https://dpss.lacounty.gov/es/senior-and-disabled/ihss.html"
 (cadena)
 
 
 relevance
-0.04
+0.02
 (número)
 
 
 snippet
-"May 31, 2025 ... Finalmente, quiero dedicar este trabajo a mi familia, cuyo amor y ... dentro de un estudio dentro de un contexto amplio. Esto implica ..."
+"Según su capacidad para realizar ciertas tareas de manera segura, el trabajador social evaluará los tipos de servicios que necesita y la cantidad de horas que ..."
 (cadena)
 
 
 title
-"RESUMEN TRABAJO DE GRADO"
+"Servicios de Apoyo en el Hogar (IHSS)"
 (cadena)
 
 
@@ -494,7 +494,7 @@ title
 
 
 displayLink
-"openaccess.uoc.edu"
+"www.infobae.com"
 (cadena)
 
 
@@ -504,37 +504,37 @@ id
 
 
 link
-"https://openaccess.uoc.edu/bitstream/10609/98606/1/Modelo%2Bana__lisis%2Baplicaciones%2Beducativas%2Ben%2BRA.%2BGERMAN%2BGALLEGO-1.pdf"
+"https://www.infobae.com/mexico/2024/09/30/toma-de-protesta-de-claudia-sheinbaum-hora-y-donde-ver-en-vivo/"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 snippet
-"En el contexto latinoamericano, la comunicación para el desarrollo se inscribe dentro de ... A su vez, dentro del medio masivo de comunicación e información de la ..."
+"Oct 1, 2024 ... La morenista llegará a la silla presidencial luego de haber ... La exjefa de Gobierno de la CDMX iniciará sus actividades rindiendo ..."
 (cadena)
 
 
 title
-"Modelo para el análisis de aplicaciones visuales educativas en ..."
+"Toma de protesta de Claudia Sheinbaum: hora y dónde ver en vivo ..."
 (cadena)
 
 
 searchTimestamp
-"2025-09-04T04:38:15.513Z"
+"2025-09-04T05:13:40.788Z"
 (cadena)
 
 
 similarity
-0.03
+0.01
 (número)
 
 
 totalResults
-"3760"
+"6570000"
 (cadena)
 
 
@@ -554,7 +554,7 @@ allLabels
 
 
 0
-"Texto escrito por humano"
+"Texto generado por IA"
 (cadena)
 
 
@@ -564,17 +564,17 @@ allScores
 
 
 0
-0.5333333333333333
+0.4666666666666666
 (número)
 
 
 label
-"Texto escrito por humano"
+"Texto generado por IA"
 (cadena)
 
 
 score
-0.5333333333333333
+0.4666666666666666
 (número)
 
 
@@ -584,17 +584,17 @@ complexity
 
 
 avgSentenceLength
-46
+47.83
 (número)
 
 
 avgWordLength
-4.15
+5.17
 (número)
 
 
 complexity
-"Moderada"
+"Alta"
 (cadena)
 
 
@@ -614,27 +614,27 @@ indicators
 
 
 2
-"Vocabulario diverso"
+"Vocabulario moderado"
 (cadena)
 
 
 readability
-20.371086956521765
+0
 (número)
 
 
 score
-1.4
+1.8
 (número)
 
 
 confidence
-0.5333333333333333
+0.4666666666666666
 (número)
 
 
 explanation
-"Análisis de fallback: Complejidad normal, Vocabulario diverso, Baja legibilidad (53% confianza)"
+"Análisis de fallback: Complejidad alta, Vocabulario diverso, Baja legibilidad (47% confianza)"
 (cadena)
 
 
@@ -654,7 +654,7 @@ formality
 
 
 repetition
-0.021739130434782608
+0.06956521739130435
 (número)
 
 
@@ -664,12 +664,12 @@ structure
 
 
 readability
-20.371086956521765
+0
 (número)
 
 
 result
-"HUMANO"
+"IA"
 (cadena)
 
 
@@ -689,12 +689,12 @@ score
 
 
 textLength
-236
+3549
 (número)
 
 
 wordCount
-46
+492
 (número)
 
 
@@ -749,7 +749,7 @@ languagePatterns
 
 
 reasoning
-"```json { "isAI": false, "confidence": 0.95, "reasoning": "El texto exhibe varias características que sugieren un origen humano, específicamente una comunicación informal y probablemente rápida. La presencia de errores ortográficos (como 'saer' en lugar de 'saber', 'pretzi' probablemente refiriéndose a 'Prezi') y gramaticales (ausencia de tildes, construcción de frases poco cuidadosa), la falta de puntuación adecuada, y el uso de lenguaje coloquial ('asi esta bien') son más indicativos de una escritura humana apresurada que de un texto generado por IA. La preocupación por la claridad para un público no especializado también sugiere una intención comunicativa humana directa.", "indicators": [ "Errores ortográficos ('saer', 'pretzi').", "Errores gramaticales (ausencia de tildes, estructura de frases imperfecta).", "Lenguaje coloquial ('asi esta bien').", "Falta de puntuación adecuada.", "Preocupación por la comprensión del público no especializado.", "Estilo conversacional e informal." ], "languagePatterns": "El patrón lingüístico muestra una mezcla de español estándar con errores típicos de la escritura informal en línea. Se observa un intento de simplificar la explicación, pero la falta de corrección dificulta la comprensión. La sintaxis es básica y directa, propia de una conversación espontánea.", "suggestions": "Para mejorar la detección, se podría entrenar un modelo con más ejemplos de textos informales, errores ortográficos comunes y variaciones dialectales del español. Analizar el uso de jerga específica o acrónimos también podría ser útil. Considerar la probabilidad de errores tipográficos en relación con errores gramaticales más profundos podría ayudar a distinguir mejor entre la escritura humana apresurada y las limitaciones de modelos de IA menos avanzados en el dominio específico del español informal." } ``` "
+"```json { "isAI": false, "confidence": 0.95, "reasoning": "El texto presenta características propias de un artículo de noticias real, incluyendo detalles específicos sobre personas, eventos y fuentes. La estructura, el estilo de redacción y la inclusión de elementos como 'La Silla lo pudo confirmar con fuentes del alto gobierno' son típicos del periodismo investigativo. Además, la referencia a fechas específicas (3 de septiembre de 2025) y la mención de entidades y figuras políticas colombianas (Gobierno Petro, Carlos Camargo, Partido Verde, etc.) sugieren que fue escrito por alguien con conocimiento del contexto político colombiano. Aunque la repetición de elementos de navegación web como menús y links sugiere una posible copia directa de una página web, el contenido principal del artículo es coherente y informativo de una manera que es difícil de replicar completamente por una IA sin información de entrenamiento específica.", "indicators": [ "Referencia a fuentes gubernamentales específicas ('La Silla lo pudo confirmar con fuentes del alto gobierno')", "Mención de figuras políticas y partidos específicos con roles y contextos claros (Gobierno Petro, Carlos Camargo, Partido Verde, La U, Liberal)", "Inclusión de detalles específicos sobre el proceso de votación y las reacciones políticas a él.", "Estilo de redacción periodística con frases y estructuras comunes en noticias.", "Referencias temporales y eventos concretos que denotan actualidad y especificidad." ], "languagePatterns": "El lenguaje es formal, informativo y objetivo, típico del periodismo. Se utilizan frases complejas y un vocabulario preciso para describir la situación política. Se observa el uso de citas indirectas y referencias a fuentes para respaldar la información.", "suggestions": "Para mejorar la detección, se podría analizar si la información presentada es consistente con otras fuentes de noticias sobre el mismo tema. También, buscar posibles inconsistencias o errores factuales que podrían indicar una generación artificial." } ```"
 (cadena)
 
 
@@ -769,7 +769,7 @@ step
 
 
 timestamp
-"2025-09-04T04:37:44.842Z"
+"2025-09-04T05:13:10.119Z"
 (cadena)
 
 
@@ -804,7 +804,7 @@ allLabels
 
 
 0
-"Texto escrito por humano"
+"Texto generado por IA"
 (cadena)
 
 
@@ -814,17 +814,17 @@ allScores
 
 
 0
-0.5333333333333333
+0.4666666666666666
 (número)
 
 
 label
-"Texto escrito por humano"
+"Texto generado por IA"
 (cadena)
 
 
 score
-0.5333333333333333
+0.4666666666666666
 (número)
 
 
@@ -834,17 +834,17 @@ complexity
 
 
 avgSentenceLength
-46
+47.83
 (número)
 
 
 avgWordLength
-4.15
+5.17
 (número)
 
 
 complexity
-"Moderada"
+"Alta"
 (cadena)
 
 
@@ -864,27 +864,27 @@ indicators
 
 
 2
-"Vocabulario diverso"
+"Vocabulario moderado"
 (cadena)
 
 
 readability
-20.371086956521765
+0
 (número)
 
 
 score
-1.4
+1.8
 (número)
 
 
 confidence
-0.5333333333333333
+0.4666666666666666
 (número)
 
 
 explanation
-"Análisis de fallback: Complejidad normal, Vocabulario diverso, Baja legibilidad (53% confianza)"
+"Análisis de fallback: Complejidad alta, Vocabulario diverso, Baja legibilidad (47% confianza)"
 (cadena)
 
 
@@ -904,7 +904,7 @@ formality
 
 
 repetition
-0.021739130434782608
+0.06956521739130435
 (número)
 
 
@@ -914,12 +914,12 @@ structure
 
 
 readability
-20.371086956521765
+0
 (número)
 
 
 result
-"HUMANO"
+"IA"
 (cadena)
 
 
@@ -939,12 +939,12 @@ score
 
 
 textLength
-236
+3549
 (número)
 
 
 wordCount
-46
+492
 (número)
 
 
@@ -959,7 +959,7 @@ step
 
 
 timestamp
-"2025-09-04T04:38:14.877Z"
+"2025-09-04T05:13:40.145Z"
 (cadena)
 
 
@@ -1034,32 +1034,32 @@ detailedResults
 
 
 link
-"https://publications.iom.int/system/files/pdf/wmr_2020_es.pdf"
+"https://www.lasillavacia.com/"
 (cadena)
 
 
 relevance
-0.04
+0.03
 (número)
 
 
 relevanceScore
-4
+3
 (número)
 
 
 snippet
-"Sep 17, 2019 ... ... dentro de y desde África,1990-2019 ... contextual que comprende datos demográficos y sobre el empleo. Cuando existen, se incluyen ..."
+"En Vivo ; Duerma informado con las claves del 3 de septiembre de 2025. 2 horas antes ; Gobierno Petro pide renuncias a tres ministros tras victoria de Camargo. 2 ..."
 (cadena)
 
 
 source
-"publications.iom.int"
+"www.lasillavacia.com"
 (cadena)
 
 
 title
-"INFORME SOBRE LAS MIGRACIONES EN EL MUNDO 2020"
+"La Silla Vacía"
 (cadena)
 
 
@@ -1069,32 +1069,32 @@ title
 
 
 link
-"http://www.biblioteca.cij.gob.mx/archivos/materiales_de_consulta/drogas_de_abuso/articulos/metodologiainvestigacionnaupas.pdf"
+"https://www.usa.gov/es/servicios-personas-con-discapacidades"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 relevanceScore
-8
+2
 (número)
 
 
 snippet
-"... dentro de líneas de inves- tigación. Buscar teorías, principios, leyes o ... quiero enfatizar en tres ideas centra- les para superar la castración de ..."
+"Encuentre ayuda económica y beneficios del Gobierno para personas con discapacidades y sepa cómo seguir recibiéndolos si trabaja o le pagan por cuidar a un ..."
 (cadena)
 
 
 source
-"www.biblioteca.cij.gob.mx"
+"www.usa.gov"
 (cadena)
 
 
 title
-"Metodología de la investigación cuantitativa-cualitativa y redacción ..."
+"Servicios para personas con discapacidades | USAGov"
 (cadena)
 
 
@@ -1104,32 +1104,32 @@ title
 
 
 link
-"https://5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com/Analisis_de_datos_cualitativos_con_MAXQDA.pdf"
+"https://www.lasillavacia.com/en-vivo/habra-retiro-espiritual-del-gobierno-petro-en-visperas-de-otro-remezon/"
 (cadena)
 
 
 relevance
-0.06
+0.03
 (número)
 
 
 relevanceScore
-6
+3
 (número)
 
 
 snippet
-"nerse en cuenta que la información contextual potencialmente ... vestigación dentro de un contexto más amplio y la discusión dentro de la comunidad cien-."
+"Jan 9, 2025 ... Como contó La Silla, el gabinete de Petro vive una nueva etapa de inestabilidad. ... gobierno hace fuerzas para que su salida se vuelva realidad."
 (cadena)
 
 
 source
-"5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com"
+"www.lasillavacia.com"
 (cadena)
 
 
 title
-"Análisis de Datos Cualitativos con MAXQDA"
+"Habrá retiro espiritual del gobierno Petro en vísperas de otro ..."
 (cadena)
 
 
@@ -1139,32 +1139,32 @@ title
 
 
 link
-"https://repositorio.ufps.edu.co/bitstream/handle/ufps/9273/opac-retrieve-file.pl%20%281%29.pdf?sequence=1&isAllowed=y"
+"https://dpss.lacounty.gov/es/senior-and-disabled/ihss.html"
 (cadena)
 
 
 relevance
-0.04
+0.02
 (número)
 
 
 relevanceScore
-4
+2
 (número)
 
 
 snippet
-"May 31, 2025 ... Finalmente, quiero dedicar este trabajo a mi familia, cuyo amor y ... dentro de un estudio dentro de un contexto amplio. Esto implica ..."
+"Según su capacidad para realizar ciertas tareas de manera segura, el trabajador social evaluará los tipos de servicios que necesita y la cantidad de horas que ..."
 (cadena)
 
 
 source
-"repositorio.ufps.edu.co"
+"dpss.lacounty.gov"
 (cadena)
 
 
 title
-"RESUMEN TRABAJO DE GRADO"
+"Servicios de Apoyo en el Hogar (IHSS)"
 (cadena)
 
 
@@ -1174,32 +1174,32 @@ title
 
 
 link
-"https://openaccess.uoc.edu/bitstream/10609/98606/1/Modelo%2Bana__lisis%2Baplicaciones%2Beducativas%2Ben%2BRA.%2BGERMAN%2BGALLEGO-1.pdf"
+"https://www.infobae.com/mexico/2024/09/30/toma-de-protesta-de-claudia-sheinbaum-hora-y-donde-ver-en-vivo/"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 relevanceScore
-8
+2
 (número)
 
 
 snippet
-"En el contexto latinoamericano, la comunicación para el desarrollo se inscribe dentro de ... A su vez, dentro del medio masivo de comunicación e información de la ..."
+"Oct 1, 2024 ... La morenista llegará a la silla presidencial luego de haber ... La exjefa de Gobierno de la CDMX iniciará sus actividades rindiendo ..."
 (cadena)
 
 
 source
-"openaccess.uoc.edu"
+"www.infobae.com"
 (cadena)
 
 
 title
-"Modelo para el análisis de aplicaciones visuales educativas en ..."
+"Toma de protesta de Claudia Sheinbaum: hora y dónde ver en vivo ..."
 (cadena)
 
 
@@ -1209,27 +1209,27 @@ keywords
 
 
 0
-"informacion"
+"silla"
 (cadena)
 
 
 1
-"contextual"
+"hace"
 (cadena)
 
 
 2
-"dentro"
+"horas"
 (cadena)
 
 
 3
-"pretzi"
+"vivo"
 (cadena)
 
 
 4
-"quiero"
+"gobierno"
 (cadena)
 
 
@@ -1259,7 +1259,7 @@ region
 
 
 searchQuery
-"informacion contextual dentro pretzi quiero"
+"silla hace horas vivo gobierno"
 (cadena)
 
 
@@ -1274,7 +1274,7 @@ searchResults
 
 
 displayLink
-"publications.iom.int"
+"www.lasillavacia.com"
 (cadena)
 
 
@@ -1284,22 +1284,22 @@ id
 
 
 link
-"https://publications.iom.int/system/files/pdf/wmr_2020_es.pdf"
+"https://www.lasillavacia.com/"
 (cadena)
 
 
 relevance
-0.04
+0.03
 (número)
 
 
 snippet
-"Sep 17, 2019 ... ... dentro de y desde África,1990-2019 ... contextual que comprende datos demográficos y sobre el empleo. Cuando existen, se incluyen ..."
+"En Vivo ; Duerma informado con las claves del 3 de septiembre de 2025. 2 horas antes ; Gobierno Petro pide renuncias a tres ministros tras victoria de Camargo. 2 ..."
 (cadena)
 
 
 title
-"INFORME SOBRE LAS MIGRACIONES EN EL MUNDO 2020"
+"La Silla Vacía"
 (cadena)
 
 
@@ -1309,7 +1309,7 @@ title
 
 
 displayLink
-"www.biblioteca.cij.gob.mx"
+"www.usa.gov"
 (cadena)
 
 
@@ -1319,22 +1319,22 @@ id
 
 
 link
-"http://www.biblioteca.cij.gob.mx/archivos/materiales_de_consulta/drogas_de_abuso/articulos/metodologiainvestigacionnaupas.pdf"
+"https://www.usa.gov/es/servicios-personas-con-discapacidades"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 snippet
-"... dentro de líneas de inves- tigación. Buscar teorías, principios, leyes o ... quiero enfatizar en tres ideas centra- les para superar la castración de ..."
+"Encuentre ayuda económica y beneficios del Gobierno para personas con discapacidades y sepa cómo seguir recibiéndolos si trabaja o le pagan por cuidar a un ..."
 (cadena)
 
 
 title
-"Metodología de la investigación cuantitativa-cualitativa y redacción ..."
+"Servicios para personas con discapacidades | USAGov"
 (cadena)
 
 
@@ -1344,7 +1344,7 @@ title
 
 
 displayLink
-"5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com"
+"www.lasillavacia.com"
 (cadena)
 
 
@@ -1354,22 +1354,22 @@ id
 
 
 link
-"https://5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com/Analisis_de_datos_cualitativos_con_MAXQDA.pdf"
+"https://www.lasillavacia.com/en-vivo/habra-retiro-espiritual-del-gobierno-petro-en-visperas-de-otro-remezon/"
 (cadena)
 
 
 relevance
-0.06
+0.03
 (número)
 
 
 snippet
-"nerse en cuenta que la información contextual potencialmente ... vestigación dentro de un contexto más amplio y la discusión dentro de la comunidad cien-."
+"Jan 9, 2025 ... Como contó La Silla, el gabinete de Petro vive una nueva etapa de inestabilidad. ... gobierno hace fuerzas para que su salida se vuelva realidad."
 (cadena)
 
 
 title
-"Análisis de Datos Cualitativos con MAXQDA"
+"Habrá retiro espiritual del gobierno Petro en vísperas de otro ..."
 (cadena)
 
 
@@ -1379,7 +1379,7 @@ title
 
 
 displayLink
-"repositorio.ufps.edu.co"
+"dpss.lacounty.gov"
 (cadena)
 
 
@@ -1389,22 +1389,22 @@ id
 
 
 link
-"https://repositorio.ufps.edu.co/bitstream/handle/ufps/9273/opac-retrieve-file.pl%20%281%29.pdf?sequence=1&isAllowed=y"
+"https://dpss.lacounty.gov/es/senior-and-disabled/ihss.html"
 (cadena)
 
 
 relevance
-0.04
+0.02
 (número)
 
 
 snippet
-"May 31, 2025 ... Finalmente, quiero dedicar este trabajo a mi familia, cuyo amor y ... dentro de un estudio dentro de un contexto amplio. Esto implica ..."
+"Según su capacidad para realizar ciertas tareas de manera segura, el trabajador social evaluará los tipos de servicios que necesita y la cantidad de horas que ..."
 (cadena)
 
 
 title
-"RESUMEN TRABAJO DE GRADO"
+"Servicios de Apoyo en el Hogar (IHSS)"
 (cadena)
 
 
@@ -1414,7 +1414,7 @@ title
 
 
 displayLink
-"openaccess.uoc.edu"
+"www.infobae.com"
 (cadena)
 
 
@@ -1424,37 +1424,37 @@ id
 
 
 link
-"https://openaccess.uoc.edu/bitstream/10609/98606/1/Modelo%2Bana__lisis%2Baplicaciones%2Beducativas%2Ben%2BRA.%2BGERMAN%2BGALLEGO-1.pdf"
+"https://www.infobae.com/mexico/2024/09/30/toma-de-protesta-de-claudia-sheinbaum-hora-y-donde-ver-en-vivo/"
 (cadena)
 
 
 relevance
-0.08
+0.02
 (número)
 
 
 snippet
-"En el contexto latinoamericano, la comunicación para el desarrollo se inscribe dentro de ... A su vez, dentro del medio masivo de comunicación e información de la ..."
+"Oct 1, 2024 ... La morenista llegará a la silla presidencial luego de haber ... La exjefa de Gobierno de la CDMX iniciará sus actividades rindiendo ..."
 (cadena)
 
 
 title
-"Modelo para el análisis de aplicaciones visuales educativas en ..."
+"Toma de protesta de Claudia Sheinbaum: hora y dónde ver en vivo ..."
 (cadena)
 
 
 searchTimestamp
-"2025-09-04T04:38:15.513Z"
+"2025-09-04T05:13:40.788Z"
 (cadena)
 
 
 similarity
-0.03
+0.01
 (número)
 
 
 totalResults
-"3760"
+"6570000"
 (cadena)
 
 
@@ -1469,7 +1469,7 @@ step
 
 
 timestamp
-"2025-09-04T04:38:15.513Z"
+"2025-09-04T05:13:40.788Z"
 (cadena)
 
 
@@ -1489,7 +1489,7 @@ name
 
 
 processingTime
-34409
+34529
 (número)
 
 
@@ -1499,7 +1499,7 @@ result
 
 
 confidence
-0.38
+0.95
 (número)
 
 
@@ -1539,7 +1539,7 @@ geminiAnalysis
 
 
 huggingfaceAnalysis
-"Análisis de fallback: Complejidad normal, Vocabulario diverso, Baja legibilidad (53% confianza)"
+"Análisis de fallback: Complejidad alta, Vocabulario diverso, Baja legibilidad (47% confianza)"
 (cadena)
 
 
@@ -1554,17 +1554,17 @@ searchEngine
 
 
 searchQuery
-"informacion contextual dentro pretzi quiero"
+"silla hace horas vivo gobierno"
 (cadena)
 
 
 searchTimestamp
-"2025-09-04T04:38:15.513Z"
+"2025-09-04T05:13:40.788Z"
 (cadena)
 
 
 similarity
-3
+1
 (número)
 
 
@@ -1574,22 +1574,22 @@ topSources
 
 
 0
-"publications.iom.int"
+"www.lasillavacia.com"
 (cadena)
 
 
 1
-"www.biblioteca.cij.gob.mx"
+"www.usa.gov"
 (cadena)
 
 
 2
-"5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com"
+"www.lasillavacia.com"
 (cadena)
 
 
 totalResults
-"3760"
+"6570000"
 (cadena)
 
 
@@ -1604,7 +1604,7 @@ complexity
 
 
 length
-236
+3549
 (número)
 
 
@@ -1619,22 +1619,22 @@ patterns
 
 
 readability
-20.371086956521765
+0
 (número)
 
 
 words
-46
+492
 (número)
 
 
 explanation
-"Hugging Face: Análisis de fallback: Complejidad normal, Vocabulario diverso, Baja legibilidad (53% confianza) (53% confianza) | Búsqueda web: "informacion, contextual, dentro, pretzi, quiero" - Similitud 3% - 3760 resultados encontrados | Fuentes principales: publications.iom.int, www.biblioteca.cij.gob.mx, 5f5042361b05f9ffe3d5-02d87b65c94206e6108b071950d8e892.ssl.cf2.rackcdn.com (probablemente IA) | Fuente principal: publications.iom.int (4% relevancia)"
+"Gemini: Análisis sugiere IA (70% confianza) | Hugging Face: Análisis de fallback: Complejidad alta, Vocabulario diverso, Baja legibilidad (47% confianza) (47% confianza) | Búsqueda web: "silla, hace, horas, vivo, gobierno" - Similitud 1% - 6570000 resultados encontrados | Fuentes principales: www.lasillavacia.com, www.usa.gov, www.lasillavacia.com (probablemente IA) | Fuente principal: www.lasillavacia.com (3% relevancia)"
 (cadena)
 
 
 result
-"HUMANO"
+"IA"
 (cadena)
 
 
@@ -1644,12 +1644,12 @@ scores
 
 
 ai
-0.8
+1.97
 (número)
 
 
 human
-0.73
+0.2
 (número)
 
 
@@ -1664,24 +1664,27 @@ step
 
 
 timestamp
-"2025-09-04T04:38:15.514Z"
+"2025-09-04T05:13:40.788Z"
 (cadena)
 
 
 processingTime
-34409
+34529
 (número)
 
 
 result
-"HUMANO"
+"IA"
 (cadena)
 
 
 timestamp
-3 de septiembre de 2025, 11:38:15 p.m. UTC-5
+4 de septiembre de 2025, 12:13:40 a.m. UTC-5
 (marca de tiempo)
 
 
 type
 "texto"
+(cadena)
+
+

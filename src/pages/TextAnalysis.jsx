@@ -144,13 +144,64 @@ const TextAnalysis = () => {
 
             {result.reasoning && (
               <div>
-                <span className="font-medium text-gray-700 block mb-2">
-                  Razonamiento:
-                </span>
+                <span className="font-medium text-gray-700 block mb-2">Razonamiento:</span>
                 <div className="bg-white p-3 rounded border border-gray-200">
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {result.reasoning}
-                  </p>
+                  {result.reasoning.includes("```json") ? (
+                    <div className="space-y-2">
+                      {(() => {
+                        try {
+                          const jsonMatch = result.reasoning.match(/```json\s*(\{[\s\S]*?\})\s*```/);
+                          if (jsonMatch) {
+                            const jsonData = JSON.parse(jsonMatch[1]);
+                            return (
+                              <div className="space-y-3">
+                                {jsonData.reasoning && (
+                                  <div>
+                                    <span className="font-medium text-gray-600 text-xs block mb-1">Análisis:</span>
+                                    <p className="text-gray-700 text-sm leading-relaxed">{jsonData.reasoning}</p>
+                                  </div>
+                                )}
+                                {jsonData.indicators && Array.isArray(jsonData.indicators) && (
+                                  <div>
+                                    <span className="font-medium text-gray-600 text-xs block mb-1">Indicadores Clave:</span>
+                                    <ul className="text-gray-700 text-sm space-y-1">
+                                      {jsonData.indicators.map((indicator, idx) => (
+                                        <li key={idx} className="flex items-start gap-2">
+                                          <span className="text-blue-500 mt-1">•</span>
+                                          <span>{indicator}</span>
+                                        </li>
+                                      ))}
+                                    </ul>
+                                  </div>
+                                )}
+                                {jsonData.languagePatterns && (
+                                  <div>
+                                    <span className="font-medium text-gray-600 text-xs block mb-1">Patrones Lingüísticos:</span>
+                                    <p className="text-gray-700 text-sm leading-relaxed">{jsonData.languagePatterns}</p>
+                                  </div>
+                                )}
+                                {jsonData.suggestions && (
+                                  <div>
+                                    <span className="font-medium text-gray-600 text-xs block mb-1">Sugerencias:</span>
+                                    <p className="text-gray-700 text-sm leading-relaxed">{jsonData.suggestions}</p>
+                                  </div>
+                                )}
+                              </div>
+                            );
+                          }
+                        } catch (e) {
+                          // Si falla el parsing, mostrar el texto limpio
+                        }
+                        return (
+                          <p className="text-gray-700 text-sm leading-relaxed">
+                            {result.reasoning.replace(/```json[\s\S]*?```/g, '').trim()}
+                          </p>
+                        );
+                      })()}
+                    </div>
+                  ) : (
+                    <p className="text-gray-700 text-sm leading-relaxed">{result.reasoning}</p>
+                  )}
                 </div>
               </div>
             )}
@@ -205,13 +256,25 @@ const TextAnalysis = () => {
 
             {result.explanation && (
               <div>
-                <span className="font-medium text-gray-700 block mb-2">
-                  Explicación:
-                </span>
+                <span className="font-medium text-gray-700 block mb-2">Explicación:</span>
                 <div className="bg-white p-3 rounded border border-gray-200">
-                  <p className="text-gray-700 text-sm leading-relaxed">
-                    {result.explanation}
-                  </p>
+                  <div className="space-y-2">
+                    {result.explanation.includes("Análisis de fallback:") ? (
+                      <>
+                        <div className="bg-yellow-50 p-2 rounded border border-yellow-200">
+                          <span className="text-xs font-medium text-yellow-800">⚠️ Análisis de Fallback Utilizado</span>
+                        </div>
+                        <p className="text-gray-700 text-sm leading-relaxed">
+                          {result.explanation.replace("Análisis de fallback:", "").trim()}
+                        </p>
+                        <div className="text-xs text-gray-500 mt-2">
+                          <span className="font-medium">Nota:</span> Se utilizó análisis heurístico debido a fallos en las APIs de Hugging Face
+                        </div>
+                      </>
+                    ) : (
+                      <p className="text-gray-700 text-sm leading-relaxed">{result.explanation}</p>
+                    )}
+                  </div>
                 </div>
               </div>
             )}
@@ -312,11 +375,14 @@ const TextAnalysis = () => {
               Array.isArray(result.searchResults) &&
               result.searchResults.length > 0 && (
                 <div>
-                  <span className="font-medium text-gray-700 block mb-3">
-                    🔍 Fuentes Relacionadas Encontradas:
-                  </span>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-medium text-gray-700 block">🔍 Fuentes Relacionadas Encontradas:</span>
+                    <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded border">
+                      {result.searchResults.length} resultados totales
+                    </span>
+                  </div>
                   <div className="space-y-3">
-                    {result.searchResults.slice(0, 3).map((item, idx) => (
+                    {result.searchResults.slice(0, 5).map((item, idx) => (
                       <div
                         key={idx}
                         className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 hover:border-blue-300"
@@ -335,11 +401,14 @@ const TextAnalysis = () => {
                           🌐 {item.displayLink}
                         </div>
                         <div className="text-sm text-gray-700 leading-relaxed">
-                          {item.snippet.length > 150
-                            ? `${item.snippet.substring(0, 150)}...`
+                          {item.snippet.length > 120
+                            ? `${item.snippet.substring(0, 120)}...`
                             : item.snippet}
                         </div>
-                        <div className="mt-3 flex justify-end">
+                        <div className="mt-3 flex justify-between items-center">
+                          <span className="text-xs text-gray-500">
+                            Relevancia: {item.relevance ? Math.round(item.relevance * 100) : 'N/A'}%
+                          </span>
                           <a
                             href={item.link}
                             target="_blank"
@@ -365,6 +434,13 @@ const TextAnalysis = () => {
                       </div>
                     ))}
                   </div>
+                  {result.searchResults.length > 5 && (
+                    <div className="text-center mt-3">
+                      <span className="text-xs text-gray-500">
+                        Mostrando los 5 resultados más relevantes de {result.searchResults.length} encontrados
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
           </div>
@@ -430,7 +506,7 @@ const TextAnalysis = () => {
                     Probabilidad IA
                   </span>
                   <span className="text-3xl font-bold text-red-600">
-                    {Math.round(result.scores.ai * 100)}%
+                    {Math.min(Math.round(result.scores.ai * 100), 100)}%
                   </span>
                   <div className="text-xs text-gray-500 mt-2">
                     {result.scores.ai > 0.7
@@ -448,7 +524,7 @@ const TextAnalysis = () => {
                     Probabilidad Humano
                   </span>
                   <span className="text-3xl font-bold text-green-600">
-                    {Math.round(result.scores.human * 100)}%
+                    {Math.min(Math.round(result.scores.human * 100), 100)}%
                   </span>
                   <div className="text-xs text-gray-500 mt-2">
                     {result.scores.human > 0.7
@@ -758,6 +834,18 @@ const TextAnalysis = () => {
                       </p>
                     </div>
                   </div>
+                  
+                  {/* Explicación adicional del nivel de confianza */}
+                  <div className="mt-4 bg-blue-100 p-3 rounded-lg border border-blue-300">
+                    <div className="text-xs text-blue-800">
+                      <span className="font-medium">¿Qué significa este nivel de confianza?</span>
+                      <ul className="mt-2 space-y-1 text-left">
+                        <li>• <strong>80-100%:</strong> El sistema está muy seguro de su clasificación</li>
+                        <li>• <strong>60-79%:</strong> El sistema está moderadamente seguro, pero se recomienda revisión</li>
+                        <li>• <strong>0-59%:</strong> El sistema tiene poca confianza, se recomienda análisis manual</li>
+                      </ul>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Explicación detallada */}
@@ -767,9 +855,74 @@ const TextAnalysis = () => {
                     Explicación Detallada del Resultado
                   </h4>
                   <div className="bg-white p-4 rounded-lg border border-green-200">
-                    <p className="text-gray-700 leading-relaxed text-base">
-                      {results.explanation}
-                    </p>
+                    {results.explanation && (
+                      <div className="space-y-4">
+                        {/* Gemini Analysis */}
+                        {results.explanation.includes("Gemini:") && (
+                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Target className="w-4 h-4 text-blue-600" />
+                              <span className="font-semibold text-blue-900">Análisis Gemini 2.0 Flash</span>
+                            </div>
+                            <div className="text-sm text-blue-800">
+                              {results.explanation.match(/Gemini: ([^|]+)/)?.[1]?.trim() || "Análisis no disponible"}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Hugging Face Analysis */}
+                        {results.explanation.includes("Hugging Face:") && (
+                          <div className="bg-purple-50 p-4 rounded-lg border border-purple-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <BarChart3 className="w-4 h-4 text-purple-600" />
+                              <span className="font-semibold text-purple-900">Análisis Hugging Face</span>
+                            </div>
+                            <div className="text-sm text-purple-800">
+                              {results.explanation.match(/Hugging Face: ([^|]+)/)?.[1]?.trim() || "Análisis no disponible"}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Web Search Analysis */}
+                        {results.explanation.includes("Búsqueda web:") && (
+                          <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Shield className="w-4 h-4 text-green-600" />
+                              <span className="font-semibold text-green-900">Verificación Web</span>
+                            </div>
+                            <div className="text-sm text-green-800">
+                              {results.explanation.match(/Búsqueda web: ([^|]+)/)?.[1]?.trim() || "Búsqueda no disponible"}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Main Sources */}
+                        {results.explanation.includes("Fuentes principales:") && (
+                          <div className="bg-orange-50 p-4 rounded-lg border border-orange-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <CheckCircle className="w-4 h-4 text-orange-600" />
+                              <span className="font-semibold text-orange-900">Fuentes Identificadas</span>
+                            </div>
+                            <div className="text-sm text-orange-800">
+                              {results.explanation.match(/Fuentes principales: ([^|]+)/)?.[1]?.trim() || "Fuentes no disponibles"}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Main Source */}
+                        {results.explanation.includes("Fuente principal:") && (
+                          <div className="bg-indigo-50 p-4 rounded-lg border border-indigo-200">
+                            <div className="flex items-center gap-2 mb-2">
+                              <Zap className="w-4 h-4 text-indigo-600" />
+                              <span className="font-semibold text-indigo-900">Fuente Principal</span>
+                            </div>
+                            <div className="text-sm text-indigo-800">
+                              {results.explanation.match(/Fuente principal: ([^|]+)/)?.[1]?.trim() || "Fuente no disponible"}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
