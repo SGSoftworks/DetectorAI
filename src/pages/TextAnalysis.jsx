@@ -102,7 +102,7 @@ const TextAnalysis = () => {
             <div className="flex items-center gap-2">
               <Target className="w-4 h-4 text-blue-600" />
               <span className="font-semibold text-blue-900">
-                Análisis Gemini
+                Análisis de IA Avanzado
               </span>
             </div>
 
@@ -246,7 +246,7 @@ const TextAnalysis = () => {
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-purple-600" />
               <span className="font-semibold text-purple-900">
-                Análisis Hugging Face
+                Análisis de Patrones Lingüísticos
               </span>
             </div>
 
@@ -306,7 +306,7 @@ const TextAnalysis = () => {
                         <div className="text-xs text-gray-500 mt-2">
                           <span className="font-medium">Nota:</span> Se utilizó
                           análisis heurístico debido a fallos en las APIs de
-                          Hugging Face
+                          Patrones Lingüísticos
                         </div>
                       </>
                     ) : (
@@ -913,104 +913,151 @@ const TextAnalysis = () => {
                     Información Adicional del Análisis
                   </h4>
                   <div className="bg-white p-4 rounded-lg border border-green-200">
-                    {results.explanation && typeof results.explanation === 'object' ? (
+                    {results.explanation &&
+                    typeof results.explanation === "object" ? (
                       <div className="space-y-6">
                         {/* Solo mostrar información NO duplicada del pipeline */}
-                        
+
                         {/* Web Search Analysis - Solo si no está en el pipeline */}
-                        {results.explanation.webSearch && results.explanation.webSearch.available && (
-                          <div className="bg-green-50 p-5 rounded-lg border border-green-200">
-                            <div className="flex items-center gap-2 mb-3">
-                              <Shield className="w-5 h-5 text-green-600" />
-                              <span className="font-semibold text-green-900 text-lg">
-                                Verificación Web Detallada
-                              </span>
-                            </div>
-                            
-                            <div className="space-y-3">
-                              {results.explanation.webSearch.keywords && results.explanation.webSearch.keywords.length > 0 && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Palabras Clave Analizadas:</span>
-                                  <div className="bg-white p-3 rounded border border-gray-200">
-                                    <div className="flex flex-wrap gap-2">
-                                      {results.explanation.webSearch.keywords.map((keyword, idx) => (
-                                        <span key={idx} className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full border border-green-300">
-                                          {keyword}
-                                        </span>
-                                      ))}
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {results.explanation.webSearch.topSources && results.explanation.webSearch.topSources.length > 0 && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">
-                                    🔍 Fuentes Encontradas ({results.explanation.webSearch.topSources.length} de {results.explanation.webSearch.totalResults} total):
-                                  </span>
-                                  <div className="space-y-2">
-                                    {results.explanation.webSearch.topSources.map((source, idx) => (
-                                      <div key={idx} className="bg-white p-3 rounded border border-gray-200">
-                                        <a
-                                          href={source.link}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="block group"
-                                        >
-                                          <div className="font-bold text-blue-700 text-sm mb-1 group-hover:text-blue-800 transition-colors">
-                                            📄 {source.title}
-                                          </div>
-                                        </a>
-                                        <div className="text-xs text-gray-500 mb-1">🌐 {source.source}</div>
-                                        <div className="flex justify-between items-center">
-                                          <span className="text-xs text-gray-500">
-                                            Relevancia: {source.relevance}%
-                                          </span>
-                                          <a
-                                            href={source.link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
-                                          >
-                                            <span>Ver fuente</span>
-                                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                                            </svg>
-                                          </a>
+                        {results.explanation.webSearch &&
+                          results.explanation.webSearch.available && (
+                            <div className="bg-green-50 p-5 rounded-lg border border-green-200">
+                              <div className="flex items-center gap-2 mb-3">
+                                <Shield className="w-5 h-5 text-green-600" />
+                                <span className="font-semibold text-green-900 text-lg">
+                                  Verificación Web Detallada
+                                </span>
+                              </div>
+
+                              <div className="space-y-3">
+                                {results.explanation.webSearch.keywords &&
+                                  results.explanation.webSearch.keywords
+                                    .length > 0 && (
+                                    <div>
+                                      <span className="font-medium text-gray-700 block mb-2">
+                                        Palabras Clave Analizadas:
+                                      </span>
+                                      <div className="bg-white p-3 rounded border border-gray-200">
+                                        <div className="flex flex-wrap gap-2">
+                                          {results.explanation.webSearch.keywords.map(
+                                            (keyword, idx) => (
+                                              <span
+                                                key={idx}
+                                                className="px-2 py-1 bg-green-100 text-green-800 text-xs rounded-full border border-green-300"
+                                              >
+                                                {keyword}
+                                              </span>
+                                            )
+                                          )}
                                         </div>
                                       </div>
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
+                                    </div>
+                                  )}
+
+                                {results.explanation.webSearch.topSources &&
+                                  results.explanation.webSearch.topSources
+                                    .length > 0 && (
+                                    <div>
+                                      <span className="font-medium text-gray-700 block mb-2">
+                                        🔍 Fuentes Encontradas (
+                                        {
+                                          results.explanation.webSearch
+                                            .topSources.length
+                                        }{" "}
+                                        de{" "}
+                                        {
+                                          results.explanation.webSearch
+                                            .totalResults
+                                        }{" "}
+                                        total):
+                                      </span>
+                                      <div className="space-y-2">
+                                        {results.explanation.webSearch.topSources.map(
+                                          (source, idx) => (
+                                            <div
+                                              key={idx}
+                                              className="bg-white p-3 rounded border border-gray-200"
+                                            >
+                                              <a
+                                                href={source.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="block group"
+                                              >
+                                                <div className="font-bold text-blue-700 text-sm mb-1 group-hover:text-blue-800 transition-colors">
+                                                  📄 {source.title}
+                                                </div>
+                                              </a>
+                                              <div className="text-xs text-gray-500 mb-1">
+                                                🌐 {source.source}
+                                              </div>
+                                              <div className="flex justify-between items-center">
+                                                <span className="text-xs text-gray-500">
+                                                  Relevancia: {source.relevance}
+                                                  %
+                                                </span>
+                                                <a
+                                                  href={source.link}
+                                                  target="_blank"
+                                                  rel="noopener noreferrer"
+                                                  className="inline-flex items-center gap-1 px-2 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
+                                                >
+                                                  <span>Ver fuente</span>
+                                                  <svg
+                                                    className="w-3 h-3"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <path
+                                                      strokeLinecap="round"
+                                                      strokeLinejoin="round"
+                                                      strokeWidth={2}
+                                                      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                                                    />
+                                                  </svg>
+                                                </a>
+                                              </div>
+                                            </div>
+                                          )
+                                        )}
+                                      </div>
+                                    </div>
+                                  )}
+                              </div>
                             </div>
-                          </div>
-                        )}
+                          )}
 
                         {/* Recomendación Final - Solo si no está duplicada */}
-                        {results.explanation.finalAnalysis && results.explanation.finalAnalysis.recommendation && (
-                          <div className="bg-orange-50 p-5 rounded-lg border border-orange-200">
-                            <div className="flex items-center gap-2 mb-3">
-                              <CheckCircle className="w-5 h-5 text-orange-600" />
-                              <span className="font-semibold text-orange-900 text-lg">
-                                Recomendación del Sistema
-                              </span>
+                        {results.explanation.finalAnalysis &&
+                          results.explanation.finalAnalysis.recommendation && (
+                            <div className="bg-orange-50 p-5 rounded-lg border border-orange-200">
+                              <div className="flex items-center gap-2 mb-3">
+                                <CheckCircle className="w-5 h-5 text-orange-600" />
+                                <span className="font-semibold text-orange-900 text-lg">
+                                  Recomendación del Sistema
+                                </span>
+                              </div>
+
+                              <div className="bg-white p-3 rounded border border-gray-200">
+                                <p className="text-sm text-gray-700 leading-relaxed">
+                                  {
+                                    results.explanation.finalAnalysis
+                                      .recommendation
+                                  }
+                                </p>
+                              </div>
                             </div>
-                            
-                            <div className="bg-white p-3 rounded border border-gray-200">
-                              <p className="text-sm text-gray-700 leading-relaxed">
-                                {results.explanation.finalAnalysis.recommendation}
-                              </p>
-                            </div>
-                          </div>
-                        )}
+                          )}
                       </div>
                     ) : (
                       // Fallback para explicación en formato string (compatibilidad)
                       <div className="space-y-4">
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                           <p className="text-sm text-gray-700 leading-relaxed">
-                            {typeof results.explanation === 'string' ? results.explanation : 'Información adicional no disponible'}
+                            {typeof results.explanation === "string"
+                              ? results.explanation
+                              : "Información adicional no disponible"}
                           </p>
                         </div>
                       </div>

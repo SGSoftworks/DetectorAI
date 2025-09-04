@@ -475,9 +475,9 @@ class ContentVerificationService {
         const response = await this.axios.get(url);
 
         if (response.data.items) {
-          searchResults.push({
-            query: fragment,
-            results: response.data.items.map((item) => ({
+          // Filtrar y mejorar resultados
+          const relevantResults = response.data.items
+            .map((item) => ({
               title: item.title,
               snippet: item.snippet,
               link: item.link,
@@ -487,7 +487,21 @@ class ContentVerificationService {
                 item.title,
                 item.snippet
               ),
-            })),
+              source: this.extractSource(item.link),
+              isTrusted: this.isTrustedSource(item.link),
+            }))
+            .filter((item) => item.relevance > 0.3) // Solo resultados relevantes
+            .sort((a, b) => b.relevance - a.relevance)
+            .slice(0, 5); // Top 5 resultados más relevantes
+
+          searchResults.push({
+            query: fragment,
+            results: relevantResults,
+            totalResults: response.data.searchInformation?.totalResults || 0,
+            searchTime: response.data.searchInformation?.searchTime || 0,
+            relevantCount: relevantResults.length,
+            topSources: this.extractTopSources(relevantResults),
+            hasRelevantContent: relevantResults.length > 0,
           });
         }
       } catch (error) {
@@ -1189,6 +1203,62 @@ class ContentVerificationService {
   calculateHitRate() {
     // Simulación de tasa de aciertos
     return "85%";
+  }
+
+  // Extraer dominio de la URL
+  extractSource(url) {
+    try {
+      const domain = new URL(url).hostname;
+      return domain.replace("www.", "");
+    } catch {
+      return "unknown";
+    }
+  }
+
+  // Verificar si es una fuente confiable
+  isTrustedSource(url) {
+    const trustedDomains = [
+      "wikipedia.org",
+      "bbc.com",
+      "cnn.com",
+      "reuters.com",
+      "ap.org",
+      "nytimes.com",
+      "washingtonpost.com",
+      "theguardian.com",
+      "elpais.com",
+      "elmundo.es",
+      "abc.es",
+      "lavanguardia.com",
+      "elconfidencial.com",
+      "marca.com",
+      "as.com",
+      "sport.es",
+      "mundodeportivo.com",
+    ];
+
+    try {
+      const domain = new URL(url).hostname.replace("www.", "");
+      return trustedDomains.some((trusted) => domain.includes(trusted));
+    } catch {
+      return false;
+    }
+  }
+
+  // Extraer fuentes principales
+  extractTopSources(results) {
+    const sources = {};
+
+    results.forEach((result) => {
+      if (result.source) {
+        sources[result.source] = (sources[result.source] || 0) + 1;
+      }
+    });
+
+    return Object.entries(sources)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([source, count]) => ({ source, count }));
   }
 }
 

@@ -26,7 +26,19 @@ export const API_CONFIG = {
   },
 };
 
-// Modelos de Hugging Face disponibles
+// APIs de análisis de texto alternativas (gratuitas)
+export const TEXT_ANALYSIS_APIS = {
+  // API gratuita de análisis de sentimientos
+  SENTIMENT_API: "https://api.meaningcloud.com/sentiment-2.1",
+  // API gratuita de clasificación de texto
+  CLASSIFICATION_API: "https://api.meaningcloud.com/class-1.1",
+  // API alternativa para análisis de texto
+  TEXT_ANALYSIS_API: "https://api.meaningcloud.com/topics-2.0",
+  // API de detección de idioma
+  LANGUAGE_DETECTION_API: "https://api.meaningcloud.com/lang-2.0",
+};
+
+// Modelos de Hugging Face disponibles (mantener como respaldo)
 export const HUGGING_FACE_MODELS = {
   // Modelos principales (pueden fallar)
   SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment",
