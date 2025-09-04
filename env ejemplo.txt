@@ -1,0 +1,25 @@
+# Configuración de APIs para el Detector de IA
+# Copia este archivo como .env.local y configura tus claves de API
+
+# Google Gemini API (Requerido)
+# Obtén tu clave gratuita en: https://makersuite.google.com/app/apikey
+VITE_GEMINI_API_KEY=lakey
+
+# Hugging Face API (Requerido)
+# Obtén tu token gratuito en: https://huggingface.co/settings/tokens
+VITE_HUGGING_FACE_API_KEY=lakey
+
+# Google Custom Search API
+# Obtén tu clave gratuita en: https://developers.google.com/custom-search/v1/introduction
+VITE_GOOGLE_SEARCH_API_KEY=lakey
+VITE_GOOGLE_SEARCH_ENGINE_ID=lakey
+
+# Firebase Configuration (Requerido para base de datos)
+# Crea un proyecto en: https://console.firebase.google.com/
+VITE_FIREBASE_API_KEY=porEstablecer
+VITE_FIREBASE_AUTH_DOMAIN=porestablecer
+VITE_FIREBASE_PROJECT_ID=porEstablecer
+# VITE_FIREBASE_STORAGE_BUCKET=no_necesario
+VITE_FIREBASE_MESSAGING_SENDER_ID=porEstablecer
+VITE_FIREBASE_APP_ID=G-porEstablecer
+

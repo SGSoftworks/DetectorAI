@@ -1,0 +1,35 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Reglas para análisis
+    match /analyses/{analysisId} {
+      allow read, write: if request.auth != null || 
+        (request.auth == null && resource.data.userId == 'anonymous');
+      allow create: if true; // Permitir análisis anónimos
+    }
+    
+    // Reglas para usuarios
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Reglas para historial de análisis
+    match /analysisHistory/{historyId} {
+      allow read, write: if request.auth != null && 
+        request.auth.uid == resource.data.userId;
+    }
+    
+    // Reglas para logs de errores (solo escritura)
+    match /errorLogs/{logId} {
+      allow create: if true;
+      allow read, update, delete: if false;
+    }
+    
+    // Reglas para estadísticas del sistema (solo lectura)
+    match /systemStats/{statId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
