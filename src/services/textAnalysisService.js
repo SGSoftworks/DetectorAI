@@ -74,30 +74,35 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
     try {
       // Intentar parsear el JSON principal
       const parsedResult = JSON.parse(result);
-      
+
       // Si hay un campo 'reasoning' que es un string JSON, parsearlo también
-      if (parsedResult.reasoning && typeof parsedResult.reasoning === 'string') {
+      if (
+        parsedResult.reasoning &&
+        typeof parsedResult.reasoning === "string"
+      ) {
         try {
           parsedResult.reasoning = JSON.parse(parsedResult.reasoning);
         } catch {
           // Si no se puede parsear, mantener como string
         }
       }
-      
+
       // Normalizar la estructura para que sea consistente
       return {
         isAI: parsedResult.isAI || false,
         confidence: parsedResult.confidence || 0.5,
         reasoning: parsedResult.reasoning || result,
         indicators: parsedResult.indicators || [],
-        languagePatterns: parsedResult.languagePatterns || "Análisis completado",
+        languagePatterns:
+          parsedResult.languagePatterns || "Análisis completado",
         suggestions: parsedResult.suggestions || "Sin sugerencias específicas",
         // Agregar metadatos adicionales
         textLength: text.length,
         wordCount: text.split(" ").length,
-        sentenceCount: text.split(/[.!?]+/).filter((s) => s.trim().length > 0).length,
+        sentenceCount: text.split(/[.!?]+/).filter((s) => s.trim().length > 0)
+          .length,
         complexity: this.calculateTextComplexity(text),
-        readability: this.calculateReadability(text)
+        readability: this.calculateReadability(text),
       };
     } catch {
       // Si no es JSON válido, extraer información del texto
@@ -113,9 +118,10 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
         // Agregar metadatos adicionales
         textLength: text.length,
         wordCount: text.split(" ").length,
-        sentenceCount: text.split(/[.!?]+/).filter((s) => s.trim().length > 0).length,
+        sentenceCount: text.split(/[.!?]+/).filter((s) => s.trim().length > 0)
+          .length,
         complexity: this.calculateTextComplexity(text),
-        readability: this.calculateReadability(text)
+        readability: this.calculateReadability(text),
       };
     }
   }
@@ -145,17 +151,10 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
         );
       } catch (error) {
         console.warn(
-          "Modelo principal de sentimientos no disponible, usando alternativo"
+          "Modelo principal de sentimientos no disponible, usando análisis local"
         );
-        // Usar modelo alternativo
-        sentimentResponse = await this.axios.post(
-          `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.ALTERNATIVE_SENTIMENT}`,
-          { inputs: text },
-          {
-            headers: getAuthHeaders("huggingface"),
-            timeout: API_CONFIG.HUGGING_FACE.TIMEOUT,
-          }
-        );
+        // Si falla, usar análisis local directamente
+        return this.analyzeWithLocalPatterns(text);
       }
 
       try {
@@ -181,17 +180,10 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
         );
       } catch (error) {
         console.warn(
-          "Modelo principal de clasificación no disponible, usando alternativo"
+          "Modelo principal de clasificación no disponible, usando análisis local"
         );
-        // Usar modelo alternativo
-        classificationResponse = await this.axios.post(
-          `${API_CONFIG.HUGGING_FACE.BASE_URL}/${API_CONFIG.HUGGING_FACE.MODELS.ALTERNATIVE_CLASSIFICATION}`,
-          { inputs: text },
-          {
-            headers: getAuthHeaders("huggingface"),
-            timeout: API_CONFIG.HUGGING_FACE.TIMEOUT,
-          }
-        );
+        // Si falla, usar análisis local directamente
+        return this.analyzeWithLocalPatterns(text);
       }
 
       const sentiment = sentimentResponse.data[0];
@@ -271,7 +263,24 @@ Sé objetivo y proporciona evidencia específica para tu conclusión. Considera:
       indicators.push("Formalidad excesiva");
     }
 
-    confidence = Math.max(0.2, Math.min(0.9, confidence));
+    // Análisis de longitud y complejidad
+    if (text.length > 1000 && patterns.formality > 0.6) {
+      isAI = true;
+      confidence += 0.1;
+      indicators.push("Texto largo con formalidad alta");
+    }
+
+    // Análisis de estructura
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 0);
+    const avgSentenceLength = sentences.reduce((sum, s) => sum + s.length, 0) / sentences.length;
+    
+    if (avgSentenceLength > 80 && patterns.formality > 0.5) {
+      isAI = true;
+      confidence += 0.1;
+      indicators.push("Oraciones largas y formales");
+    }
+
+    confidence = Math.max(0.3, Math.min(0.8, confidence));
 
     return {
       result: isAI ? "IA" : "HUMANO",
