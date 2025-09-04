@@ -37,26 +37,22 @@ class AnalysisService {
         };
       }
 
-      // Ejecutar análisis en paralelo
-      const [geminiResult, huggingFaceResult] = await Promise.allSettled([
-        geminiService.analyzeText(request),
-        huggingFaceService.analyzeText(request)
-      ]);
+      // Ejecutar solo Gemini para análisis más rápido
+      const geminiResult = await geminiService.analyzeText(request);
 
-      // Combinar resultados
-      const combinedResult = this.combineResults(
-        geminiResult.status === 'fulfilled' ? geminiResult.value : null,
-        huggingFaceResult.status === 'fulfilled' ? huggingFaceResult.value : null,
-        request.text
-      );
-
-      // Buscar contenido relacionado
-      const relatedContent = await this.searchRelatedContent(request.text);
+      // Usar resultado de Gemini directamente
+      const combinedResult = geminiResult;
 
       // Actualizar tiempo de procesamiento
       const processingTime = Date.now() - startTime;
       combinedResult.metadata.processingTime = processingTime;
-      combinedResult.relatedContent = relatedContent;
+      
+      // Buscar contenido relacionado de forma asíncrona (no bloquea la respuesta)
+      this.searchRelatedContent(request.text).then(relatedContent => {
+        combinedResult.relatedContent = relatedContent;
+      }).catch(error => {
+        console.error('Error al buscar contenido relacionado:', error);
+      });
 
       this.isProcessing = false;
 
