@@ -12,7 +12,7 @@ class GeminiService {
     }
     
     this.genAI = new GoogleGenerativeAI(API_CONFIG.GEMINI_API_KEY);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-pro' });
+    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
   }
 
   async analyzeText(request: TextAnalysisRequest): Promise<AnalysisResult> {
@@ -94,7 +94,7 @@ Considera los siguientes factores:
         metadata: {
           timestamp: new Date(),
           processingTime: 0, // Se calculará en el servicio principal
-          model: 'gemini-pro',
+          model: 'gemini-2.0-flash',
           version: '1.0.0'
         }
       };
@@ -116,7 +116,7 @@ Considera los siguientes factores:
         metadata: {
           timestamp: new Date(),
           processingTime: 0,
-          model: 'gemini-pro',
+          model: 'gemini-2.0-flash',
           version: '1.0.0'
         }
       };
