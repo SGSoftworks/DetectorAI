@@ -1149,6 +1149,7 @@ class AnalysisService {
       cleanExplanation = cleanExplanation
         .replace(/\[FALLBACK\]/g, '') // Remover marcadores de fallback
         .replace(/\[ANÁLISIS DE RESPALDO\]/g, '') // Remover marcadores de respaldo
+        .replace(/\(\d+% confianza\)/g, '') // CORREGIR: Remover doble porcentaje
         .replace(/\s+/g, ' ') // Normalizar espacios
         .trim();
       
@@ -1232,23 +1233,32 @@ class AnalysisService {
       const normalizedAiScore = Math.min(aiScore, 1.0);
       const normalizedHumanScore = Math.min(humanScore, 1.0);
       
+      // CORREGIR: Calcular confianza de manera más realista
       if (scoreDifference > 0.5) {
         // Alta confianza cuando hay una diferencia clara
         confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.9, 0.95);
       } else if (scoreDifference > 0.2) {
         // Confianza moderada
-        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.7, 0.85);
+        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.8, 0.85);
       } else {
         // Baja confianza cuando los scores están muy cerca
-        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.5, 0.6);
+        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.6, 0.7);
       }
+      
+      // CORREGIR: Asegurar que la confianza nunca sea menor a 30%
+      confidence = Math.max(confidence, 0.3);
     } else {
-      // Fallback si no hay scores
-      confidence = 0.5;
+      // Fallback si no hay scores - confianza mínima realista
+      confidence = 0.4;
     }
     
-    // Mejorar la clasificación basada en múltiples factores y contexto
+    // CORREGIR: Mejorar la clasificación basada en múltiples factores y contexto
     let isAI = finalScore > 0.6;
+    
+    // CORREGIR: Ser más conservador y requerir evidencia más fuerte
+    if (finalScore < 0.7) {
+      isAI = false; // Requerir evidencia más fuerte para clasificar como IA
+    }
     
     // Ajustar clasificación basada en similitud web y contexto
     if (results.googleSearch) {
@@ -1267,12 +1277,20 @@ class AnalysisService {
       }
     }
     
-    // Verificación adicional: si es un artículo completo de noticia, ser más conservador
-    if (results.huggingface && results.huggingface.textLength > 1000) {
-      // Para textos largos, requerir evidencia más fuerte de IA
-      if (finalScore < 0.7) {
+    // CORREGIR: Verificación adicional para textos largos y complejos
+    if (results.huggingface && results.huggingface.textLength > 500) {
+      // Para textos medianos y largos, ser más conservador
+      if (finalScore < 0.75) {
         isAI = false;
         confidence = Math.min(confidence + 0.05, 0.95);
+      }
+    }
+    
+    // CORREGIR: Verificación especial para textos muy cortos o repetitivos
+    if (results.huggingface && results.huggingface.textLength < 100) {
+      // Para textos muy cortos, ser más estricto
+      if (finalScore < 0.8) {
+        isAI = false;
       }
     }
 

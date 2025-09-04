@@ -906,190 +906,31 @@ const TextAnalysis = () => {
                   </div>
                 </div>
 
-                {/* Explicación detallada */}
+                {/* Explicación detallada - Solo información adicional no duplicada */}
                 <div className="bg-gradient-to-br from-white to-green-50 border border-green-200 rounded-2xl p-6 shadow-lg">
                   <h4 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
                     <Info className="w-6 h-6 text-green-600" />
-                    Explicación Detallada del Resultado
+                    Información Adicional del Análisis
                   </h4>
                   <div className="bg-white p-4 rounded-lg border border-green-200">
                     {results.explanation && typeof results.explanation === 'object' ? (
                       <div className="space-y-6">
-                        {/* Gemini Analysis */}
-                        {results.explanation.gemini && results.explanation.gemini.available && (
-                          <div className="bg-blue-50 p-5 rounded-lg border border-blue-200">
-                            <div className="flex items-center gap-2 mb-3">
-                              <Target className="w-5 h-5 text-blue-600" />
-                              <span className="font-semibold text-blue-900 text-lg">
-                                Análisis Gemini 2.0 Flash
-                              </span>
-                              {results.explanation.gemini.fallback && (
-                                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full border border-yellow-300">
-                                  ⚠️ Fallback
-                                </span>
-                              )}
-                            </div>
-                            
-                            <div className="space-y-3">
-                              {results.explanation.gemini.result && (
-                                <div className="flex items-center gap-3">
-                                  <span className="font-medium text-gray-700">Clasificación:</span>
-                                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    results.explanation.gemini.result === "IA"
-                                      ? "bg-red-100 text-red-800 border border-red-300"
-                                      : "bg-green-100 text-green-800 border border-green-300"
-                                  }`}>
-                                    {results.explanation.gemini.result === "IA" ? "🤖 IA" : "👤 Humano"}
-                                  </span>
-                                                    <span className="text-sm text-blue-700 font-medium">
-                    ({Math.round(results.explanation.gemini.confidence * 100)}% confianza)
-                  </span>
-                  <div className="w-16 bg-gray-200 rounded-full h-1.5 ml-2">
-                    <div
-                      className="bg-blue-600 h-1.5 rounded-full transition-all duration-300"
-                      style={{ width: `${results.explanation.gemini.confidence * 100}%` }}
-                    ></div>
-                  </div>
-                                </div>
-                              )}
-                              
-                              {results.explanation.gemini.reasoning && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Razonamiento:</span>
-                                  <div className="bg-white p-3 rounded border border-gray-200">
-                                    <p className="text-sm text-gray-700 leading-relaxed">
-                                      {results.explanation.gemini.reasoning}
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {results.explanation.gemini.indicators && results.explanation.gemini.indicators.length > 0 && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Indicadores Clave:</span>
-                                  <ul className="bg-white p-3 rounded border border-gray-200 space-y-1">
-                                    {results.explanation.gemini.indicators.map((indicator, idx) => (
-                                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
-                                        <span className="text-blue-500 mt-1">•</span>
-                                        <span>{indicator}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
-                              
-                              {results.explanation.gemini.languagePatterns && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Patrones Lingüísticos:</span>
-                                  <div className="bg-white p-3 rounded border border-gray-200">
-                                    <p className="text-sm text-gray-700 leading-relaxed">
-                                      {results.explanation.gemini.languagePatterns}
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Hugging Face Analysis */}
-                        {results.explanation.huggingface && results.explanation.huggingface.available && (
-                          <div className="bg-purple-50 p-5 rounded-lg border border-purple-200">
-                            <div className="flex items-center gap-2 mb-3">
-                              <BarChart3 className="w-5 h-5 text-purple-600" />
-                              <span className="font-semibold text-purple-900 text-lg">
-                                Análisis Hugging Face
-                              </span>
-                              {results.explanation.huggingface.fallback && (
-                                <span className="px-2 py-1 bg-yellow-100 text-yellow-800 text-xs rounded-full border border-yellow-300">
-                                  ⚠️ Análisis de Respaldo
-                                </span>
-                              )}
-                            </div>
-                            
-                            <div className="space-y-3">
-                              {results.explanation.huggingface.result && (
-                                <div className="flex items-center gap-3">
-                                  <span className="font-medium text-gray-700">Clasificación:</span>
-                                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    results.explanation.huggingface.result === "IA"
-                                      ? "bg-red-100 text-red-800 border border-red-300"
-                                      : "bg-green-100 text-green-800 border border-green-300"
-                                  }`}>
-                                    {results.explanation.huggingface.result === "IA" ? "🤖 IA" : "👤 Humano"}
-                                  </span>
-                                  <span className="text-sm text-purple-700 font-medium">
-                                    ({Math.round(results.explanation.huggingface.confidence * 100)}% confianza)
-                                  </span>
-                                  <div className="w-16 bg-gray-200 rounded-full h-1.5 ml-2">
-                                    <div
-                                      className="bg-purple-600 h-1.5 rounded-full transition-all duration-300"
-                                      style={{ width: `${results.explanation.huggingface.confidence * 100}%` }}
-                                    ></div>
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {results.explanation.huggingface.explanation && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Explicación:</span>
-                                  <div className="bg-white p-3 rounded border border-gray-200">
-                                    <p className="text-sm text-gray-700 leading-relaxed">
-                                      {results.explanation.huggingface.explanation}
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {results.explanation.huggingface.complexity && (
-                                <div className="grid grid-cols-2 gap-4">
-                                  <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                                    <span className="font-medium text-gray-700 block text-xs mb-1">Complejidad:</span>
-                                    <span className="text-lg font-bold text-purple-700">
-                                      {results.explanation.huggingface.complexity.level}
-                                    </span>
-                                  </div>
-                                  <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                                    <span className="font-medium text-gray-700 block text-xs mb-1">Legibilidad:</span>
-                                    <span className="text-lg font-bold text-purple-700">
-                                      {Math.round(results.explanation.huggingface.readability)}%
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        )}
-
-                        {/* Web Search Analysis */}
+                        {/* Solo mostrar información NO duplicada del pipeline */}
+                        
+                        {/* Web Search Analysis - Solo si no está en el pipeline */}
                         {results.explanation.webSearch && results.explanation.webSearch.available && (
                           <div className="bg-green-50 p-5 rounded-lg border border-green-200">
                             <div className="flex items-center gap-2 mb-3">
                               <Shield className="w-5 h-5 text-green-600" />
                               <span className="font-semibold text-green-900 text-lg">
-                                Verificación Web
+                                Verificación Web Detallada
                               </span>
                             </div>
                             
                             <div className="space-y-3">
-                              <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white p-3 rounded border border-gray-200 text-center">
-                                  <span className="font-medium text-gray-700 block text-xs mb-1">Total Resultados:</span>
-                                  <span className="text-lg font-bold text-green-700">
-                                    {results.explanation.webSearch.totalResults}
-                                  </span>
-                                </div>
-                                <div className="bg-white p-3 rounded border border-gray-200 text-center">
-                                  <span className="font-medium text-gray-700 block text-xs mb-1">Similitud:</span>
-                                  <span className="text-lg font-bold text-green-700">
-                                    {Math.round(results.explanation.webSearch.similarity * 100)}%
-                                  </span>
-                                </div>
-                              </div>
-                              
                               {results.explanation.webSearch.keywords && results.explanation.webSearch.keywords.length > 0 && (
                                 <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Palabras Clave:</span>
+                                  <span className="font-medium text-gray-700 block mb-2">Palabras Clave Analizadas:</span>
                                   <div className="bg-white p-3 rounded border border-gray-200">
                                     <div className="flex flex-wrap gap-2">
                                       {results.explanation.webSearch.keywords.map((keyword, idx) => (
@@ -1146,56 +987,20 @@ const TextAnalysis = () => {
                           </div>
                         )}
 
-                        {/* Final Analysis */}
-                        {results.explanation.finalAnalysis && (
+                        {/* Recomendación Final - Solo si no está duplicada */}
+                        {results.explanation.finalAnalysis && results.explanation.finalAnalysis.recommendation && (
                           <div className="bg-orange-50 p-5 rounded-lg border border-orange-200">
                             <div className="flex items-center gap-2 mb-3">
                               <CheckCircle className="w-5 h-5 text-orange-600" />
                               <span className="font-semibold text-orange-900 text-lg">
-                                Análisis Final y Recomendación
+                                Recomendación del Sistema
                               </span>
                             </div>
                             
-                            <div className="space-y-3">
-                              {results.explanation.finalAnalysis.conclusion && (
-                                <div className="flex items-center gap-3">
-                                  <span className="font-medium text-gray-700">Conclusión:</span>
-                                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                                    results.explanation.finalAnalysis.conclusion === "IA"
-                                      ? "bg-red-100 text-red-800 border border-red-300"
-                                      : "bg-green-100 text-green-800 border border-green-300"
-                                  }`}>
-                                    {results.explanation.finalAnalysis.conclusion === "IA" 
-                                      ? "🤖 CONTENIDO GENERADO POR IA" 
-                                      : "👤 CONTENIDO HUMANO"}
-                                  </span>
-                                </div>
-                              )}
-                              
-                              {results.explanation.finalAnalysis.recommendation && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Recomendación:</span>
-                                  <div className="bg-white p-3 rounded border border-gray-200">
-                                    <p className="text-sm text-gray-700 leading-relaxed">
-                                      {results.explanation.finalAnalysis.recommendation}
-                                    </p>
-                                  </div>
-                                </div>
-                              )}
-                              
-                              {results.explanation.finalAnalysis.factors && results.explanation.finalAnalysis.factors.length > 0 && (
-                                <div>
-                                  <span className="font-medium text-gray-700 block mb-2">Factores que Influenciaron la Decisión:</span>
-                                  <ul className="bg-white p-3 rounded border border-gray-200 space-y-2">
-                                    {results.explanation.finalAnalysis.factors.map((factor, idx) => (
-                                      <li key={idx} className="flex items-start gap-2 text-sm text-gray-700">
-                                        <span className="text-orange-500 mt-1">•</span>
-                                        <span>{factor}</span>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                </div>
-                              )}
+                            <div className="bg-white p-3 rounded border border-gray-200">
+                              <p className="text-sm text-gray-700 leading-relaxed">
+                                {results.explanation.finalAnalysis.recommendation}
+                              </p>
                             </div>
                           </div>
                         )}
@@ -1205,7 +1010,7 @@ const TextAnalysis = () => {
                       <div className="space-y-4">
                         <div className="bg-gray-50 p-4 rounded-lg border border-gray-200">
                           <p className="text-sm text-gray-700 leading-relaxed">
-                            {typeof results.explanation === 'string' ? results.explanation : 'Explicación no disponible'}
+                            {typeof results.explanation === 'string' ? results.explanation : 'Información adicional no disponible'}
                           </p>
                         </div>
                       </div>
