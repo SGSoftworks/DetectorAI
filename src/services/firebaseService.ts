@@ -233,8 +233,9 @@ class FirebaseService {
           lastUpdated: new Date()
         }
       };
-    } catch (error) {
-      console.error('Error al obtener estadísticas:', error);
+    } catch (error: any) {
+      console.warn('Error al obtener estadísticas del dashboard:', error.message);
+      // Retornar datos por defecto sin fallar
       return {
         totalAnalyses: 0,
         accuracyRate: 0,
@@ -243,10 +244,10 @@ class FirebaseService {
         recentAnalyses: [],
         systemHealth: {
           apis: {
-            gemini: 'offline',
-            huggingFace: 'offline',
-            googleSearch: 'offline',
-            firebase: 'offline'
+            gemini: 'unknown',
+            huggingFace: 'unknown',
+            googleSearch: 'unknown',
+            firebase: 'error'
           },
           performance: {
             averageResponseTime: 0,

@@ -17,6 +17,7 @@ class GoogleSearchService {
 
   async searchRelatedContent(query: string, maxResults: number = 5): Promise<RelatedContent[]> {
     if (!this.apiKey || !this.searchEngineId) {
+      console.warn('Google Search API no configurada - saltando búsqueda de contenido relacionado');
       return [];
     }
 
@@ -30,6 +31,7 @@ class GoogleSearchService {
           safe: 'active',
           lr: 'lang_es', // Búsqueda en español
         },
+        timeout: 5000, // Timeout de 5 segundos
       });
 
       if (response.data.items) {
@@ -43,8 +45,14 @@ class GoogleSearchService {
       }
 
       return [];
-    } catch (error) {
-      console.error('Error en búsqueda de Google:', error);
+    } catch (error: any) {
+      if (error.response?.status === 429) {
+        console.warn('Google Search API: Límite de cuota excedido - saltando búsqueda de contenido relacionado');
+      } else if (error.response?.status === 403) {
+        console.warn('Google Search API: Acceso denegado - verificar configuración');
+      } else {
+        console.warn('Google Search API: Error temporal - saltando búsqueda de contenido relacionado');
+      }
       return [];
     }
   }
@@ -112,10 +120,17 @@ class GoogleSearchService {
           q: 'test',
           num: 1,
         },
+        timeout: 3000, // Timeout más corto para verificación
       });
       return response.status === 200;
-    } catch (error) {
-      console.error('Google Search no está disponible:', error);
+    } catch (error: any) {
+      if (error.response?.status === 429) {
+        console.warn('Google Search API: Límite de cuota excedido');
+      } else if (error.response?.status === 403) {
+        console.warn('Google Search API: Acceso denegado');
+      } else {
+        console.warn('Google Search API: No disponible temporalmente');
+      }
       return false;
     }
   }
