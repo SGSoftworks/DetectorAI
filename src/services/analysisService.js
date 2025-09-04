@@ -245,62 +245,79 @@ class AnalysisService {
         return this.createFallbackAnalysis(text);
       }
 
-      // Análisis de sentimientos con fallback inteligente
-      let sentimentResponse;
-      let sentimentFallback = false;
+      // Intentar múltiples modelos de Hugging Face con fallback
+      const sentimentModels = [
+        HUGGING_FACE_MODELS.SENTIMENT,
+        HUGGING_FACE_MODELS.SENTIMENT_ALT1,
+        HUGGING_FACE_MODELS.SENTIMENT_ALT2,
+      ];
 
-      try {
-        sentimentResponse = await this.axios.post(
-          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT}`,
-          { inputs: text },
-          {
-            headers: getHeaders("huggingface"),
-            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
-          }
-        );
-      } catch (error) {
-        console.warn(
-          "Modelo de sentimientos falló, usando análisis de fallback..."
-        );
-        sentimentFallback = true;
-        // No lanzar error, continuar con fallback
+      const classificationModels = [
+        HUGGING_FACE_MODELS.TEXT_CLASSIFICATION,
+        HUGGING_FACE_MODELS.CLASSIFICATION_ALT1,
+        HUGGING_FACE_MODELS.CLASSIFICATION_ALT2,
+      ];
+
+      let sentimentResponse = null;
+      let classificationResponse = null;
+      let sentimentModel = null;
+      let classificationModel = null;
+
+      // Intentar modelos de sentimientos
+      for (const model of sentimentModels) {
+        try {
+          console.log(`Intentando modelo de sentimientos: ${model}`);
+          sentimentResponse = await this.axios.post(
+            `${API_CONFIG.HUGGING_FACE_API_URL}/${model}`,
+            { inputs: text },
+            {
+              headers: getHeaders("huggingface"),
+              timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+            }
+          );
+          sentimentModel = model;
+          console.log(`Modelo de sentimientos exitoso: ${model}`);
+          break;
+        } catch (error) {
+          console.warn(`Modelo ${model} falló:`, error.message);
+          continue;
+        }
       }
 
-      // Clasificación de texto con fallback inteligente
-      let classificationResponse;
-      let classificationFallback = false;
-
-      try {
-        classificationResponse = await this.axios.post(
-          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.TEXT_CLASSIFICATION}`,
-          {
-            inputs: text,
-            parameters: {
-              candidate_labels: [
-                "Texto generado por IA",
-                "Texto escrito por humano",
-                "Contenido académico",
-                "Contenido periodístico",
-                "Contenido informal",
-              ],
+      // Intentar modelos de clasificación
+      for (const model of classificationModels) {
+        try {
+          console.log(`Intentando modelo de clasificación: ${model}`);
+          classificationResponse = await this.axios.post(
+            `${API_CONFIG.HUGGING_FACE_API_URL}/${model}`,
+            {
+              inputs: text,
+              parameters: {
+                candidate_labels: [
+                  "Texto generado por IA",
+                  "Texto escrito por humano",
+                  "Contenido académico",
+                  "Contenido periodístico",
+                  "Contenido informal",
+                ],
+              },
             },
-          },
-          {
-            headers: getHeaders("huggingface"),
-            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
-          }
-        );
-      } catch (error) {
-        console.warn(
-          "Modelo de clasificación falló, usando análisis de fallback...",
-          error.message
-        );
-        classificationFallback = true;
-        // No lanzar error, continuar con fallback
+            {
+              headers: getHeaders("huggingface"),
+              timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+            }
+          );
+          classificationModel = model;
+          console.log(`Modelo de clasificación exitoso: ${model}`);
+          break;
+        } catch (error) {
+          console.warn(`Modelo ${model} falló:`, error.message);
+          continue;
+        }
       }
 
-      // Si ambos modelos fallaron, usar análisis de fallback completo
-      if (sentimentFallback && classificationFallback) {
+      // Si ningún modelo funcionó, usar análisis de fallback
+      if (!sentimentResponse && !classificationResponse) {
         console.warn(
           "Todos los modelos de Hugging Face fallaron, usando análisis de fallback completo"
         );
@@ -311,21 +328,26 @@ class AnalysisService {
       let sentiment, classification;
 
       // Procesar sentimientos
-      if (!sentimentFallback && sentimentResponse) {
+      if (sentimentResponse) {
         try {
           sentiment = sentimentResponse.data[0];
+          console.log(`Sentimientos procesados con modelo: ${sentimentModel}`);
         } catch (error) {
           console.warn("Error procesando sentimientos:", error);
           sentiment = { label: "neutral", score: 0.5 };
         }
       } else {
         sentiment = { label: "neutral", score: 0.5, fallback: true };
+        console.log("Usando sentimientos de fallback");
       }
 
       // Procesar clasificación
-      if (!classificationFallback && classificationResponse) {
+      if (classificationResponse) {
         try {
           classification = classificationResponse.data;
+          console.log(
+            `Clasificación procesada con modelo: ${classificationModel}`
+          );
         } catch (error) {
           console.warn("Error procesando clasificación:", error);
           classification = {
@@ -339,6 +361,7 @@ class AnalysisService {
           scores: [0.5],
           fallback: true,
         };
+        console.log("Usando clasificación de fallback");
       }
 
       // Determinar si es IA basado en clasificación
@@ -1992,16 +2015,34 @@ class AnalysisService {
     // Determinar si es probable que sea IA basado en patrones simples
     let isAI = false;
     let confidence = 0.4; // Confianza baja para análisis de fallback
+    let indicators = [];
 
     // Indicadores simples de IA
     if (patterns.repetition > 0.6) {
       isAI = true;
       confidence += 0.2;
+      indicators.push("Patrones repetitivos detectados");
     }
 
     if (patterns.formality > 0.8) {
       isAI = true;
       confidence += 0.1;
+      indicators.push("Formalidad excesiva");
+    }
+
+    // Detectar patrones específicos de IA
+    const aiPatterns = this.detectAIPatterns(text);
+    if (aiPatterns.length > 0) {
+      isAI = true;
+      confidence += 0.15;
+      indicators.push(...aiPatterns);
+    }
+
+    // Detectar patrones humanos
+    const humanPatterns = this.detectHumanPatterns(text);
+    if (humanPatterns.length > 0 && !isAI) {
+      confidence += 0.1;
+      indicators.push(...humanPatterns);
     }
 
     if (textLength < 100) {
@@ -2019,9 +2060,8 @@ class AnalysisService {
           ? "Se detectaron indicadores de texto generado por IA."
           : "No se detectaron indicadores claros de IA."
       }`,
-      indicators: isAI
-        ? ["Patrones repetitivos detectados", "Formalidad excesiva"]
-        : ["Patrones naturales detectados"],
+      indicators:
+        indicators.length > 0 ? indicators : ["Patrones naturales detectados"],
       languagePatterns: `Repetición: ${Math.round(
         patterns.repetition * 100
       )}%, Formalidad: ${Math.round(patterns.formality * 100)}%`,
@@ -2040,6 +2080,122 @@ class AnalysisService {
         textLength > 500 ? "Alta" : textLength > 200 ? "Media" : "Baja",
       readability: this.calculateReadability(text),
     };
+  }
+
+  // Detectar patrones específicos de IA
+  detectAIPatterns(text) {
+    const patterns = [];
+    const lowerText = text.toLowerCase();
+
+    // Frases típicas de IA
+    const aiPhrases = [
+      "es importante mencionar",
+      "cabe destacar que",
+      "es fundamental",
+      "en primer lugar",
+      "en segundo lugar",
+      "por un lado",
+      "por otro lado",
+      "en conclusión",
+      "para finalizar",
+      "es necesario",
+      "se debe",
+      "hay que",
+      "resulta importante",
+    ];
+
+    let aiPhraseCount = 0;
+    aiPhrases.forEach((phrase) => {
+      if (lowerText.includes(phrase)) {
+        aiPhraseCount++;
+      }
+    });
+
+    if (aiPhraseCount >= 3) {
+      patterns.push("Uso excesivo de frases formales típicas de IA");
+    }
+
+    // Estructura muy formal
+    if (
+      lowerText.includes("introducción") &&
+      lowerText.includes("conclusión")
+    ) {
+      patterns.push("Estructura académica muy formal");
+    }
+
+    // Repetición de conectores
+    const connectors = [
+      "además",
+      "asimismo",
+      "por consiguiente",
+      "en consecuencia",
+    ];
+    let connectorCount = 0;
+    connectors.forEach((connector) => {
+      const matches = (lowerText.match(new RegExp(connector, "g")) || [])
+        .length;
+      connectorCount += matches;
+    });
+
+    if (connectorCount >= 4) {
+      patterns.push("Uso excesivo de conectores formales");
+    }
+
+    return patterns;
+  }
+
+  // Detectar patrones humanos
+  detectHumanPatterns(text) {
+    const patterns = [];
+    const lowerText = text.toLowerCase();
+
+    // Expresiones coloquiales
+    const colloquialExpressions = [
+      "bueno",
+      "pues",
+      "entonces",
+      "o sea",
+      "digamos",
+      "tipo",
+      "como que",
+      "me parece",
+      "creo que",
+      "pienso que",
+      "siento que",
+      "opino que",
+    ];
+
+    let colloquialCount = 0;
+    colloquialExpressions.forEach((expr) => {
+      if (lowerText.includes(expr)) {
+        colloquialCount++;
+      }
+    });
+
+    if (colloquialCount >= 2) {
+      patterns.push("Uso de expresiones coloquiales");
+    }
+
+    // Contracciones y abreviaciones
+    if (
+      lowerText.includes("'") ||
+      lowerText.includes("q ") ||
+      lowerText.includes("xq")
+    ) {
+      patterns.push("Uso de contracciones y abreviaciones");
+    }
+
+    // Preguntas retóricas
+    if ((lowerText.match(/\?/g) || []).length >= 2) {
+      patterns.push("Uso de preguntas retóricas");
+    }
+
+    // Exclamaciones
+    if ((lowerText.match(/!/g) || []).length >= 1) {
+      patterns.push("Uso de exclamaciones");
+    }
+
+    return patterns;
   }
 
   // Calcular legibilidad básica

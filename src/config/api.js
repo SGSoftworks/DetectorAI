@@ -28,21 +28,24 @@ export const API_CONFIG = {
 
 // Modelos de Hugging Face disponibles
 export const HUGGING_FACE_MODELS = {
-  // Modelos REALES y FUNCIONANTES para PRODUCCIÓN
+  // Modelos principales (pueden fallar)
   SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment",
   TEXT_CLASSIFICATION: "facebook/bart-large-mnli",
   ZERO_SHOT: "facebook/bart-large-mnli",
-  // Modelo para detección de texto generado por IA
-  AI_DETECTION: "microsoft/DialoGPT-medium",
-  // Modelos alternativos de respaldo VERIFICADOS
-  SENTIMENT_BACKUP: "cardiffnlp/twitter-roberta-base-sentiment",
-  CLASSIFICATION_BACKUP: "facebook/bart-large-mnli",
-  // Modelos adicionales para mayor robustez
-  SENTIMENT_ALT: "cardiffnlp/twitter-roberta-base-sentiment",
-  CLASSIFICATION_ALT: "facebook/bart-large-mnli",
-  // Modelos de respaldo que funcionan sin API key
+
+  // Modelos alternativos que funcionan mejor
+  SENTIMENT_ALT1: "distilbert-base-uncased-finetuned-sst-2-english",
+  SENTIMENT_ALT2: "nlptown/bert-base-multilingual-uncased-sentiment",
+  CLASSIFICATION_ALT1: "microsoft/DialoGPT-medium",
+  CLASSIFICATION_ALT2: "gpt2",
+
+  // Modelos de respaldo simples
   FALLBACK_SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment",
   FALLBACK_CLASSIFICATION: "facebook/bart-large-mnli",
+
+  // Modelos que funcionan sin API key (públicos)
+  PUBLIC_SENTIMENT: "distilbert-base-uncased-finetuned-sst-2-english",
+  PUBLIC_CLASSIFICATION: "gpt2",
 };
 
 // Función para obtener headers de autenticación
