@@ -46,12 +46,17 @@ export class DatabaseService {
     try {
       // Limpiar datos para Firebase - eliminar campos undefined
       const cleanedData = this.cleanDataForFirebase(analysisData);
-
-      const docRef = await addDoc(collection(db, COLLECTIONS.ANALYSES), {
+      
+      const dataToSave = {
         ...cleanedData,
         timestamp: new Date(),
         createdAt: new Date().toISOString(),
-      });
+      };
+      
+      // Validar datos antes de guardar
+      this.validateAnalysisData(dataToSave);
+
+      const docRef = await addDoc(collection(db, COLLECTIONS.ANALYSES), dataToSave);
       return docRef.id;
     } catch (error) {
       console.error("Error saving analysis:", error);
@@ -161,8 +166,10 @@ export class DatabaseService {
       if (auth) {
         await signInAnonymously(auth);
         console.log("Anonymous authentication successful");
+        return true;
       } else {
         console.log("Auth not configured, continuing without authentication");
+        return false;
       }
     } catch (error) {
       console.warn(
@@ -170,7 +177,48 @@ export class DatabaseService {
         error.message
       );
       // Continuar sin autenticación para que la app funcione
+      return false;
     }
+  }
+
+  // Validar datos antes de guardar
+  static validateAnalysisData(data) {
+    const requiredFields = ['timestamp', 'createdAt'];
+    const missingFields = requiredFields.filter(field => !data[field]);
+    
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    }
+    
+    return true;
+  }
+
+  // Validar datos de búsqueda
+  static validateSearchData(data) {
+    const requiredFields = ['timestamp', 'createdAt'];
+    const missingFields = requiredFields.filter(field => !data[field]);
+    
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    }
+    
+    return true;
+  }
+
+  // Validar feedback de usuario
+  static validateFeedbackData(data) {
+    const requiredFields = ['timestamp', 'createdAt', 'rating'];
+    const missingFields = requiredFields.filter(field => !data[field]);
+    
+    if (missingFields.length > 0) {
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
+    }
+    
+    if (data.rating < 1 || data.rating > 5) {
+      throw new Error('Rating must be between 1 and 5');
+    }
+    
+    return true;
   }
 }
 

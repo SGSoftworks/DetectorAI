@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Función para validar que el usuario esté autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Función para validar que los datos tengan la estructura correcta
+    function isValidAnalysis(data) {
+      return data.keys().hasAll(['timestamp', 'createdAt']) &&
+             data.timestamp is timestamp &&
+             data.createdAt is string &&
+             data.createdAt.size() > 0;
+    }
+    
+    // Función para validar que los datos de búsqueda tengan la estructura correcta
+    function isValidSearchResult(data) {
+      return data.keys().hasAll(['timestamp', 'createdAt']) &&
+             data.timestamp is timestamp &&
+             data.createdAt is string &&
+             data.createdAt.size() > 0;
+    }
+    
+    // Función para validar feedback de usuario
+    function isValidFeedback(data) {
+      return data.keys().hasAll(['timestamp', 'createdAt']) &&
+             data.timestamp is timestamp &&
+             data.createdAt is string &&
+             data.createdAt.size() > 0 &&
+             data.rating is number &&
+             data.rating >= 1 && data.rating <= 5;
+    }
+    
+    // Función para validar logs del sistema
+    function isValidSystemLog(data) {
+      return data.keys().hasAll(['timestamp', 'createdAt', 'level']) &&
+             data.timestamp is timestamp &&
+             data.createdAt is string &&
+             data.createdAt.size() > 0 &&
+             data.level in ['info', 'warn', 'error', 'debug'];
+    }
+    
+    // Permitir lectura y escritura para análisis (con validación)
+    match /analyses/{document} {
+      allow read, write: if isAuthenticated() && 
+                            isValidAnalysis(resource.data) &&
+                            request.time < timestamp.date(2025, 12, 31);
+    }
+    
+    // Permitir lectura y escritura para resultados de búsqueda (con validación)
+    match /search_results/{document} {
+      allow read, write: if isAuthenticated() && 
+                            isValidSearchResult(resource.data) &&
+                            request.time < timestamp.date(2025, 12, 31);
+    }
+    
+    // Permitir solo escritura para logs del sistema (solo el sistema puede escribir)
+    match /system_logs/{document} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && 
+                      isValidSystemLog(resource.data) &&
+                      request.time < timestamp.date(2025, 12, 31);
+    }
+    
+    // Permitir lectura y escritura para feedback de usuarios (con validación)
+    match /user_feedback/{document} {
+      allow read, write: if isAuthenticated() && 
+                            isValidFeedback(resource.data) &&
+                            request.time < timestamp.date(2025, 12, 31);
+    }
+    
+    // Bloquear todo lo demás
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
