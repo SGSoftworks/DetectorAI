@@ -1,6 +1,6 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import { API_CONFIG } from '@/config/api';
-import type { TextAnalysisRequest, AnalysisResult, ContentType } from '@/types';
+import { GoogleGenerativeAI } from "@google/generative-ai";
+import { API_CONFIG } from "@/config/api";
+import type { TextAnalysisRequest, AnalysisResult, ContentType } from "@/types";
 
 class GeminiService {
   private genAI: GoogleGenerativeAI;
@@ -8,11 +8,11 @@ class GeminiService {
 
   constructor() {
     if (!API_CONFIG.GEMINI_API_KEY) {
-      throw new Error('GEMINI_API_KEY no está configurada');
+      throw new Error("GEMINI_API_KEY no está configurada");
     }
-    
+
     this.genAI = new GoogleGenerativeAI(API_CONFIG.GEMINI_API_KEY);
-    this.model = this.genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
   }
 
   async analyzeText(request: TextAnalysisRequest): Promise<AnalysisResult> {
@@ -21,11 +21,11 @@ class GeminiService {
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
-      
-      return this.parseAnalysisResponse(text, 'text', request.text);
+
+      return this.parseAnalysisResponse(text, "text", request.text);
     } catch (error) {
-      console.error('Error en análisis de Gemini:', error);
-      throw new Error('Error al analizar el texto con Gemini');
+      console.error("Error en análisis de Gemini:", error);
+      throw new Error("Error al analizar el texto con Gemini");
     }
   }
 
@@ -69,16 +69,20 @@ Considera los siguientes factores:
 `;
   }
 
-  private parseAnalysisResponse(response: string, type: ContentType, content: string): AnalysisResult {
+  private parseAnalysisResponse(
+    response: string,
+    type: ContentType,
+    content: string
+  ): AnalysisResult {
     try {
       // Extraer JSON del response
       const jsonMatch = response.match(/\{[\s\S]*\}/);
       if (!jsonMatch) {
-        throw new Error('No se pudo extraer JSON del response');
+        throw new Error("No se pudo extraer JSON del response");
       }
 
       const analysis = JSON.parse(jsonMatch[0]);
-      
+
       return {
         id: this.generateId(),
         type,
@@ -89,17 +93,17 @@ Considera los siguientes factores:
           probability: analysis.probability,
           explanation: analysis.explanation,
           methodology: analysis.methodology,
-          factors: analysis.factors || []
+          factors: analysis.factors || [],
         },
         metadata: {
           timestamp: new Date(),
           processingTime: 0, // Se calculará en el servicio principal
-          model: 'gemini-2.0-flash',
-          version: '1.0.0'
-        }
+          model: "gemini-2.0-flash",
+          version: "1.0.0",
+        },
       };
     } catch (error) {
-      console.error('Error al parsear respuesta de Gemini:', error);
+      console.error("Error al parsear respuesta de Gemini:", error);
       // Respuesta de fallback
       return {
         id: this.generateId(),
@@ -109,16 +113,16 @@ Considera los siguientes factores:
           isAI: false,
           confidence: 50,
           probability: { ai: 50, human: 50 },
-          explanation: 'No se pudo analizar el contenido con precisión',
-          methodology: 'Análisis básico de texto',
-          factors: []
+          explanation: "No se pudo analizar el contenido con precisión",
+          methodology: "Análisis básico de texto",
+          factors: [],
         },
         metadata: {
           timestamp: new Date(),
           processingTime: 0,
-          model: 'gemini-2.0-flash',
-          version: '1.0.0'
-        }
+          model: "gemini-2.0-flash",
+          version: "1.0.0",
+        },
       };
     }
   }
@@ -133,7 +137,7 @@ Considera los siguientes factores:
       await this.model.generateContent(testPrompt);
       return true;
     } catch (error) {
-      console.error('Gemini no está disponible:', error);
+      console.error("Gemini no está disponible:", error);
       return false;
     }
   }
