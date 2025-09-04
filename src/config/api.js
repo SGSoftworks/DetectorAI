@@ -28,11 +28,15 @@ export const API_CONFIG = {
 
 // Modelos de Hugging Face disponibles
 export const HUGGING_FACE_MODELS = {
-  SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment-latest",
+  // Modelos REALES y FUNCIONANTES para PRODUCCIÓN
+  SENTIMENT: "cardiffnlp/twitter-roberta-base-sentiment",
   TEXT_CLASSIFICATION: "facebook/bart-large-mnli",
   ZERO_SHOT: "facebook/bart-large-mnli",
   // Modelo para detección de texto generado por IA
   AI_DETECTION: "microsoft/DialoGPT-medium",
+  // Modelos alternativos de respaldo
+  SENTIMENT_BACKUP: "nlptown/bert-base-multilingual-uncased-sentiment",
+  CLASSIFICATION_BACKUP: "joeddav/xlm-roberta-large-xnli",
 };
 
 // Función para obtener headers de autenticación

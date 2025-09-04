@@ -226,58 +226,108 @@ class AnalysisService {
         throw new Error("API key de Hugging Face no configurada");
       }
 
-      // Análisis de sentimientos
-      const sentimentResponse = await this.axios.post(
-        `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT}`,
-        { inputs: text },
-        {
-          headers: getHeaders("huggingface"),
-          timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
-        }
-      );
+      // Análisis de sentimientos (con respaldo)
+      let sentimentResponse;
+      try {
+        sentimentResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT}`,
+          { inputs: text },
+          {
+            headers: getHeaders("huggingface"),
+            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+          }
+        );
+      } catch (error) {
+        console.warn("Modelo de sentimientos principal falló, usando respaldo...");
+        sentimentResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.SENTIMENT_BACKUP}`,
+          { inputs: text },
+          {
+            headers: getHeaders("huggingface"),
+            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+          }
+        );
+      }
 
-      // Clasificación de texto
-      const classificationResponse = await this.axios.post(
-        `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.TEXT_CLASSIFICATION}`,
-        {
-          inputs: text,
-          parameters: {
-            candidate_labels: [
-              "Texto generado por IA",
-              "Texto escrito por humano",
-              "Contenido académico",
-              "Contenido periodístico",
-              "Contenido informal",
-            ],
+      // Clasificación de texto (con respaldo)
+      let classificationResponse;
+      try {
+        classificationResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.TEXT_CLASSIFICATION}`,
+          {
+            inputs: text,
+            parameters: {
+              candidate_labels: [
+                "Texto generado por IA",
+                "Texto escrito por humano",
+                "Contenido académico",
+                "Contenido periodístico",
+                "Contenido informal",
+              ],
+            },
           },
-        },
-        {
-          headers: getHeaders("huggingface"),
-          timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
-        }
-      );
+          {
+            headers: getHeaders("huggingface"),
+            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+          }
+        );
+      } catch (error) {
+        console.warn("Modelo de clasificación principal falló, usando respaldo...");
+        classificationResponse = await this.axios.post(
+          `${API_CONFIG.HUGGING_FACE_API_URL}/${HUGGING_FACE_MODELS.CLASSIFICATION_BACKUP}`,
+          {
+            inputs: text,
+            parameters: {
+              candidate_labels: [
+                "Texto generado por IA",
+                "Texto escrito por humano",
+                "Contenido académico",
+                "Contenido periodístico",
+                "Contenido informal",
+              ],
+            },
+          },
+          {
+            headers: getHeaders("huggingface"),
+            timeout: API_CONFIG.TIMEOUTS.HUGGING_FACE,
+          }
+        );
+      }
 
-      // Procesar resultados
-      const sentiment = sentimentResponse.data[0];
-      const classification = classificationResponse.data;
+      // Procesar resultados con manejo de errores robusto
+      let sentiment, classification;
+      
+      try {
+        sentiment = sentimentResponse.data[0];
+      } catch (error) {
+        console.warn("Error procesando sentimientos:", error);
+        sentiment = { label: "neutral", score: 0.5 };
+      }
+
+      try {
+        classification = classificationResponse.data;
+      } catch (error) {
+        console.warn("Error procesando clasificación:", error);
+        classification = { labels: ["Texto escrito por humano"], scores: [0.5] };
+      }
 
       // Determinar si es IA basado en clasificación
-      const isAI = classification.labels[0] === "Texto generado por IA";
-      const confidence = classification.scores[0];
+      const isAI = classification.labels && classification.labels[0] === "Texto generado por IA";
+      const confidence = classification.scores && classification.scores[0] ? classification.scores[0] : 0.5;
 
       return {
         result: isAI ? "IA" : "HUMANO",
         confidence: confidence,
-        explanation: `Clasificación: ${classification.labels[0]} (${Math.round(confidence * 100)}% confianza) | Sentimiento: ${sentiment.label} (${Math.round(sentiment.score * 100)}% confianza)`,
+        explanation: `Clasificación: ${classification.labels ? classification.labels[0] : "No disponible"} (${Math.round(confidence * 100)}% confianza) | Sentimiento: ${sentiment.label || "No disponible"} (${Math.round((sentiment.score || 0.5) * 100)}% confianza)`,
         sentiment: {
-          label: sentiment.label,
-          score: sentiment.score,
+          label: sentiment.label || "neutral",
+          score: sentiment.score || 0.5,
         },
         classification: {
-          label: classification.labels[0],
-          score: classification.scores[0],
-          allLabels: classification.labels,
-          allScores: classification.scores,
+          label: classification.labels ? classification.labels[0] : "No disponible",
+          score: classification.scores ? classification.scores[0] : 0.5,
+          allLabels: classification.labels || ["No disponible"],
+          allScores: classification.scores || [0.5],
         },
         // Análisis adicional para PRODUCCIÓN
         textLength: text.length,
@@ -288,8 +338,82 @@ class AnalysisService {
       };
     } catch (error) {
       console.error("Error en análisis Hugging Face:", error);
-      throw new Error(`Error en Hugging Face API: ${error.message}`);
+      
+      // Fallback para PRODUCCIÓN cuando Hugging Face falle completamente
+      console.warn("Usando análisis de fallback basado en características del texto...");
+      return this.fallbackTextAnalysis(text);
     }
+  }
+
+  // Análisis de fallback cuando las APIs fallan
+  fallbackTextAnalysis(text) {
+    const complexity = this.calculateTextComplexity(text);
+    const patterns = this.detectLanguagePatterns(text);
+    const readability = this.calculateReadabilityScore(text);
+
+    // Heurísticas simples para determinar si es IA
+    let aiScore = 0;
+    let humanScore = 0;
+    const indicators = [];
+
+    // Evaluar complejidad
+    if (complexity.score > 2.0) {
+      aiScore += 0.6;
+      indicators.push("Complejidad muy alta");
+    } else if (complexity.score > 1.5) {
+      aiScore += 0.4;
+      indicators.push("Complejidad alta");
+    } else {
+      humanScore += 0.6;
+      indicators.push("Complejidad normal");
+    }
+
+    // Evaluar patrones de repetición
+    if (patterns.repetition > 0.7) {
+      aiScore += 0.7;
+      indicators.push("Alta repetición de palabras");
+    } else {
+      humanScore += 0.5;
+      indicators.push("Vocabulario diverso");
+    }
+
+    // Evaluar legibilidad
+    if (readability < 30) {
+      aiScore += 0.5;
+      indicators.push("Baja legibilidad");
+    } else if (readability > 70) {
+      humanScore += 0.5;
+      indicators.push("Alta legibilidad");
+    }
+
+    // Calcular resultado final
+    const totalScore = aiScore + humanScore;
+    const finalScore = aiScore / totalScore;
+    const isAI = finalScore > 0.6;
+    const confidence = Math.min(totalScore / 3, 0.8);
+
+    return {
+      result: isAI ? "IA" : "HUMANO",
+      confidence: confidence,
+      explanation: `Análisis de fallback: ${indicators.join(", ")} (${Math.round(confidence * 100)}% confianza)`,
+      sentiment: {
+        label: "neutral",
+        score: 0.5,
+      },
+      classification: {
+        label: isAI ? "Texto generado por IA" : "Texto escrito por humano",
+        score: confidence,
+        allLabels: [isAI ? "Texto generado por IA" : "Texto escrito por humano"],
+        allScores: [confidence],
+      },
+      // Análisis adicional para PRODUCCIÓN
+      textLength: text.length,
+      wordCount: text.split(" ").length,
+      complexity: complexity,
+      patterns: patterns,
+      readability: readability,
+      fallback: true
+    };
   }
 
   // Búsqueda en Google para verificar contenido
