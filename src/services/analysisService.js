@@ -442,36 +442,61 @@ class AnalysisService {
   // Búsqueda en Google para verificar contenido
   async searchGoogleContent(text) {
     try {
-      // Extraer palabras clave del texto
-      const keywords = this.extractKeywords(text);
+      // Extraer palabras clave más inteligentes del texto
+      const keywords = this.extractSmartKeywords(text);
+      
+      // Crear múltiples consultas para mejor cobertura
+      const searchQueries = this.createSearchQueries(keywords, text);
 
-      const response = await this.axios.get(API_CONFIG.GOOGLE_SEARCH_API_URL, {
-        params: {
-          key: API_CONFIG.GOOGLE_SEARCH_API_KEY,
-          cx: API_CONFIG.GOOGLE_SEARCH_ENGINE_ID,
-          q: keywords.join(" "),
-          num: 5,
-        },
-      });
+      let allResults = [];
+      let totalResults = 0;
 
-      const searchResults = response.data.items || [];
-      const totalResults = response.data.searchInformation?.totalResults || 0;
+      // Realizar búsquedas con diferentes consultas
+      for (const query of searchQueries.slice(0, 3)) { // Máximo 3 consultas
+        try {
+          const response = await this.axios.get(API_CONFIG.GOOGLE_SEARCH_API_URL, {
+            params: {
+              key: API_CONFIG.GOOGLE_SEARCH_API_KEY,
+              cx: API_CONFIG.GOOGLE_SEARCH_ENGINE_ID,
+              q: query,
+              num: 3, // Reducir por consulta para obtener más variedad
+              lr: "lang_es", // Restringir a español
+              cr: "countryCO", // Restringir a Colombia
+            },
+          });
 
-      // Procesar y formatear los resultados para mostrar
-      const formattedResults = searchResults.map((item, index) => ({
-        id: index + 1,
-        title: item.title,
-        link: item.link,
-        snippet: item.snippet,
-        displayLink: item.displayLink,
-        relevance: this.calculateRelevance(text, item),
-      }));
+          const searchResults = response.data.items || [];
+          totalResults = Math.max(totalResults, response.data.searchInformation?.totalResults || 0);
+          
+          // Agregar resultados únicos
+          searchResults.forEach(item => {
+            if (!allResults.find(r => r.link === item.link)) {
+              allResults.push(item);
+            }
+          });
+        } catch (queryError) {
+          console.warn(`Error en consulta "${query}":`, queryError.message);
+        }
+      }
+
+      // Ordenar por relevancia y tomar los mejores
+      const formattedResults = allResults
+        .map((item, index) => ({
+          id: index + 1,
+          title: item.title,
+          link: item.link,
+          snippet: item.snippet,
+          displayLink: item.displayLink,
+          relevance: this.calculateRelevance(text, item),
+        }))
+        .sort((a, b) => b.relevance - a.relevance)
+        .slice(0, 5); // Solo los 5 más relevantes
 
       return {
         searchResults: formattedResults,
         totalResults: totalResults,
         keywords: keywords,
-        similarity: this.calculateSimilarity(text, searchResults),
+        similarity: this.calculateSimilarity(text, formattedResults),
         analysis: this.analyzeSearchResults(formattedResults, text),
         detailedResults: formattedResults.map(result => ({
           title: result.title,
@@ -482,13 +507,14 @@ class AnalysisService {
           relevanceScore: Math.round(result.relevance * 100)
         })),
         // Información adicional para PRODUCCIÓN
-        searchQuery: keywords.join(" "),
+        searchQuery: searchQueries.join(" | "),
         searchTimestamp: new Date().toISOString(),
         searchEngine: "Google Custom Search",
         searchParameters: {
           maxResults: 5,
           language: "es",
-          region: "CO"
+          region: "CO",
+          queries: searchQueries.length
         }
       };
     } catch (error) {
@@ -780,6 +806,58 @@ class AnalysisService {
       .map(([word]) => word);
   }
 
+  // Extraer palabras clave más inteligentes del texto
+  extractSmartKeywords(text) {
+    const words = text.toLowerCase()
+      .replace(/[^\w\s]/g, '')
+      .split(/\s+/)
+      .filter(word => word.length > 3);
+    
+    const stopWords = new Set(['el', 'la', 'los', 'las', 'un', 'una', 'unos', 'unas', 'y', 'o', 'pero', 'si', 'no', 'que', 'cual', 'quien', 'donde', 'cuando', 'como', 'por', 'para', 'con', 'sin', 'sobre', 'bajo', 'entre', 'detras', 'delante', 'desde', 'hasta', 'durante', 'antes', 'despues', 'mientras', 'aunque', 'porque', 'pues', 'entonces', 'asi', 'tambien', 'tampoco', 'nunca', 'siempre', 'a veces', 'mucho', 'poco', 'mas', 'menos', 'muy', 'demasiado', 'bastante', 'casi', 'apenas', 'solo', 'solamente', 'incluso', 'ademas', 'tambien', 'tampoco', 'ni', 'o', 'u', 'pero', 'mas', 'aunque', 'sin embargo', 'no obstante', 'por el contrario', 'por otra parte', 'por un lado', 'por otro lado', 'en primer lugar', 'en segundo lugar', 'finalmente', 'en conclusion', 'en resumen', 'en resumidas cuentas', 'en definitiva', 'en fin', 'por ultimo', 'para terminar', 'para finalizar', 'para concluir', 'para resumir', 'para sintetizar', 'para resumir', 'para sintetizar', 'para resumir', 'para sintetizar']);
+    
+    const filteredWords = words.filter(word => !stopWords.has(word));
+    
+    // Contar frecuencia y tomar las más comunes
+    const wordCount = {};
+    filteredWords.forEach(word => {
+      wordCount[word] = (wordCount[word] || 0) + 1;
+    });
+    
+    return Object.entries(wordCount)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 10)
+      .map(([word]) => word);
+  }
+
+  // Crear consultas de búsqueda inteligentes
+  createSearchQueries(keywords, text) {
+    const queries = [];
+    
+    // Consulta 1: Palabras clave principales
+    if (keywords.length > 0) {
+      queries.push(keywords.slice(0, 5).join(" "));
+    }
+    
+    // Consulta 2: Frases específicas del texto
+    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 20);
+    if (sentences.length > 0) {
+      const firstSentence = sentences[0].trim().substring(0, 100);
+      queries.push(`"${firstSentence}"`);
+    }
+    
+    // Consulta 3: Combinación de palabras clave más relevantes
+    if (keywords.length > 2) {
+      const relevantKeywords = keywords.filter(word => 
+        word.length > 4 && !['gobierno', 'ministerio', 'presidente', 'partido'].includes(word)
+      );
+      if (relevantKeywords.length > 0) {
+        queries.push(relevantKeywords.slice(0, 3).join(" "));
+      }
+    }
+    
+    return queries;
+  }
+
   calculateSimilarity(text, searchResults) {
     if (!searchResults.length) return 0;
 
@@ -1062,7 +1140,7 @@ class AnalysisService {
       totalConfidence += 0.6;
     }
 
-    // Calcular resultado final con lógica mejorada
+    // Calcular resultado final con lógica mejorada y balanceada
     const totalScore = aiScore + humanScore;
     let finalScore = 0;
     let confidence = 0;
@@ -1074,22 +1152,44 @@ class AnalysisService {
       const scoreDifference = Math.abs(aiScore - humanScore);
       const maxPossibleScore = Math.max(aiScore, humanScore);
       
+      // Normalizar scores para evitar valores excesivos
+      const normalizedAiScore = Math.min(aiScore, 1.0);
+      const normalizedHumanScore = Math.min(humanScore, 1.0);
+      
       if (scoreDifference > 0.5) {
         // Alta confianza cuando hay una diferencia clara
-        confidence = Math.min(maxPossibleScore * 0.9, 0.95);
+        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.9, 0.95);
       } else if (scoreDifference > 0.2) {
         // Confianza moderada
-        confidence = Math.min(maxPossibleScore * 0.7, 0.85);
+        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.7, 0.85);
       } else {
         // Baja confianza cuando los scores están muy cerca
-        confidence = Math.min(maxPossibleScore * 0.5, 0.6);
+        confidence = Math.min(Math.max(normalizedAiScore, normalizedHumanScore) * 0.5, 0.6);
       }
     } else {
       // Fallback si no hay scores
       confidence = 0.5;
     }
     
-    const isAI = finalScore > 0.6;
+    // Mejorar la clasificación basada en múltiples factores
+    let isAI = finalScore > 0.6;
+    
+    // Ajustar clasificación basada en similitud web y contexto
+    if (results.googleSearch) {
+      const similarity = results.googleSearch.similarity || 0;
+      const totalResults = results.googleSearch.totalResults || 0;
+      
+      // Si hay alta similitud con contenido existente, es más probable que sea humano
+      if (similarity > 0.7 && totalResults > 1000) {
+        isAI = false;
+        confidence = Math.min(confidence + 0.1, 0.95);
+      }
+      // Si hay muy baja similitud y pocos resultados, es más probable que sea IA
+      else if (similarity < 0.2 && totalResults < 100) {
+        isAI = true;
+        confidence = Math.min(confidence + 0.1, 0.95);
+      }
+    }
 
     // Agregar contexto adicional para PRODUCCIÓN
     let contextInfo = "";
