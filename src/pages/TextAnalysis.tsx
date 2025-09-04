@@ -104,7 +104,7 @@ Explicación: ${result.result.explanation}`;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -125,7 +125,7 @@ Explicación: ${result.result.explanation}`;
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
           {/* Input Section */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -356,6 +356,39 @@ Explicación: ${result.result.explanation}`;
                               style={{ width: `${factor.value}%` }}
                             ></div>
                           </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Related Content */}
+                {result.relatedContent && result.relatedContent.length > 0 && (
+                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                      <Info className="w-5 h-5 text-primary-600 mr-2" />
+                      Contenido Relacionado
+                    </h3>
+                    <div className="space-y-3">
+                      {result.relatedContent.map((link: any, index: number) => (
+                        <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                          <a 
+                            href={link.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="block"
+                          >
+                            <h4 className="font-medium text-primary-600 hover:text-primary-700 mb-2 line-clamp-2">
+                              {link.title}
+                            </h4>
+                            <p className="text-sm text-gray-600 line-clamp-2 mb-2">
+                              {link.snippet}
+                            </p>
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs text-gray-500">{link.domain}</span>
+                              <span className="text-xs text-primary-600">Relevancia: {Math.round(link.relevance * 100)}%</span>
+                            </div>
+                          </a>
                         </div>
                       ))}
                     </div>

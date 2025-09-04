@@ -33,6 +33,8 @@ class GeminiService {
     return `
 Analiza el siguiente texto y determina si fue generado por inteligencia artificial o por un humano. 
 
+IMPORTANTE: Considera que el contenido falso, conspirativo, o con afirmaciones científicamente incorrectas puede ser generado tanto por IA como por humanos, pero las IA modernas tienden a generar contenido más estructurado y "creíble" incluso cuando es falso.
+
 Proporciona tu análisis en el siguiente formato JSON:
 {
   "isAI": boolean,
@@ -59,13 +61,19 @@ ${text}
 
 Considera los siguientes factores:
 1. Patrones de lenguaje y estructura
-2. Consistencia en el estilo
-3. Complejidad y coherencia
-4. Uso de conectores y transiciones
-5. Originalidad y creatividad
-6. Errores típicos de IA
-7. Fluidez natural del lenguaje
-8. Contexto y conocimiento específico
+2. Consistencia en el estilo y coherencia
+3. Uso de conectores y transiciones naturales
+4. Originalidad vs. contenido genérico
+5. Errores típicos de IA (repetición, frases forzadas)
+6. Fluidez natural del lenguaje
+7. Credibilidad científica y factual
+8. Estructura narrativa y desarrollo lógico
+9. Uso de evidencia y referencias
+10. Tono y estilo de escritura
+11. Complejidad del vocabulario
+12. Patrones de argumentación
+
+NOTA: Si el contenido contiene afirmaciones falsas, conspirativas o científicamente incorrectas, evalúa si la forma de presentarlas es más característica de IA (estructurada, "creíble") o humana (más espontánea, menos pulida).
 `;
   }
 
