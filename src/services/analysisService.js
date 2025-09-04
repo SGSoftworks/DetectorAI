@@ -1674,360 +1674,172 @@ class AnalysisService {
   }
 
   combineResults(results) {
-    let aiScore = 0;
-    let humanScore = 0;
-    let totalConfidence = 0;
+    // NUEVA LÓGICA COHERENTE: Análisis basado en evidencia real
+    let finalDecision = "HUMANO"; // Por defecto asumir humano
+    let finalConfidence = 0.5;
+    let aiProbability = 0;
+    let humanProbability = 0;
 
-    // Estructura de explicación detallada
-    const detailedExplanation = {
-      gemini: {
-        available: false,
-        result: null,
-        confidence: 0,
-        reasoning: "",
-        indicators: [],
-        languagePatterns: "",
-        suggestions: "",
-        fallback: false,
-      },
+    // 1. Analizar evidencia de cada fuente
+    const evidence = {
+      gemini: { available: false, result: null, confidence: 0, reasoning: "" },
       huggingface: {
         available: false,
         result: null,
         confidence: 0,
         explanation: "",
-        complexity: null,
-        readability: 0,
-        patterns: {},
-        fallback: false,
       },
       webSearch: {
         available: false,
-        keywords: [],
         similarity: 0,
         totalResults: 0,
-        topSources: [],
-        analysis: null,
-      },
-      finalAnalysis: {
-        conclusion: "",
-        confidence: 0,
-        recommendation: "",
-        factors: [],
+        supportsAI: false,
+        supportsHuman: false,
       },
     };
 
-    // Analizar resultados de Gemini (REAL)
+    // 2. Analizar evidencia de Gemini
     if (results.gemini && results.gemini.result) {
-      const geminiResult = results.gemini.result;
-      const geminiConfidence = results.gemini.confidence || 0.5;
-
-      detailedExplanation.gemini.available = true;
-      detailedExplanation.gemini.result = geminiResult;
-      detailedExplanation.gemini.confidence = geminiConfidence;
-      // Limpiar caracteres JSON y asegurar mención de Gemini 2.0 Flash
-      let cleanReasoning =
+      evidence.gemini.available = true;
+      evidence.gemini.result = results.gemini.result;
+      evidence.gemini.confidence = results.gemini.confidence || 0.5;
+      evidence.gemini.reasoning =
         results.gemini.reasoning ||
         results.gemini.explanation ||
         "Análisis completado con Gemini 2.0 Flash";
-      cleanReasoning = cleanReasoning
-        .replace(/```json[\s\S]*?```/g, "") // Remover bloques JSON
-        .replace(/[{}[\]]/g, "") // Remover llaves y corchetes
-        .replace(/["']/g, "") // Remover comillas
-        .replace(/\s+/g, " ") // Normalizar espacios
-        .trim();
-
-      if (!cleanReasoning.includes("Gemini 2.0 Flash")) {
-        cleanReasoning = `Análisis completado con Gemini 2.0 Flash: ${cleanReasoning}`;
-      }
-
-      detailedExplanation.gemini.reasoning = cleanReasoning;
-      detailedExplanation.gemini.indicators = results.gemini.indicators || [];
-      detailedExplanation.gemini.languagePatterns =
-        results.gemini.languagePatterns || "";
-      detailedExplanation.gemini.suggestions = results.gemini.suggestions || "";
-
-      if (geminiResult === "IA") {
-        aiScore += geminiConfidence;
-      } else if (geminiResult === "HUMANO") {
-        humanScore += geminiConfidence;
-      }
-      totalConfidence += geminiConfidence;
-    } else if (results.gemini && results.gemini.error) {
-      detailedExplanation.gemini.fallback = true;
-      detailedExplanation.gemini.reasoning = `Error: ${results.gemini.error} - Usando análisis de respaldo`;
-      totalConfidence += 0.3; // Confianza reducida por fallback
     } else if (results.gemini && results.gemini.isAI !== undefined) {
-      // Si Gemini devuelve isAI en lugar de result
-      const geminiConfidence = results.gemini.confidence || 0.7;
-
-      detailedExplanation.gemini.available = true;
-      detailedExplanation.gemini.result = results.gemini.isAI ? "IA" : "HUMANO";
-      detailedExplanation.gemini.confidence = geminiConfidence;
-      detailedExplanation.gemini.reasoning =
+      evidence.gemini.available = true;
+      evidence.gemini.result = results.gemini.isAI ? "IA" : "HUMANO";
+      evidence.gemini.confidence = results.gemini.confidence || 0.7;
+      evidence.gemini.reasoning =
         results.gemini.reasoning || "Análisis completado con Gemini 2.0 Flash";
-      detailedExplanation.gemini.indicators = results.gemini.indicators || [];
-      detailedExplanation.gemini.languagePatterns =
-        results.gemini.languagePatterns || "";
-      detailedExplanation.gemini.suggestions = results.gemini.suggestions || "";
-
-      if (results.gemini.isAI) {
-        aiScore += geminiConfidence;
-      } else {
-        humanScore += geminiConfidence;
-      }
-      totalConfidence += geminiConfidence;
     }
 
-    // Analizar resultados de Hugging Face (REAL)
+    // 3. Analizar evidencia de Hugging Face
     if (results.huggingface && results.huggingface.result) {
-      const hfResult = results.huggingface.result;
-      const hfConfidence = results.huggingface.confidence || 0.5;
-      const apiStatus = results.huggingface.apiStatus;
-
-      detailedExplanation.huggingface.available = true;
-      detailedExplanation.huggingface.result = hfResult;
-      detailedExplanation.huggingface.confidence = hfConfidence;
-      // Limpiar explicación de Hugging Face y agregar más contexto
-      let cleanExplanation =
+      evidence.huggingface.available = true;
+      evidence.huggingface.result = results.huggingface.result;
+      evidence.huggingface.confidence = results.huggingface.confidence || 0.5;
+      evidence.huggingface.explanation =
         results.huggingface.explanation ||
         "Análisis completado con Hugging Face";
-      cleanExplanation = cleanExplanation
-        .replace(/\[FALLBACK\]/g, "") // Remover marcadores de fallback
-        .replace(/\[ANÁLISIS DE RESPALDO\]/g, "") // Remover marcadores de respaldo
-        .replace(/\(\d+% confianza\)/g, "") // CORREGIR: Remover doble porcentaje
-        .replace(/\s+/g, " ") // Normalizar espacios
-        .trim();
 
-      // Agregar más explicación si es muy corta
-      if (cleanExplanation.length < 50) {
-        cleanExplanation = `Análisis de patrones lingüísticos completado: ${cleanExplanation}`;
+      // Reducir confianza si es fallback
+      if (
+        results.huggingface.fallback ||
+        (results.huggingface.apiStatus &&
+          results.huggingface.apiStatus.fallbackUsed)
+      ) {
+        evidence.huggingface.confidence *= 0.7; // Reducir confianza por fallback
       }
-
-      detailedExplanation.huggingface.explanation = cleanExplanation;
-      detailedExplanation.huggingface.complexity =
-        results.huggingface.complexity || null;
-      detailedExplanation.huggingface.readability =
-        results.huggingface.readability || 0;
-      detailedExplanation.huggingface.patterns =
-        results.huggingface.patterns || {};
-      detailedExplanation.huggingface.fallback =
-        apiStatus && apiStatus.fallbackUsed;
-
-      if (hfResult === "IA") {
-        aiScore += hfConfidence;
-      } else if (hfResult === "HUMANO") {
-        humanScore += hfConfidence;
-      }
-
-      // Ajustar confianza basado en si se usó fallback
-      if (apiStatus && apiStatus.fallbackUsed) {
-        totalConfidence += hfConfidence * 0.7; // Reducir confianza por fallback
-      } else {
-        totalConfidence += hfConfidence;
-      }
-    } else if (results.huggingface && results.huggingface.fallback) {
-      detailedExplanation.huggingface.fallback = true;
-      detailedExplanation.huggingface.explanation = `Análisis de respaldo: ${results.huggingface.explanation}`;
-      detailedExplanation.huggingface.complexity =
-        results.huggingface.complexity || null;
-      detailedExplanation.huggingface.readability =
-        results.huggingface.readability || 0;
-      totalConfidence += 0.4; // Confianza moderada por fallback
     }
 
-    // Analizar resultados de Google Search (REAL)
+    // 4. Analizar evidencia de búsqueda web
     if (results.googleSearch) {
-      const similarity = results.googleSearch.similarity || 0;
-      const totalResults = results.googleSearch.totalResults || 0;
-      const searchResults = results.googleSearch.searchResults || [];
-      const keywords = results.googleSearch.keywords || [];
+      evidence.webSearch.available = true;
+      evidence.webSearch.similarity = results.googleSearch.similarity || 0;
+      evidence.webSearch.totalResults = results.googleSearch.totalResults || 0;
 
-      detailedExplanation.webSearch.available = true;
-      detailedExplanation.webSearch.keywords = keywords;
-      detailedExplanation.webSearch.similarity = similarity;
-      detailedExplanation.webSearch.totalResults = totalResults;
-      // Limitar a 3-10 resultados más relevantes (no todos)
-      const maxResults = Math.min(
-        Math.max(3, Math.floor(searchResults.length * 0.6)),
-        10
-      );
-      detailedExplanation.webSearch.topSources = searchResults
-        .slice(0, maxResults)
-        .map((r) => ({
-          title: r.title,
-          link: r.link,
-          source: r.displayLink,
-          relevance: Math.round(r.relevance * 100),
-        }));
-      detailedExplanation.webSearch.analysis =
-        results.googleSearch.analysis || null;
+      // Determinar si la búsqueda web apoya IA o humano
+      if (
+        evidence.webSearch.similarity > 0.7 &&
+        evidence.webSearch.totalResults > 100
+      ) {
+        evidence.webSearch.supportsHuman = true; // Mucho contenido similar = probablemente humano
+      } else if (
+        evidence.webSearch.similarity < 0.3 &&
+        evidence.webSearch.totalResults < 50
+      ) {
+        evidence.webSearch.supportsAI = true; // Poco contenido similar = probablemente IA
+      }
+    }
 
-      if (similarity > 0.7 && totalResults > 0) {
-        humanScore += 0.8;
-        aiScore += 0.2;
-      } else if (similarity < 0.3 || totalResults === 0) {
-        aiScore += 0.8;
-        humanScore += 0.2;
+    // 5. Determinar decisión final basada en evidencia
+    if (evidence.gemini.available && evidence.huggingface.available) {
+      // Ambas fuentes disponibles - usar consenso
+      if (evidence.gemini.result === evidence.huggingface.result) {
+        finalDecision = evidence.gemini.result;
+        finalConfidence =
+          Math.min(
+            evidence.gemini.confidence,
+            evidence.huggingface.confidence
+          ) + 0.1;
       } else {
-        aiScore += 0.5;
-        humanScore += 0.5;
+        // Conflicto - usar la fuente con mayor confianza
+        if (evidence.gemini.confidence > evidence.huggingface.confidence) {
+          finalDecision = evidence.gemini.result;
+          finalConfidence = evidence.gemini.confidence - 0.2; // Reducir por conflicto
+        } else {
+          finalDecision = evidence.huggingface.result;
+          finalConfidence = evidence.huggingface.confidence - 0.2; // Reducir por conflicto
+        }
       }
-      totalConfidence += 0.6;
-    }
-
-    // Calcular resultado final con lógica más realista y contextual
-    const totalScore = aiScore + humanScore;
-    let finalScore = 0;
-    let confidence = 0;
-
-    if (totalScore > 0) {
-      finalScore = aiScore / totalScore;
-
-      // Calcular confianza basada en evidencia real, no en diferencias artificiales
-      const evidenceStrength = this.calculateEvidenceStrength(
-        results,
-        aiScore,
-        humanScore
-      );
-      const consistencyScore = this.calculateConsistencyScore(results);
-      const dataQuality = this.calculateDataQuality(results);
-
-      // La confianza debe basarse en la calidad y consistencia de la evidencia
-      confidence =
-        evidenceStrength * 0.5 + consistencyScore * 0.3 + dataQuality * 0.2;
-
-      // Ajustar confianza basada en el contexto del análisis
-      if (results.googleSearch && results.googleSearch.totalResults > 0) {
-        // Si hay evidencia web, aumentar confianza
-        confidence = Math.min(confidence + 0.1, 0.95);
-      }
-
-      // Reducir confianza si hay inconsistencias
-      if (this.hasInconsistencies(results)) {
-        confidence = Math.max(confidence - 0.2, 0.2);
-      }
-
-      // Asegurar rango realista de confianza
-      confidence = Math.max(0.15, Math.min(confidence, 0.95));
+    } else if (evidence.gemini.available) {
+      // Solo Gemini disponible
+      finalDecision = evidence.gemini.result;
+      finalConfidence = evidence.gemini.confidence;
+    } else if (evidence.huggingface.available) {
+      // Solo Hugging Face disponible
+      finalDecision = evidence.huggingface.result;
+      finalConfidence = evidence.huggingface.confidence;
     } else {
-      // Sin evidencia suficiente - confianza muy baja
-      confidence = 0.2;
+      // Ninguna fuente disponible - análisis de fallback
+      finalDecision = "HUMANO";
+      finalConfidence = 0.3;
     }
 
-    // Clasificación más inteligente basada en evidencia contextual
-    let isAI = false;
+    // 6. Ajustar confianza basada en evidencia web
+    if (evidence.webSearch.available) {
+      if (this.webSearchSupportsDecision(evidence.webSearch, finalDecision)) {
+        finalConfidence = Math.min(finalConfidence + 0.1, 0.95);
+      } else if (
+        this.webSearchContradictsDecision(evidence.webSearch, finalDecision)
+      ) {
+        finalConfidence = Math.max(finalConfidence - 0.15, 0.2);
+      }
+    }
 
-    // Solo clasificar como IA si hay evidencia sólida y consistente
-    if (finalScore > 0.75 && confidence > 0.6) {
-      isAI = true;
-    } else if (
-      finalScore > 0.65 &&
-      confidence > 0.7 &&
-      this.hasStrongAIIndicators(results)
-    ) {
-      isAI = true;
-    } else if (finalScore < 0.4 || confidence < 0.5) {
-      // Si hay poca evidencia de IA o baja confianza, asumir humano
-      isAI = false;
+    // 7. Calcular probabilidades realistas
+    if (finalDecision === "IA") {
+      aiProbability = finalConfidence;
+      humanProbability = 1 - finalConfidence;
     } else {
-      // Zona gris - usar evidencia adicional para decidir
-      isAI = this.resolveGrayArea(results, finalScore, confidence);
+      humanProbability = finalConfidence;
+      aiProbability = 1 - finalConfidence;
     }
 
-    // Ajustar clasificación basada en similitud web y contexto
-    if (results.googleSearch) {
-      const similarity = results.googleSearch.similarity || 0;
-      const totalResults = results.googleSearch.totalResults || 0;
+    // 8. Asegurar coherencia final
+    const isAI = finalDecision === "IA";
 
-      // Si hay alta similitud con contenido existente, es más probable que sea humano
-      if (similarity > 0.7 && totalResults > 1000) {
-        isAI = false;
-        confidence = Math.min(confidence + 0.1, 0.95);
-      }
-      // Si hay muy baja similitud y pocos resultados, es más probable que sea IA
-      else if (similarity < 0.2 && totalResults < 100) {
-        isAI = true;
-        confidence = Math.min(confidence + 0.1, 0.95);
-      }
-    }
+    // 9. Generar explicación coherente
+    const explanation = this.generateCoherentExplanation(
+      evidence,
+      finalDecision,
+      finalConfidence
+    );
 
-    // CORREGIR: Verificación adicional para textos largos y complejos
-    if (results.huggingface && results.huggingface.textLength > 500) {
-      // Para textos medianos y largos, ser más conservador
-      if (finalScore < 0.75) {
-        isAI = false;
-        confidence = Math.min(confidence + 0.05, 0.95);
-      }
-    }
-
-    // CORREGIR: Verificación especial para textos muy cortos o repetitivos
-    if (results.huggingface && results.huggingface.textLength < 100) {
-      // Para textos muy cortos, ser más estricto
-      if (finalScore < 0.8) {
-        isAI = false;
-      }
-    }
-
-    // Generar explicación final estructurada
-    const finalResult = isAI ? "IA" : "HUMANO";
-    detailedExplanation.finalAnalysis.conclusion = finalResult;
-    detailedExplanation.finalAnalysis.confidence =
-      Math.round(confidence * 100) / 100;
-
-    // Generar recomendación basada en confianza
-    if (confidence > 0.8) {
-      detailedExplanation.finalAnalysis.recommendation =
+    // 10. Generar recomendación basada en confianza
+    let recommendation = "";
+    if (finalConfidence > 0.8) {
+      recommendation =
         "La alta confianza del análisis sugiere que este resultado es muy confiable.";
-    } else if (confidence > 0.6) {
-      detailedExplanation.finalAnalysis.recommendation =
+    } else if (finalConfidence > 0.6) {
+      recommendation =
         "La confianza moderada sugiere que este resultado es confiable pero se recomienda verificación adicional.";
     } else {
-      detailedExplanation.finalAnalysis.recommendation =
+      recommendation =
         "La baja confianza sugiere que se requiere verificación manual del contenido.";
     }
 
-    // Agregar factores que influyeron en la decisión
-    const factors = [];
-    if (detailedExplanation.gemini.available) {
-      factors.push(
-        `Análisis con Gemini 2.0 Flash: ${
-          detailedExplanation.gemini.result
-        } (${Math.round(
-          detailedExplanation.gemini.confidence * 100
-        )}% confianza)`
-      );
-    }
-    if (detailedExplanation.huggingface.available) {
-      const fallbackText = detailedExplanation.huggingface.fallback
-        ? " [Análisis de respaldo]"
-        : "";
-      factors.push(
-        `Análisis con Hugging Face: ${
-          detailedExplanation.huggingface.result
-        } (${Math.round(
-          detailedExplanation.huggingface.confidence * 100
-        )}% confianza)${fallbackText}`
-      );
-    }
-    if (detailedExplanation.webSearch.available) {
-      factors.push(
-        `Verificación web: ${
-          detailedExplanation.webSearch.totalResults
-        } resultados, ${Math.round(
-          detailedExplanation.webSearch.similarity * 100
-        )}% similitud`
-      );
-    }
-    detailedExplanation.finalAnalysis.factors = factors;
-
     return {
-      result: finalResult,
-      confidence: Math.round(confidence * 100) / 100,
-      explanation: detailedExplanation, // Ahora es un objeto estructurado
-      scores: {
-        ai: Math.min(Math.round(aiScore * 100) / 100, 1.0),
-        human: Math.min(Math.round(humanScore * 100) / 100, 1.0),
-      },
+      result: finalDecision,
+      confidence: Math.round(finalConfidence * 100) / 100,
+      explanation: explanation,
+      recommendation: recommendation,
+      aiProbability: Math.round(aiProbability * 100),
+      humanProbability: Math.round(humanProbability * 100),
+      evidence: evidence,
+      isAI: isAI,
       context: {
         geminiAnalysis: results.gemini?.explanation || "No disponible",
         huggingfaceAnalysis:
@@ -2253,6 +2065,73 @@ class AnalysisService {
     if (readability >= 40) return "Moderada";
     if (readability >= 20) return "Difícil";
     return "Muy difícil";
+  }
+
+  // Métodos auxiliares para la nueva lógica coherente
+  webSearchSupportsDecision(webSearch, decision) {
+    if (decision === "HUMANO") {
+      return webSearch.supportsHuman;
+    } else if (decision === "IA") {
+      return webSearch.supportsAI;
+    }
+    return false;
+  }
+
+  webSearchContradictsDecision(webSearch, decision) {
+    if (decision === "HUMANO") {
+      return webSearch.supportsAI;
+    } else if (decision === "IA") {
+      return webSearch.supportsHuman;
+    }
+    return false;
+  }
+
+  generateCoherentExplanation(evidence, finalDecision, finalConfidence) {
+    let explanation = `El análisis ha determinado que el contenido es ${
+      finalDecision === "IA"
+        ? "generado por Inteligencia Artificial"
+        : "escrito por un ser humano"
+    }. `;
+
+    const sources = [];
+    if (evidence.gemini.available) {
+      sources.push(
+        `Gemini 2.0 Flash (${Math.round(
+          evidence.gemini.confidence * 100
+        )}% confianza)`
+      );
+    }
+    if (evidence.huggingface.available) {
+      sources.push(
+        `Hugging Face (${Math.round(
+          evidence.huggingface.confidence * 100
+        )}% confianza)`
+      );
+    }
+    if (evidence.webSearch.available) {
+      sources.push(
+        `Verificación web (${evidence.webSearch.totalResults} resultados)`
+      );
+    }
+
+    if (sources.length > 0) {
+      explanation += `Esta conclusión se basa en el análisis de ${sources.join(
+        ", "
+      )}. `;
+    }
+
+    if (finalConfidence > 0.7) {
+      explanation +=
+        "La alta confianza en este resultado indica una evaluación sólida y confiable.";
+    } else if (finalConfidence > 0.5) {
+      explanation +=
+        "La confianza moderada sugiere que el resultado es probable pero podría beneficiarse de verificación adicional.";
+    } else {
+      explanation +=
+        "La baja confianza indica que se requiere análisis manual adicional para una evaluación definitiva.";
+    }
+
+    return explanation;
   }
 }
 
