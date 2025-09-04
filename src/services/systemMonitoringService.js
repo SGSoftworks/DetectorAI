@@ -24,13 +24,17 @@ class SystemMonitoringService {
   // Obtener estadísticas reales del sistema
   async getSystemStats() {
     try {
-      // Intentar obtener datos del backend si existe
-      if (API_CONFIG.BACKEND_URL) {
-        const response = await this.axios.get(
-          `${API_CONFIG.BACKEND_URL}/api/stats`
-        );
-        this.stats = response.data;
-        return this.stats;
+      // Intentar obtener datos del backend si existe y es válido
+      if (API_CONFIG.BACKEND_URL && API_CONFIG.BACKEND_URL !== 'https://tu-backend.com/api') {
+        try {
+          const response = await this.axios.get(
+            `${API_CONFIG.BACKEND_URL}/api/stats`
+          );
+          this.stats = response.data;
+          return this.stats;
+        } catch (error) {
+          console.warn("Error conectando al backend:", error.message);
+        }
       }
 
       // Si no hay backend, usar localStorage para persistir datos
@@ -52,12 +56,16 @@ class SystemMonitoringService {
   // Obtener análisis recientes reales
   async getRecentAnalyses(limit = 10) {
     try {
-      if (API_CONFIG.BACKEND_URL) {
-        const response = await this.axios.get(
-          `${API_CONFIG.BACKEND_URL}/api/analyses?limit=${limit}`
-        );
-        this.analyses = response.data;
-        return this.analyses;
+      if (API_CONFIG.BACKEND_URL && API_CONFIG.BACKEND_URL !== 'https://tu-backend.com/api') {
+        try {
+          const response = await this.axios.get(
+            `${API_CONFIG.BACKEND_URL}/api/analyses?limit=${limit}`
+          );
+          this.analyses = response.data;
+          return this.analyses;
+        } catch (error) {
+          console.warn("Error conectando al backend:", error.message);
+        }
       }
 
       // Usar localStorage para análisis recientes
@@ -374,6 +382,17 @@ class SystemMonitoringService {
       } catch (error) {
         console.warn("No se pudo enviar al backend:", error.message);
       }
+    }
+
+    // Intentar guardar en Firebase si está disponible
+    try {
+      if (typeof window !== 'undefined' && window.firebase) {
+        // Firebase está disponible, guardar análisis
+        const { DatabaseService } = await import('../config/firebase.js');
+        await DatabaseService.saveAnalysis(analysis);
+      }
+    } catch (error) {
+      console.warn("No se pudo guardar en Firebase:", error.message);
     }
 
     return analysis;
