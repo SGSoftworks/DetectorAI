@@ -6,7 +6,7 @@ class ContentVerificationService {
     this.axios = axios.create({
       timeout: 30000, // 30 segundos para búsquedas
     });
-    
+
     this.verificationCache = new Map();
     this.cacheExpiry = 24 * 60 * 60 * 1000; // 24 horas
   }
@@ -15,7 +15,7 @@ class ContentVerificationService {
   async verifyTextContent(text, options = {}) {
     try {
       const cacheKey = `text_${this.hashText(text)}`;
-      
+
       // Verificar cache
       if (this.isCacheValid(cacheKey)) {
         return this.verificationCache.get(cacheKey);
@@ -31,7 +31,7 @@ class ContentVerificationService {
         plagiarismCheck: null,
         factCheck: null,
         finalVerification: null,
-        pipeline: []
+        pipeline: [],
       };
 
       // Paso 1: Extraer fragmentos clave
@@ -39,7 +39,7 @@ class ContentVerificationService {
         step: 1,
         name: "Extracción de Fragmentos",
         status: "Iniciando",
-        description: "Extrayendo fragmentos clave para búsqueda"
+        description: "Extrayendo fragmentos clave para búsqueda",
       });
 
       const keyFragments = this.extractKeyFragments(text, options);
@@ -52,7 +52,7 @@ class ContentVerificationService {
         step: 2,
         name: "Búsquedas Web",
         status: "Iniciando",
-        description: "Realizando búsquedas para verificar contenido"
+        description: "Realizando búsquedas para verificar contenido",
       });
 
       const searchResults = await this.performGoogleSearches(keyFragments);
@@ -65,7 +65,7 @@ class ContentVerificationService {
         step: 3,
         name: "Análisis de Similitud",
         status: "Iniciando",
-        description: "Analizando similitud con contenido existente"
+        description: "Analizando similitud con contenido existente",
       });
 
       const similarityAnalysis = this.analyzeSimilarity(text, searchResults);
@@ -78,7 +78,7 @@ class ContentVerificationService {
         step: 4,
         name: "Verificación de Fuentes",
         status: "Iniciando",
-        description: "Verificando credibilidad de fuentes encontradas"
+        description: "Verificando credibilidad de fuentes encontradas",
       });
 
       const sourceVerification = this.verifySources(searchResults);
@@ -91,7 +91,7 @@ class ContentVerificationService {
         step: 5,
         name: "Verificación de Plagio",
         status: "Iniciando",
-        description: "Verificando posibles casos de plagio"
+        description: "Verificando posibles casos de plagio",
       });
 
       const plagiarismCheck = this.checkPlagiarism(text, searchResults);
@@ -104,7 +104,7 @@ class ContentVerificationService {
         step: 6,
         name: "Verificación de Hechos",
         status: "Iniciando",
-        description: "Verificando hechos y declaraciones"
+        description: "Verificando hechos y declaraciones",
       });
 
       const factCheck = await this.factCheckContent(text, searchResults);
@@ -117,7 +117,7 @@ class ContentVerificationService {
         step: 7,
         name: "Verificación Final",
         status: "Procesando",
-        description: "Generando verificación final del contenido"
+        description: "Generando verificación final del contenido",
       });
 
       const finalVerification = this.generateFinalVerification(results);
@@ -138,7 +138,7 @@ class ContentVerificationService {
   async verifyImageContent(imageFile, options = {}) {
     try {
       const cacheKey = `image_${imageFile.name}_${imageFile.size}`;
-      
+
       // Verificar cache
       if (this.isCacheValid(cacheKey)) {
         return this.verificationCache.get(cacheKey);
@@ -152,7 +152,7 @@ class ContentVerificationService {
         metadataAnalysis: null,
         sourceVerification: null,
         finalVerification: null,
-        pipeline: []
+        pipeline: [],
       };
 
       // Paso 1: Análisis de imagen
@@ -160,7 +160,7 @@ class ContentVerificationService {
         step: 1,
         name: "Análisis de Imagen",
         status: "Iniciando",
-        description: "Analizando metadatos y características de la imagen"
+        description: "Analizando metadatos y características de la imagen",
       });
 
       const imageAnalysis = await this.analyzeImage(imageFile);
@@ -173,7 +173,7 @@ class ContentVerificationService {
         step: 2,
         name: "Búsqueda Inversa",
         status: "Iniciando",
-        description: "Realizando búsqueda inversa de imagen"
+        description: "Realizando búsqueda inversa de imagen",
       });
 
       const reverseSearch = await this.reverseImageSearch(imageFile);
@@ -186,7 +186,7 @@ class ContentVerificationService {
         step: 3,
         name: "Análisis de Metadatos",
         status: "Iniciando",
-        description: "Analizando metadatos EXIF y otros datos"
+        description: "Analizando metadatos EXIF y otros datos",
       });
 
       const metadataAnalysis = this.analyzeImageMetadata(imageFile);
@@ -199,7 +199,7 @@ class ContentVerificationService {
         step: 4,
         name: "Verificación de Fuentes",
         status: "Iniciando",
-        description: "Verificando fuentes de la imagen"
+        description: "Verificando fuentes de la imagen",
       });
 
       const sourceVerification = this.verifyImageSources(reverseSearch);
@@ -212,7 +212,7 @@ class ContentVerificationService {
         step: 5,
         name: "Verificación Final",
         status: "Procesando",
-        description: "Generando verificación final de la imagen"
+        description: "Generando verificación final de la imagen",
       });
 
       const finalVerification = this.generateImageVerification(results);
@@ -233,7 +233,7 @@ class ContentVerificationService {
   async verifyVideoContent(videoFile, options = {}) {
     try {
       const cacheKey = `video_${videoFile.name}_${videoFile.size}`;
-      
+
       // Verificar cache
       if (this.isCacheValid(cacheKey)) {
         return this.verificationCache.get(cacheKey);
@@ -247,7 +247,7 @@ class ContentVerificationService {
         audioAnalysis: null,
         sourceVerification: null,
         finalVerification: null,
-        pipeline: []
+        pipeline: [],
       };
 
       // Paso 1: Análisis de video
@@ -255,7 +255,7 @@ class ContentVerificationService {
         step: 1,
         name: "Análisis de Video",
         status: "Iniciando",
-        description: "Analizando metadatos del video"
+        description: "Analizando metadatos del video",
       });
 
       const videoAnalysis = await this.analyzeVideo(videoFile);
@@ -268,7 +268,7 @@ class ContentVerificationService {
         step: 2,
         name: "Extracción de Frames",
         status: "Iniciando",
-        description: "Extrayendo frames clave para análisis"
+        description: "Extrayendo frames clave para análisis",
       });
 
       const frameExtraction = await this.extractVideoFrames(videoFile);
@@ -281,7 +281,7 @@ class ContentVerificationService {
         step: 3,
         name: "Análisis de Audio",
         status: "Iniciando",
-        description: "Analizando características del audio"
+        description: "Analizando características del audio",
       });
 
       const audioAnalysis = await this.analyzeVideoAudio(videoFile);
@@ -294,7 +294,7 @@ class ContentVerificationService {
         step: 4,
         name: "Verificación de Fuentes",
         status: "Iniciando",
-        description: "Verificando fuentes del video"
+        description: "Verificando fuentes del video",
       });
 
       const sourceVerification = this.verifyVideoSources(frameExtraction);
@@ -307,7 +307,7 @@ class ContentVerificationService {
         step: 5,
         name: "Verificación Final",
         status: "Procesando",
-        description: "Generando verificación final del video"
+        description: "Generando verificación final del video",
       });
 
       const finalVerification = this.generateVideoVerification(results);
@@ -328,7 +328,7 @@ class ContentVerificationService {
   async verifyDocumentContent(documentFile, options = {}) {
     try {
       const cacheKey = `document_${documentFile.name}_${documentFile.size}`;
-      
+
       // Verificar cache
       if (this.isCacheValid(cacheKey)) {
         return this.verificationCache.get(cacheKey);
@@ -342,7 +342,7 @@ class ContentVerificationService {
         contentAnalysis: null,
         sourceVerification: null,
         finalVerification: null,
-        pipeline: []
+        pipeline: [],
       };
 
       // Paso 1: Análisis de documento
@@ -350,7 +350,7 @@ class ContentVerificationService {
         step: 1,
         name: "Análisis de Documento",
         status: "Iniciando",
-        description: "Analizando estructura y metadatos del documento"
+        description: "Analizando estructura y metadatos del documento",
       });
 
       const documentAnalysis = await this.analyzeDocument(documentFile);
@@ -363,7 +363,7 @@ class ContentVerificationService {
         step: 2,
         name: "Extracción de Texto",
         status: "Iniciando",
-        description: "Extrayendo texto del documento"
+        description: "Extrayendo texto del documento",
       });
 
       const textExtraction = await this.extractDocumentText(documentFile);
@@ -376,7 +376,7 @@ class ContentVerificationService {
         step: 3,
         name: "Análisis de Contenido",
         status: "Iniciando",
-        description: "Analizando contenido del documento"
+        description: "Analizando contenido del documento",
       });
 
       const contentAnalysis = this.analyzeDocumentContent(textExtraction);
@@ -389,10 +389,12 @@ class ContentVerificationService {
         step: 4,
         name: "Verificación de Fuentes",
         status: "Iniciando",
-        description: "Verificando fuentes del documento"
+        description: "Verificando fuentes del documento",
       });
 
-      const sourceVerification = await this.verifyDocumentSources(textExtraction);
+      const sourceVerification = await this.verifyDocumentSources(
+        textExtraction
+      );
       results.sourceVerification = sourceVerification;
       results.pipeline[3].status = "Completado";
       results.pipeline[3].result = sourceVerification;
@@ -402,7 +404,7 @@ class ContentVerificationService {
         step: 5,
         name: "Verificación Final",
         status: "Procesando",
-        description: "Generando verificación final del documento"
+        description: "Generando verificación final del documento",
       });
 
       const finalVerification = this.generateDocumentVerification(results);
@@ -422,60 +424,81 @@ class ContentVerificationService {
   // Métodos auxiliares para texto
   extractKeyFragments(text, options = {}) {
     const fragments = [];
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 10);
-    
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 10);
+
     // Extraer oraciones clave (las más largas y con palabras importantes)
     const keySentences = sentences
       .sort((a, b) => b.length - a.length)
       .slice(0, Math.min(5, sentences.length));
-    
+
     // Crear consultas de búsqueda
-    keySentences.forEach(sentence => {
+    keySentences.forEach((sentence) => {
       const words = sentence.trim().split(/\s+/);
       if (words.length >= 5) {
         // Tomar palabras clave (excluyendo artículos, preposiciones, etc.)
-        const keyWords = words.filter(word => 
-          word.length > 3 && 
-          !['el', 'la', 'los', 'las', 'de', 'del', 'en', 'con', 'por', 'para', 'sin', 'sobre'].includes(word.toLowerCase())
+        const keyWords = words.filter(
+          (word) =>
+            word.length > 3 &&
+            ![
+              "el",
+              "la",
+              "los",
+              "las",
+              "de",
+              "del",
+              "en",
+              "con",
+              "por",
+              "para",
+              "sin",
+              "sobre",
+            ].includes(word.toLowerCase())
         );
-        
+
         if (keyWords.length >= 3) {
-          fragments.push(keyWords.slice(0, 6).join(' '));
+          fragments.push(keyWords.slice(0, 6).join(" "));
         }
       }
     });
-    
+
     return fragments.slice(0, 3); // Máximo 3 fragmentos
   }
 
   async performGoogleSearches(fragments) {
     const searchResults = [];
-    
+
     for (const fragment of fragments) {
       try {
         const query = encodeURIComponent(fragment);
         const url = `https://www.googleapis.com/customsearch/v1?key=${API_CONFIG.GOOGLE_SEARCH_API_KEY}&cx=${API_CONFIG.GOOGLE_SEARCH_ENGINE_ID}&q=${query}&num=5`;
-        
+
         const response = await this.axios.get(url);
-        
+
         if (response.data.items) {
           searchResults.push({
             query: fragment,
-            results: response.data.items.map(item => ({
+            results: response.data.items.map((item) => ({
               title: item.title,
               snippet: item.snippet,
               link: item.link,
               displayLink: item.displayLink,
-              relevance: this.calculateRelevance(fragment, item.title, item.snippet)
-            }))
+              relevance: this.calculateRelevance(
+                fragment,
+                item.title,
+                item.snippet
+              ),
+            })),
           });
         }
       } catch (error) {
-        console.warn(`Error en búsqueda para fragmento "${fragment}":`, error.message);
+        console.warn(
+          `Error en búsqueda para fragmento "${fragment}":`,
+          error.message
+        );
         // Continuar con el siguiente fragmento
       }
     }
-    
+
     return searchResults;
   }
 
@@ -483,31 +506,40 @@ class ContentVerificationService {
     let totalSimilarity = 0;
     let maxSimilarity = 0;
     let similarSources = [];
-    
-    searchResults.forEach(searchResult => {
-      searchResult.results.forEach(result => {
-        const similarity = this.calculateTextSimilarity(originalText, result.snippet);
+
+    searchResults.forEach((searchResult) => {
+      searchResult.results.forEach((result) => {
+        const similarity = this.calculateTextSimilarity(
+          originalText,
+          result.snippet
+        );
         totalSimilarity += similarity;
         maxSimilarity = Math.max(maxSimilarity, similarity);
-        
-        if (similarity > 0.3) { // Umbral de similitud
+
+        if (similarity > 0.3) {
+          // Umbral de similitud
           similarSources.push({
             source: result.displayLink,
             title: result.title,
             similarity: similarity,
-            link: result.link
+            link: result.link,
           });
         }
       });
     });
-    
-    const averageSimilarity = searchResults.length > 0 ? totalSimilarity / (searchResults.length * 5) : 0;
-    
+
+    const averageSimilarity =
+      searchResults.length > 0
+        ? totalSimilarity / (searchResults.length * 5)
+        : 0;
+
     return {
       averageSimilarity: averageSimilarity,
       maxSimilarity: maxSimilarity,
-      similarSources: similarSources.sort((a, b) => b.similarity - a.similarity),
-      riskLevel: this.assessSimilarityRisk(averageSimilarity, maxSimilarity)
+      similarSources: similarSources.sort(
+        (a, b) => b.similarity - a.similarity
+      ),
+      riskLevel: this.assessSimilarityRisk(averageSimilarity, maxSimilarity),
     };
   }
 
@@ -517,42 +549,56 @@ class ContentVerificationService {
       credibleSources: 0,
       questionableSources: 0,
       sourceBreakdown: [],
-      credibilityScore: 0
+      credibilityScore: 0,
     };
-    
+
     const credibleDomains = [
-      'wikipedia.org', 'edu', 'gov', 'org', 'bbc.com', 'reuters.com',
-      'ap.org', 'npr.org', 'nature.com', 'science.org', 'harvard.edu',
-      'mit.edu', 'stanford.edu', 'oxford.ac.uk', 'cambridge.ac.uk'
+      "wikipedia.org",
+      "edu",
+      "gov",
+      "org",
+      "bbc.com",
+      "reuters.com",
+      "ap.org",
+      "npr.org",
+      "nature.com",
+      "science.org",
+      "harvard.edu",
+      "mit.edu",
+      "stanford.edu",
+      "oxford.ac.uk",
+      "cambridge.ac.uk",
     ];
-    
-    searchResults.forEach(searchResult => {
-      searchResult.results.forEach(result => {
+
+    searchResults.forEach((searchResult) => {
+      searchResult.results.forEach((result) => {
         sourceAnalysis.totalSources++;
-        
+
         const domain = this.extractDomain(result.displayLink);
-        const isCredible = credibleDomains.some(credible => 
+        const isCredible = credibleDomains.some((credible) =>
           domain.includes(credible)
         );
-        
+
         if (isCredible) {
           sourceAnalysis.credibleSources++;
         } else {
           sourceAnalysis.questionableSources++;
         }
-        
+
         sourceAnalysis.sourceBreakdown.push({
           domain: domain,
           title: result.title,
-          credibility: isCredible ? 'Alta' : 'Baja',
-          link: result.link
+          credibility: isCredible ? "Alta" : "Baja",
+          link: result.link,
         });
       });
     });
-    
-    sourceAnalysis.credibilityScore = sourceAnalysis.totalSources > 0 ? 
-      (sourceAnalysis.credibleSources / sourceAnalysis.totalSources) * 100 : 0;
-    
+
+    sourceAnalysis.credibilityScore =
+      sourceAnalysis.totalSources > 0
+        ? (sourceAnalysis.credibleSources / sourceAnalysis.totalSources) * 100
+        : 0;
+
     return sourceAnalysis;
   }
 
@@ -560,47 +606,54 @@ class ContentVerificationService {
     const plagiarismAnalysis = {
       plagiarismScore: 0,
       potentialMatches: [],
-      riskLevel: 'Bajo',
-      recommendations: []
+      riskLevel: "Bajo",
+      recommendations: [],
     };
-    
+
     let totalPlagiarismScore = 0;
     let matchCount = 0;
-    
-    searchResults.forEach(searchResult => {
-      searchResult.results.forEach(result => {
-        const similarity = this.calculateTextSimilarity(originalText, result.snippet);
-        
-        if (similarity > 0.5) { // Umbral de plagio
+
+    searchResults.forEach((searchResult) => {
+      searchResult.results.forEach((result) => {
+        const similarity = this.calculateTextSimilarity(
+          originalText,
+          result.snippet
+        );
+
+        if (similarity > 0.5) {
+          // Umbral de plagio
           matchCount++;
           totalPlagiarismScore += similarity;
-          
+
           plagiarismAnalysis.potentialMatches.push({
             source: result.displayLink,
             title: result.title,
             similarity: similarity,
             link: result.link,
-            risk: similarity > 0.8 ? 'Alto' : similarity > 0.6 ? 'Medio' : 'Bajo'
+            risk:
+              similarity > 0.8 ? "Alto" : similarity > 0.6 ? "Medio" : "Bajo",
           });
         }
       });
     });
-    
-    plagiarismAnalysis.plagiarismScore = matchCount > 0 ? 
-      (totalPlagiarismScore / matchCount) * 100 : 0;
-    
+
+    plagiarismAnalysis.plagiarismScore =
+      matchCount > 0 ? (totalPlagiarismScore / matchCount) * 100 : 0;
+
     // Determinar nivel de riesgo
     if (plagiarismAnalysis.plagiarismScore > 70) {
-      plagiarismAnalysis.riskLevel = 'Alto';
-      plagiarismAnalysis.recommendations.push('Revisar contenido inmediatamente');
+      plagiarismAnalysis.riskLevel = "Alto";
+      plagiarismAnalysis.recommendations.push(
+        "Revisar contenido inmediatamente"
+      );
     } else if (plagiarismAnalysis.plagiarismScore > 40) {
-      plagiarismAnalysis.riskLevel = 'Medio';
-      plagiarismAnalysis.recommendations.push('Verificar fuentes y citas');
+      plagiarismAnalysis.riskLevel = "Medio";
+      plagiarismAnalysis.recommendations.push("Verificar fuentes y citas");
     } else {
-      plagiarismAnalysis.riskLevel = 'Bajo';
-      plagiarismAnalysis.recommendations.push('Contenido original');
+      plagiarismAnalysis.riskLevel = "Bajo";
+      plagiarismAnalysis.recommendations.push("Contenido original");
     }
-    
+
     return plagiarismAnalysis;
   }
 
@@ -610,16 +663,16 @@ class ContentVerificationService {
       verifiedFacts: [],
       unverifiedClaims: [],
       contradictorySources: [],
-      recommendations: []
+      recommendations: [],
     };
-    
+
     // Extraer declaraciones fácticas del texto
     const factualClaims = this.extractFactualClaims(text);
-    
+
     // Verificar cada declaración
     for (const claim of factualClaims) {
       const verification = await this.verifyFactualClaim(claim, searchResults);
-      
+
       if (verification.verified) {
         factCheck.verifiedFacts.push(verification);
         factCheck.factCheckScore += 1;
@@ -629,97 +682,102 @@ class ContentVerificationService {
         factCheck.unverifiedClaims.push(verification);
       }
     }
-    
+
     // Calcular puntuación final
     if (factualClaims.length > 0) {
-      factCheck.factCheckScore = (factCheck.factCheckScore / factualClaims.length) * 100;
+      factCheck.factCheckScore =
+        (factCheck.factCheckScore / factualClaims.length) * 100;
     }
-    
+
     // Generar recomendaciones
     if (factCheck.factCheckScore < 50) {
-      factCheck.recommendations.push('Verificar fuentes de información');
+      factCheck.recommendations.push("Verificar fuentes de información");
     }
     if (factCheck.contradictorySources.length > 0) {
-      factCheck.recommendations.push('Investigar contradicciones encontradas');
+      factCheck.recommendations.push("Investigar contradicciones encontradas");
     }
-    
+
     return factCheck;
   }
 
   generateFinalVerification(results) {
     const verification = {
       overallScore: 0,
-      verificationStatus: 'Pendiente',
+      verificationStatus: "Pendiente",
       riskFactors: [],
       recommendations: [],
-      summary: ''
+      summary: "",
     };
-    
+
     // Calcular puntuación general
     let totalScore = 0;
     let factorCount = 0;
-    
+
     // Factor de similitud (30%)
     if (results.similarityAnalysis) {
-      const similarityScore = (1 - results.similarityAnalysis.averageSimilarity) * 100;
+      const similarityScore =
+        (1 - results.similarityAnalysis.averageSimilarity) * 100;
       totalScore += similarityScore * 0.3;
       factorCount++;
     }
-    
+
     // Factor de fuentes (25%)
     if (results.sourceVerification) {
       totalScore += results.sourceVerification.credibilityScore * 0.25;
       factorCount++;
     }
-    
+
     // Factor de plagio (25%)
     if (results.plagiarismCheck) {
-      const plagiarismScore = (100 - results.plagiarismCheck.plagiarismScore);
+      const plagiarismScore = 100 - results.plagiarismCheck.plagiarismScore;
       totalScore += plagiarismScore * 0.25;
       factorCount++;
     }
-    
+
     // Factor de verificación de hechos (20%)
     if (results.factCheck) {
       totalScore += results.factCheck.factCheckScore * 0.2;
       factorCount++;
     }
-    
+
     verification.overallScore = factorCount > 0 ? Math.round(totalScore) : 0;
-    
+
     // Determinar estado de verificación
     if (verification.overallScore >= 80) {
-      verification.verificationStatus = 'Verificado';
+      verification.verificationStatus = "Verificado";
     } else if (verification.overallScore >= 60) {
-      verification.verificationStatus = 'Parcialmente Verificado';
+      verification.verificationStatus = "Parcialmente Verificado";
     } else {
-      verification.verificationStatus = 'No Verificado';
+      verification.verificationStatus = "No Verificado";
     }
-    
+
     // Identificar factores de riesgo
     if (results.similarityAnalysis?.averageSimilarity > 0.5) {
-      verification.riskFactors.push('Alta similitud con contenido existente');
+      verification.riskFactors.push("Alta similitud con contenido existente");
     }
     if (results.sourceVerification?.credibilityScore < 50) {
-      verification.riskFactors.push('Fuentes de baja credibilidad');
+      verification.riskFactors.push("Fuentes de baja credibilidad");
     }
     if (results.plagiarismCheck?.plagiarismScore > 40) {
-      verification.riskFactors.push('Posible plagio detectado');
+      verification.riskFactors.push("Posible plagio detectado");
     }
     if (results.factCheck?.factCheckScore < 50) {
-      verification.riskFactors.push('Hechos no verificados');
+      verification.riskFactors.push("Hechos no verificados");
     }
-    
+
     // Generar recomendaciones
     if (verification.overallScore < 80) {
-      verification.recommendations.push('Revisar fuentes de información');
-      verification.recommendations.push('Verificar hechos y declaraciones');
-      verification.recommendations.push('Considerar citar fuentes originales');
+      verification.recommendations.push("Revisar fuentes de información");
+      verification.recommendations.push("Verificar hechos y declaraciones");
+      verification.recommendations.push("Considerar citar fuentes originales");
     }
-    
+
     // Generar resumen
-    verification.summary = this.generateVerificationSummary(verification, results);
-    
+    verification.summary = this.generateVerificationSummary(
+      verification,
+      results
+    );
+
     return verification;
   }
 
@@ -735,7 +793,7 @@ class ContentVerificationService {
             aspectRatio: (img.width / img.height).toFixed(2),
             fileSize: imageFile.size,
             fileType: imageFile.type,
-            estimatedPixels: img.width * img.height
+            estimatedPixels: img.width * img.height,
           });
         };
         img.src = e.target.result;
@@ -750,11 +808,19 @@ class ContentVerificationService {
       setTimeout(() => {
         resolve({
           similarImages: [
-            { source: 'example.com', similarity: 0.85, link: 'https://example.com/image1.jpg' },
-            { source: 'sample.org', similarity: 0.72, link: 'https://sample.org/image2.jpg' }
+            {
+              source: "example.com",
+              similarity: 0.85,
+              link: "https://example.com/image1.jpg",
+            },
+            {
+              source: "sample.org",
+              similarity: 0.72,
+              link: "https://sample.org/image2.jpg",
+            },
           ],
-          searchTime: '2.3 segundos',
-          totalResults: 15
+          searchTime: "2.3 segundos",
+          totalResults: 15,
         });
       }, 2000);
     });
@@ -764,14 +830,14 @@ class ContentVerificationService {
     // Simulación de análisis de metadatos
     return {
       exifData: {
-        camera: 'Canon EOS R5',
-        dateTaken: '2024-01-15',
-        location: 'Madrid, España',
-        settings: 'f/2.8, 1/1000s, ISO 100'
+        camera: "Canon EOS R5",
+        dateTaken: "2024-01-15",
+        location: "Madrid, España",
+        settings: "f/2.8, 1/1000s, ISO 100",
       },
-      digitalSignature: 'Verificado',
-      compression: 'JPEG',
-      colorProfile: 'sRGB'
+      digitalSignature: "Verificado",
+      compression: "JPEG",
+      colorProfile: "sRGB",
     };
   }
 
@@ -780,34 +846,35 @@ class ContentVerificationService {
       totalSources: reverseSearch.similarImages.length,
       credibleSources: 2,
       questionableSources: 0,
-      sourceBreakdown: reverseSearch.similarImages.map(img => ({
+      sourceBreakdown: reverseSearch.similarImages.map((img) => ({
         source: img.source,
-        credibility: 'Alta',
-        similarity: img.similarity
-      }))
+        credibility: "Alta",
+        similarity: img.similarity,
+      })),
     };
   }
 
   generateImageVerification(results) {
     return {
       overallScore: 85,
-      verificationStatus: 'Verificado',
+      verificationStatus: "Verificado",
       riskFactors: [],
-      recommendations: ['Imagen original con metadatos verificables'],
-      summary: 'La imagen muestra características de contenido original con metadatos EXIF válidos'
+      recommendations: ["Imagen original con metadatos verificables"],
+      summary:
+        "La imagen muestra características de contenido original con metadatos EXIF válidos",
     };
   }
 
   // Métodos auxiliares para video
   async analyzeVideo(videoFile) {
     return new Promise((resolve) => {
-      const video = document.createElement('video');
+      const video = document.createElement("video");
       video.onloadedmetadata = () => {
         resolve({
           duration: video.duration,
           dimensions: { width: video.videoWidth, height: video.videoHeight },
           fileSize: videoFile.size,
-          fileType: videoFile.type
+          fileType: videoFile.type,
         });
       };
       video.src = URL.createObjectURL(videoFile);
@@ -822,7 +889,7 @@ class ContentVerificationService {
           totalFrames: 150,
           keyFrames: 12,
           frameRate: 30,
-          extractionTime: '3.2 segundos'
+          extractionTime: "3.2 segundos",
         });
       }, 3000);
     });
@@ -833,11 +900,11 @@ class ContentVerificationService {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          audioCodec: 'AAC',
-          sampleRate: '48kHz',
+          audioCodec: "AAC",
+          sampleRate: "48kHz",
           channels: 2,
-          bitrate: '128kbps',
-          quality: 'Alta'
+          bitrate: "128kbps",
+          quality: "Alta",
         });
       }, 2000);
     });
@@ -847,18 +914,21 @@ class ContentVerificationService {
     return {
       totalFrames: frameExtraction.totalFrames,
       analyzedFrames: frameExtraction.keyFrames,
-      sourceVerification: 'Completado',
-      authenticity: 'Verificado'
+      sourceVerification: "Completado",
+      authenticity: "Verificado",
     };
   }
 
   generateVideoVerification(results) {
     return {
       overallScore: 78,
-      verificationStatus: 'Parcialmente Verificado',
-      riskFactors: ['Algunos frames requieren análisis adicional'],
-      recommendations: ['Verificar frames específicos con herramientas especializadas'],
-      summary: 'El video muestra características consistentes con contenido original'
+      verificationStatus: "Parcialmente Verificado",
+      riskFactors: ["Algunos frames requieren análisis adicional"],
+      recommendations: [
+        "Verificar frames específicos con herramientas especializadas",
+      ],
+      summary:
+        "El video muestra características consistentes con contenido original",
     };
   }
 
@@ -870,7 +940,7 @@ class ContentVerificationService {
         fileSize: documentFile.size,
         fileType: documentFile.type,
         lastModified: new Date(documentFile.lastModified),
-        estimatedPages: Math.ceil(documentFile.size / 50000) // Estimación aproximada
+        estimatedPages: Math.ceil(documentFile.size / 50000), // Estimación aproximada
       });
     });
   }
@@ -880,11 +950,11 @@ class ContentVerificationService {
     return new Promise((resolve) => {
       setTimeout(() => {
         resolve({
-          textContent: 'Contenido simulado del documento...',
+          textContent: "Contenido simulado del documento...",
           wordCount: 1250,
           characterCount: 8500,
-          language: 'Español',
-          extractionSuccess: true
+          language: "Español",
+          extractionSuccess: true,
         });
       }, 2000);
     });
@@ -896,11 +966,11 @@ class ContentVerificationService {
         hasTitle: true,
         hasIntroduction: true,
         hasConclusion: true,
-        hasReferences: false
+        hasReferences: false,
       },
-      complexity: 'Media',
-      readability: 'Buena',
-      contentType: 'Artículo informativo'
+      complexity: "Media",
+      readability: "Buena",
+      contentType: "Artículo informativo",
     };
   }
 
@@ -912,7 +982,7 @@ class ContentVerificationService {
           sourcesFound: 3,
           citations: 2,
           externalLinks: 1,
-          verificationStatus: 'Parcial'
+          verificationStatus: "Parcial",
         });
       }, 1500);
     });
@@ -921,42 +991,94 @@ class ContentVerificationService {
   generateDocumentVerification(results) {
     return {
       overallScore: 72,
-      verificationStatus: 'Parcialmente Verificado',
-      riskFactors: ['Faltan referencias completas'],
-      recommendations: ['Agregar bibliografía completa', 'Verificar citas'],
-      summary: 'Documento con contenido original pero requiere mejor documentación de fuentes'
+      verificationStatus: "Parcialmente Verificado",
+      riskFactors: ["Faltan referencias completas"],
+      recommendations: ["Agregar bibliografía completa", "Verificar citas"],
+      summary:
+        "Documento con contenido original pero requiere mejor documentación de fuentes",
     };
   }
 
   // Métodos auxiliares generales
   calculateRelevance(query, title, snippet) {
-    const queryWords = query.toLowerCase().split(/\s+/);
-    const text = (title + ' ' + snippet).toLowerCase();
-    
+    const queryWords = query
+      .toLowerCase()
+      .split(/\s+/)
+      .filter((word) => word.length > 3);
+    const text = (title + " " + snippet).toLowerCase();
+
+    // Filtrar palabras importantes (excluir artículos, preposiciones, etc.)
+    const stopWords = [
+      "el",
+      "la",
+      "de",
+      "en",
+      "un",
+      "una",
+      "es",
+      "se",
+      "que",
+      "con",
+      "por",
+      "para",
+      "del",
+      "las",
+      "los",
+      "su",
+      "sus",
+      "le",
+      "les",
+      "lo",
+      "al",
+      "a",
+      "o",
+      "y",
+      "pero",
+      "sin",
+      "sobre",
+      "entre",
+      "hasta",
+      "desde",
+    ];
+    const importantWords = queryWords.filter(
+      (word) => !stopWords.includes(word)
+    );
+
+    if (importantWords.length === 0) return 0;
+
     let relevance = 0;
-    queryWords.forEach(word => {
+    importantWords.forEach((word) => {
       if (text.includes(word)) {
         relevance += 1;
       }
     });
-    
-    return relevance / queryWords.length;
+
+    const baseRelevance = relevance / importantWords.length;
+
+    // Bonificación por coincidencias en el título
+    const titleMatches = importantWords.filter((word) =>
+      title.toLowerCase().includes(word)
+    ).length;
+    const titleBonus =
+      titleMatches > 0 ? (titleMatches / importantWords.length) * 0.2 : 0;
+
+    return Math.min(baseRelevance + titleBonus, 1);
   }
 
   calculateTextSimilarity(text1, text2) {
     const words1 = text1.toLowerCase().split(/\s+/);
     const words2 = text2.toLowerCase().split(/\s+/);
-    
-    const intersection = words1.filter(word => words2.includes(word));
+
+    const intersection = words1.filter((word) => words2.includes(word));
     const union = [...new Set([...words1, ...words2])];
-    
+
     return union.length > 0 ? intersection.length / union.length : 0;
   }
 
   assessSimilarityRisk(averageSimilarity, maxSimilarity) {
-    if (maxSimilarity > 0.8 || averageSimilarity > 0.6) return 'Alto';
-    if (maxSimilarity > 0.6 || averageSimilarity > 0.4) return 'Medio';
-    return 'Bajo';
+    if (maxSimilarity > 0.8 || averageSimilarity > 0.6) return "Alto";
+    if (maxSimilarity > 0.6 || averageSimilarity > 0.4) return "Medio";
+    return "Bajo";
   }
 
   extractDomain(url) {
@@ -969,11 +1091,11 @@ class ContentVerificationService {
 
   extractFactualClaims(text) {
     // Simulación de extracción de declaraciones fácticas
-    const sentences = text.split(/[.!?]+/).filter(s => s.trim().length > 10);
-    return sentences.slice(0, 3).map(sentence => ({
+    const sentences = text.split(/[.!?]+/).filter((s) => s.trim().length > 10);
+    return sentences.slice(0, 3).map((sentence) => ({
       text: sentence.trim(),
-      type: 'Declaración',
-      confidence: 0.8
+      type: "Declaración",
+      confidence: 0.8,
     }));
   }
 
@@ -986,24 +1108,28 @@ class ContentVerificationService {
           claim: claim.text,
           verified: verified,
           contradictory: !verified && Math.random() > 0.7,
-          sources: verified ? ['Fuente verificada'] : [],
-          confidence: verified ? 0.9 : 0.4
+          sources: verified ? ["Fuente verificada"] : [],
+          confidence: verified ? 0.9 : 0.4,
         });
       }, 1000);
     });
   }
 
   generateVerificationSummary(verification, results) {
-    let summary = `Contenido ${verification.verificationStatus.toLowerCase()} con puntuación de ${verification.overallScore}/100. `;
-    
+    let summary = `Contenido ${verification.verificationStatus.toLowerCase()} con puntuación de ${
+      verification.overallScore
+    }/100. `;
+
     if (verification.overallScore >= 80) {
-      summary += 'El contenido muestra alta originalidad y credibilidad.';
+      summary += "El contenido muestra alta originalidad y credibilidad.";
     } else if (verification.overallScore >= 60) {
-      summary += 'El contenido requiere verificación adicional de algunas fuentes.';
+      summary +=
+        "El contenido requiere verificación adicional de algunas fuentes.";
     } else {
-      summary += 'El contenido presenta múltiples factores de riesgo que requieren atención inmediata.';
+      summary +=
+        "El contenido presenta múltiples factores de riesgo que requieren atención inmediata.";
     }
-    
+
     return summary;
   }
 
@@ -1012,7 +1138,7 @@ class ContentVerificationService {
     let hash = 0;
     for (let i = 0; i < text.length; i++) {
       const char = text.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
+      hash = (hash << 5) - hash + char;
       hash = hash & hash; // Convertir a entero de 32 bits
     }
     return hash.toString();
@@ -1021,15 +1147,15 @@ class ContentVerificationService {
   isCacheValid(cacheKey) {
     const cached = this.verificationCache.get(cacheKey);
     if (!cached) return false;
-    
+
     const now = Date.now();
-    return (now - cached.timestamp) < this.cacheExpiry;
+    return now - cached.timestamp < this.cacheExpiry;
   }
 
   saveToCache(cacheKey, data) {
     this.verificationCache.set(cacheKey, {
       ...data,
-      timestamp: Date.now()
+      timestamp: Date.now(),
     });
   }
 
@@ -1037,7 +1163,7 @@ class ContentVerificationService {
   cleanExpiredCache() {
     const now = Date.now();
     for (const [key, value] of this.verificationCache.entries()) {
-      if ((now - value.timestamp) >= this.cacheExpiry) {
+      if (now - value.timestamp >= this.cacheExpiry) {
         this.verificationCache.delete(key);
       }
     }
@@ -1048,7 +1174,7 @@ class ContentVerificationService {
     return {
       totalEntries: this.verificationCache.size,
       cacheSize: this.calculateCacheSize(),
-      hitRate: this.calculateHitRate()
+      hitRate: this.calculateHitRate(),
     };
   }
 
@@ -1062,7 +1188,7 @@ class ContentVerificationService {
 
   calculateHitRate() {
     // Simulación de tasa de aciertos
-    return '85%';
+    return "85%";
   }
 }
 
