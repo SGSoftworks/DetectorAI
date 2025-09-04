@@ -101,27 +101,37 @@ const TextAnalysis = () => {
           <div className="space-y-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
             <div className="flex items-center gap-2">
               <Target className="w-4 h-4 text-blue-600" />
-              <span className="font-semibold text-blue-900">Análisis Gemini</span>
+              <span className="font-semibold text-blue-900">
+                Análisis Gemini
+              </span>
             </div>
-            
+
             {result.isAI !== undefined && (
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-700">Clasificación:</span>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  result.isAI ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-green-100 text-green-800 border border-green-300'
-                }`}>
-                  {result.isAI ? '🤖 Generado por IA' : '👤 Escrito por Humano'}
+                <span className="font-medium text-gray-700">
+                  Clasificación:
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    result.isAI
+                      ? "bg-red-100 text-red-800 border border-red-300"
+                      : "bg-green-100 text-green-800 border border-green-300"
+                  }`}
+                >
+                  {result.isAI ? "🤖 Generado por IA" : "👤 Escrito por Humano"}
                 </span>
               </div>
             )}
-            
+
             {result.confidence && (
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-700">Nivel de Confianza:</span>
+                <span className="font-medium text-gray-700">
+                  Nivel de Confianza:
+                </span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                    <div
+                      className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${result.confidence * 100}%` }}
                     ></div>
                   </div>
@@ -131,12 +141,16 @@ const TextAnalysis = () => {
                 </div>
               </div>
             )}
-            
+
             {result.reasoning && (
               <div>
-                <span className="font-medium text-gray-700 block mb-2">Razonamiento:</span>
+                <span className="font-medium text-gray-700 block mb-2">
+                  Razonamiento:
+                </span>
                 <div className="bg-white p-3 rounded border border-gray-200">
-                  <p className="text-gray-700 text-sm leading-relaxed">{result.reasoning}</p>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {result.reasoning}
+                  </p>
                 </div>
               </div>
             )}
@@ -150,27 +164,35 @@ const TextAnalysis = () => {
           <div className="space-y-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-purple-600" />
-              <span className="font-semibold text-purple-900">Análisis Hugging Face</span>
+              <span className="font-semibold text-purple-900">
+                Análisis Hugging Face
+              </span>
             </div>
-            
+
             {result.result && (
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-700">Clasificación:</span>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  result.result === 'IA' ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-green-100 text-green-800 border border-green-300'
-                }`}>
-                  {result.result === 'IA' ? '🤖 IA' : '👤 Humano'}
+                <span className="font-medium text-gray-700">
+                  Clasificación:
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    result.result === "IA"
+                      ? "bg-red-100 text-red-800 border border-red-300"
+                      : "bg-green-100 text-green-800 border border-green-300"
+                  }`}
+                >
+                  {result.result === "IA" ? "🤖 IA" : "👤 Humano"}
                 </span>
               </div>
             )}
-            
+
             {result.confidence && (
               <div className="flex items-center gap-3">
                 <span className="font-medium text-gray-700">Confianza:</span>
                 <div className="flex items-center gap-2">
                   <div className="w-20 bg-gray-200 rounded-full h-2">
-                    <div 
-                      className="bg-purple-600 h-2 rounded-full transition-all duration-300" 
+                    <div
+                      className="bg-purple-600 h-2 rounded-full transition-all duration-300"
                       style={{ width: `${result.confidence * 100}%` }}
                     ></div>
                   </div>
@@ -180,45 +202,71 @@ const TextAnalysis = () => {
                 </div>
               </div>
             )}
-            
+
             {result.explanation && (
               <div>
-                <span className="font-medium text-gray-700 block mb-2">Explicación:</span>
+                <span className="font-medium text-gray-700 block mb-2">
+                  Explicación:
+                </span>
                 <div className="bg-white p-3 rounded border border-gray-200">
-                  <p className="text-gray-700 text-sm leading-relaxed">{result.explanation}</p>
+                  <p className="text-gray-700 text-sm leading-relaxed">
+                    {result.explanation}
+                  </p>
                 </div>
               </div>
             )}
-            
+
             {result.complexity && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                  <span className="font-medium text-gray-700 block text-xs mb-1">Nivel de Complejidad:</span>
-                  <span className="text-lg font-bold text-purple-700">{result.complexity.level}</span>
+                  <span className="font-medium text-gray-700 block text-xs mb-1">
+                    Nivel de Complejidad:
+                  </span>
+                  <span className="text-lg font-bold text-purple-700">
+                    {result.complexity.level}
+                  </span>
                   <div className="text-xs text-gray-500 mt-1">
-                    {result.complexity.level === 'Baja' ? 'Fácil de entender' : 
-                     result.complexity.level === 'Media' ? 'Comprensión moderada' : 'Requiere atención especial'}
+                    {result.complexity.level === "Baja"
+                      ? "Fácil de entender"
+                      : result.complexity.level === "Media"
+                      ? "Comprensión moderada"
+                      : "Requiere atención especial"}
                   </div>
                 </div>
                 <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                  <span className="font-medium text-gray-700 block text-xs mb-1">Score de Complejidad:</span>
-                  <span className="text-lg font-bold text-purple-700">{Math.round(result.complexity.score * 100)}%</span>
+                  <span className="font-medium text-gray-700 block text-xs mb-1">
+                    Score de Complejidad:
+                  </span>
+                  <span className="text-lg font-bold text-purple-700">
+                    {Math.round(result.complexity.score * 100)}%
+                  </span>
                   <div className="text-xs text-gray-500 mt-1">
-                    {result.complexity.score < 0.3 ? 'Muy simple' : 
-                     result.complexity.score < 0.7 ? 'Complejidad moderada' : 'Muy complejo'}
+                    {result.complexity.score < 0.3
+                      ? "Muy simple"
+                      : result.complexity.score < 0.7
+                      ? "Complejidad moderada"
+                      : "Muy complejo"}
                   </div>
                 </div>
               </div>
             )}
-            
+
             {result.readability && (
               <div className="bg-white p-3 rounded-lg border border-gray-200 text-center">
-                <span className="font-medium text-gray-700 block text-xs mb-1">Índice de Legibilidad:</span>
-                <span className="text-lg font-bold text-purple-700">{Math.round(result.readability)}%</span>
+                <span className="font-medium text-gray-700 block text-xs mb-1">
+                  Índice de Legibilidad:
+                </span>
+                <span className="text-lg font-bold text-purple-700">
+                  {Math.round(result.readability)}%
+                </span>
                 <div className="text-xs text-gray-500 mt-1">
-                  {result.readability >= 80 ? 'Muy fácil de leer' : 
-                   result.readability >= 60 ? 'Fácil de leer' : 
-                   result.readability >= 40 ? 'Moderadamente difícil' : 'Difícil de leer'}
+                  {result.readability >= 80
+                    ? "Muy fácil de leer"
+                    : result.readability >= 60
+                    ? "Fácil de leer"
+                    : result.readability >= 40
+                    ? "Moderadamente difícil"
+                    : "Difícil de leer"}
                 </div>
               </div>
             )}
@@ -232,64 +280,93 @@ const TextAnalysis = () => {
           <div className="space-y-3 p-3 bg-green-50 rounded-lg border border-green-200">
             <div className="flex items-center gap-2">
               <Shield className="w-4 h-4 text-green-600" />
-              <span className="font-semibold text-green-900">Verificación de Contenido</span>
+              <span className="font-semibold text-green-900">
+                Verificación de Contenido
+              </span>
             </div>
-            
+
             <div className="grid grid-cols-2 gap-4">
               {result.totalResults && (
                 <div className="bg-white p-2 rounded border border-gray-200">
-                  <span className="font-medium text-gray-700 block text-xs">Total de Resultados:</span>
-                  <span className="text-sm font-semibold text-green-700">{result.totalResults}</span>
+                  <span className="font-medium text-gray-700 block text-xs">
+                    Total de Resultados:
+                  </span>
+                  <span className="text-sm font-semibold text-green-700">
+                    {result.totalResults}
+                  </span>
                 </div>
               )}
               {result.similarity && (
                 <div className="bg-white p-2 rounded border border-gray-200">
-                  <span className="font-medium text-gray-700 block text-xs">Similitud:</span>
-                  <span className="text-sm font-semibold text-green-700">{Math.round(result.similarity * 100)}%</span>
+                  <span className="font-medium text-gray-700 block text-xs">
+                    Similitud:
+                  </span>
+                  <span className="text-sm font-semibold text-green-700">
+                    {Math.round(result.similarity * 100)}%
+                  </span>
                 </div>
               )}
             </div>
-            
-            {result.searchResults && Array.isArray(result.searchResults) && result.searchResults.length > 0 && (
-              <div>
-                <span className="font-medium text-gray-700 block mb-3">🔍 Fuentes Relacionadas Encontradas:</span>
-                <div className="space-y-3">
-                  {result.searchResults.slice(0, 3).map((item, idx) => (
-                    <div key={idx} className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 hover:border-blue-300">
-                      <a 
-                        href={item.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="block group"
+
+            {result.searchResults &&
+              Array.isArray(result.searchResults) &&
+              result.searchResults.length > 0 && (
+                <div>
+                  <span className="font-medium text-gray-700 block mb-3">
+                    🔍 Fuentes Relacionadas Encontradas:
+                  </span>
+                  <div className="space-y-3">
+                    {result.searchResults.slice(0, 3).map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-white p-4 rounded-lg border border-gray-200 hover:shadow-lg transition-all duration-300 hover:border-blue-300"
                       >
-                        <div className="font-bold text-blue-700 text-sm mb-2 group-hover:text-blue-800 transition-colors">
-                          📄 {item.title}
-                        </div>
-                      </a>
-                      <div className="text-xs text-gray-500 mb-2 font-medium">
-                        🌐 {item.displayLink}
-                      </div>
-                      <div className="text-sm text-gray-700 leading-relaxed">
-                        {item.snippet.length > 150 ? `${item.snippet.substring(0, 150)}...` : item.snippet}
-                      </div>
-                      <div className="mt-3 flex justify-end">
-                        <a 
-                          href={item.link} 
-                          target="_blank" 
+                        <a
+                          href={item.link}
+                          target="_blank"
                           rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
+                          className="block group"
                         >
-                          <span>Ver fuente</span>
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
+                          <div className="font-bold text-blue-700 text-sm mb-2 group-hover:text-blue-800 transition-colors">
+                            📄 {item.title}
+                          </div>
                         </a>
+                        <div className="text-xs text-gray-500 mb-2 font-medium">
+                          🌐 {item.displayLink}
+                        </div>
+                        <div className="text-sm text-gray-700 leading-relaxed">
+                          {item.snippet.length > 150
+                            ? `${item.snippet.substring(0, 150)}...`
+                            : item.snippet}
+                        </div>
+                        <div className="mt-3 flex justify-end">
+                          <a
+                            href={item.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 text-xs font-medium rounded-full hover:bg-blue-200 transition-colors"
+                          >
+                            <span>Ver fuente</span>
+                            <svg
+                              className="w-3 h-3"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
+                              />
+                            </svg>
+                          </a>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
           </div>
         );
       }
@@ -300,27 +377,39 @@ const TextAnalysis = () => {
           <div className="space-y-3 p-3 bg-orange-50 rounded-lg border border-orange-200">
             <div className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-orange-600" />
-              <span className="font-semibold text-orange-900">Análisis Final</span>
+              <span className="font-semibold text-orange-900">
+                Análisis Final
+              </span>
             </div>
-            
+
             {result.result && (
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-700">Decisión Final:</span>
-                <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                  result.result === 'IA' ? 'bg-red-100 text-red-800 border border-red-300' : 'bg-green-100 text-green-800 border border-green-300'
-                }`}>
-                  {result.result === 'IA' ? '🤖 CONTENIDO GENERADO POR IA' : '👤 CONTENIDO HUMANO'}
+                <span className="font-medium text-gray-700">
+                  Decisión Final:
+                </span>
+                <span
+                  className={`px-3 py-1 rounded-full text-sm font-medium ${
+                    result.result === "IA"
+                      ? "bg-red-100 text-red-800 border border-red-300"
+                      : "bg-green-100 text-green-800 border border-green-300"
+                  }`}
+                >
+                  {result.result === "IA"
+                    ? "🤖 CONTENIDO GENERADO POR IA"
+                    : "👤 CONTENIDO HUMANO"}
                 </span>
               </div>
             )}
-            
+
             {result.confidence && (
               <div className="flex items-center gap-3">
-                <span className="font-medium text-gray-700">Confianza Final:</span>
+                <span className="font-medium text-gray-700">
+                  Confianza Final:
+                </span>
                 <div className="flex items-center gap-2">
                   <div className="w-24 bg-gray-200 rounded-full h-3">
-                    <div 
-                      className="bg-orange-600 h-3 rounded-full transition-all duration-300" 
+                    <div
+                      className="bg-orange-600 h-3 rounded-full transition-all duration-300"
                       style={{ width: `${result.confidence * 100}%` }}
                     ></div>
                   </div>
@@ -330,29 +419,43 @@ const TextAnalysis = () => {
                 </div>
               </div>
             )}
-            
+
             {result.scores && (
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-white p-4 rounded-lg border border-gray-200 text-center shadow-sm">
                   <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <span className="text-2xl">🤖</span>
                   </div>
-                  <span className="font-medium text-gray-700 block text-sm mb-2">Probabilidad IA</span>
-                  <span className="text-3xl font-bold text-red-600">{Math.round(result.scores.ai * 100)}%</span>
+                  <span className="font-medium text-gray-700 block text-sm mb-2">
+                    Probabilidad IA
+                  </span>
+                  <span className="text-3xl font-bold text-red-600">
+                    {Math.round(result.scores.ai * 100)}%
+                  </span>
                   <div className="text-xs text-gray-500 mt-2">
-                    {result.scores.ai > 0.7 ? 'Alta probabilidad' : 
-                     result.scores.ai > 0.4 ? 'Probabilidad moderada' : 'Baja probabilidad'}
+                    {result.scores.ai > 0.7
+                      ? "Alta probabilidad"
+                      : result.scores.ai > 0.4
+                      ? "Probabilidad moderada"
+                      : "Baja probabilidad"}
                   </div>
                 </div>
                 <div className="bg-white p-4 rounded-lg border border-gray-200 text-center shadow-sm">
                   <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <span className="text-2xl">👤</span>
                   </div>
-                  <span className="font-medium text-gray-700 block text-sm mb-2">Probabilidad Humano</span>
-                  <span className="text-3xl font-bold text-green-600">{Math.round(result.scores.human * 100)}%</span>
+                  <span className="font-medium text-gray-700 block text-sm mb-2">
+                    Probabilidad Humano
+                  </span>
+                  <span className="text-3xl font-bold text-green-600">
+                    {Math.round(result.scores.human * 100)}%
+                  </span>
                   <div className="text-xs text-gray-500 mt-2">
-                    {result.scores.human > 0.7 ? 'Alta probabilidad' : 
-                     result.scores.human > 0.4 ? 'Probabilidad moderada' : 'Baja probabilidad'}
+                    {result.scores.human > 0.7
+                      ? "Alta probabilidad"
+                      : result.scores.human > 0.4
+                      ? "Probabilidad moderada"
+                      : "Baja probabilidad"}
                   </div>
                 </div>
               </div>
@@ -363,15 +466,20 @@ const TextAnalysis = () => {
 
       // Para otros objetos, mostrar propiedades clave
       const simpleProps = Object.keys(result).filter(
-        key => typeof result[key] === "string" || typeof result[key] === "number" || typeof result[key] === "boolean"
+        (key) =>
+          typeof result[key] === "string" ||
+          typeof result[key] === "number" ||
+          typeof result[key] === "boolean"
       );
 
       if (simpleProps.length > 0) {
         return (
           <div className="space-y-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
-            {simpleProps.map(key => (
+            {simpleProps.map((key) => (
               <div key={key} className="flex justify-between">
-                <span className="font-medium text-gray-700 capitalize">{key}:</span>
+                <span className="font-medium text-gray-700 capitalize">
+                  {key}:
+                </span>
                 <span className="text-gray-900">{String(result[key])}</span>
               </div>
             ))}
@@ -537,7 +645,7 @@ const TextAnalysis = () => {
                     </>
                   )}
                 </button>
-                
+
                 {results && (
                   <button
                     onClick={handleNewAnalysis}
@@ -599,14 +707,15 @@ const TextAnalysis = () => {
                           results.finalResult
                         )}`}
                       >
-                        {results.finalResult === "IA" ? "🤖 CONTENIDO GENERADO POR IA" : "👤 CONTENIDO HUMANO"}
+                        {results.finalResult === "IA"
+                          ? "🤖 CONTENIDO GENERADO POR IA"
+                          : "👤 CONTENIDO HUMANO"}
                       </span>
                     </div>
                     <p className="text-gray-600 text-sm">
-                      {results.finalResult === "IA" 
+                      {results.finalResult === "IA"
                         ? "El sistema ha detectado características típicas de contenido generado por inteligencia artificial"
-                        : "El sistema ha identificado patrones característicos de contenido escrito por humanos"
-                      }
+                        : "El sistema ha identificado patrones característicos de contenido escrito por humanos"}
                     </p>
                   </div>
                 </div>
@@ -673,19 +782,27 @@ const TextAnalysis = () => {
                     </h4>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.length}</div>
+                        <div className="text-2xl font-bold text-purple-600">
+                          {results.textMetrics.length}
+                        </div>
                         <div className="text-xs text-gray-600">Caracteres</div>
                       </div>
                       <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.words}</div>
+                        <div className="text-2xl font-bold text-purple-600">
+                          {results.textMetrics.words}
+                        </div>
                         <div className="text-xs text-gray-600">Palabras</div>
                       </div>
                       <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.complexity}</div>
+                        <div className="text-2xl font-bold text-purple-600">
+                          {results.textMetrics.complexity}
+                        </div>
                         <div className="text-xs text-gray-600">Complejidad</div>
                       </div>
                       <div className="bg-white p-3 rounded-lg border border-purple-200 text-center">
-                        <div className="text-2xl font-bold text-purple-600">{results.textMetrics.readability}%</div>
+                        <div className="text-2xl font-bold text-purple-600">
+                          {results.textMetrics.readability}%
+                        </div>
                         <div className="text-xs text-gray-600">Legibilidad</div>
                       </div>
                     </div>
@@ -706,10 +823,17 @@ const TextAnalysis = () => {
             </h2>
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <Clock className="w-4 h-4" />
-              <span>Tiempo total: {results.pipeline.reduce((total, step) => total + (step.processingTime || 0), 0)}ms</span>
+              <span>
+                Tiempo total:{" "}
+                {results.pipeline.reduce(
+                  (total, step) => total + (step.processingTime || 0),
+                  0
+                )}
+                ms
+              </span>
             </div>
           </div>
-          
+
           <div className="space-y-6">
             {results.pipeline.map((step, index) => (
               <div
@@ -726,25 +850,29 @@ const TextAnalysis = () => {
               >
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
-                      step.status === "Completado"
-                        ? "bg-green-500"
-                        : step.status === "Error"
-                        ? "bg-red-500"
-                        : step.status === "Iniciando"
-                        ? "bg-blue-500"
-                        : "bg-gray-500"
-                    }`}>
+                    <div
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold ${
+                        step.status === "Completado"
+                          ? "bg-green-500"
+                          : step.status === "Error"
+                          ? "bg-red-500"
+                          : step.status === "Iniciando"
+                          ? "bg-blue-500"
+                          : "bg-gray-500"
+                      }`}
+                    >
                       {index + 1}
                     </div>
                     <div>
                       <h3 className="font-semibold text-gray-900 text-lg">
                         {step.name}
                       </h3>
-                      <p className="text-gray-600 text-sm">{step.description}</p>
+                      <p className="text-gray-600 text-sm">
+                        {step.description}
+                      </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-3">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
@@ -759,7 +887,7 @@ const TextAnalysis = () => {
                     >
                       {step.status}
                     </span>
-                    
+
                     {step.processingTime && (
                       <span className="text-xs text-gray-500 bg-white px-2 py-1 rounded border">
                         {step.processingTime}ms
@@ -767,11 +895,13 @@ const TextAnalysis = () => {
                     )}
                   </div>
                 </div>
-                
+
                 {/* Mostrar resultado detallado */}
                 {step.result && (
                   <div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
-                    <div className="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wide">Resultado del Paso:</div>
+                    <div className="text-xs text-gray-500 mb-3 font-medium uppercase tracking-wide">
+                      Resultado del Paso:
+                    </div>
                     <div className="text-sm text-gray-700">
                       {renderStepResult(step.result, step.name)}
                     </div>
@@ -783,7 +913,9 @@ const TextAnalysis = () => {
                   <div className="bg-red-50 border border-red-200 rounded-lg p-3 mt-3">
                     <div className="flex items-center gap-2 text-red-500 mb-2">
                       <AlertCircle className="w-4 h-4" />
-                      <span className="text-xs font-medium uppercase tracking-wide">Error:</span>
+                      <span className="text-xs font-medium uppercase tracking-wide">
+                        Error:
+                      </span>
                     </div>
                     <p className="text-sm text-red-600">{step.error}</p>
                   </div>
