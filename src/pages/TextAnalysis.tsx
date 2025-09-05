@@ -18,6 +18,8 @@ import { analysisService } from '@/services/analysisService';
 import { firebaseService } from '@/services/firebaseService';
 import type { AnalysisResult } from '@/types';
 import toast from 'react-hot-toast';
+import ExpandableText from '@/components/ExpandableText';
+import RelatedContentCarousel from '@/components/RelatedContentCarousel';
 
 const TextAnalysis: React.FC = () => {
   const [text, setText] = useState('');
@@ -334,11 +336,19 @@ Explicación: ${result.result.explanation}`;
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
-                      <p className="text-gray-700">{result.result.explanation}</p>
+                      <ExpandableText 
+                        text={result.result.explanation} 
+                        maxLength={200}
+                        className="text-gray-700"
+                      />
                     </div>
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
-                      <p className="text-gray-700">{result.result.methodology}</p>
+                      <ExpandableText 
+                        text={result.result.methodology} 
+                        maxLength={200}
+                        className="text-gray-700"
+                      />
                     </div>
                   </div>
                 </div>
@@ -362,7 +372,11 @@ Explicación: ${result.result.explanation}`;
                                factor.impact === 'negative' ? 'Negativo' : 'Neutral'}
                             </span>
                           </div>
-                          <p className="text-xs text-gray-600 mb-3 line-clamp-2">{factor.description}</p>
+                          <ExpandableText 
+                            text={factor.description} 
+                            maxLength={80}
+                            className="text-xs text-gray-600 mb-3"
+                          />
                           <div className="flex justify-between text-xs mb-1">
                             <span className="text-gray-600">Valor</span>
                             <span className="font-medium">{factor.value}%</span>
@@ -382,37 +396,13 @@ Explicación: ${result.result.explanation}`;
                   </div>
                 )}
 
-                {/* Related Content - Grid Layout */}
+                {/* Related Content - Carousel */}
                 {result.relatedContent && result.relatedContent.length > 0 && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <Info className="w-5 h-5 text-primary-600 mr-2" />
-                      Contenido Relacionado
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {result.relatedContent.map((link: any, index: number) => (
-                        <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <a 
-                            href={link.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="block"
-                          >
-                            <h4 className="font-medium text-primary-600 hover:text-primary-700 mb-2 line-clamp-2">
-                              {link.title}
-                            </h4>
-                            <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                              {link.snippet}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-gray-500">{link.domain}</span>
-                              <span className="text-xs text-primary-600">Relevancia: {Math.round(link.relevance * 100)}%</span>
-                            </div>
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <RelatedContentCarousel 
+                    items={result.relatedContent}
+                    title="Contenido Relacionado"
+                    type="text"
+                  />
                 )}
 
                 {/* Metadata - Grid Layout */}

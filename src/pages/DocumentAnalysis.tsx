@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
+import ExpandableText from '@/components/ExpandableText';
+import RelatedContentCarousel from '@/components/RelatedContentCarousel';
 
 const DocumentAnalysis: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -65,10 +67,10 @@ const DocumentAnalysis: React.FC = () => {
         explanation: 'El análisis del documento sugiere que fue generado por IA basándose en patrones de escritura, estructura y coherencia del contenido.',
         methodology: 'Análisis de texto extraído, evaluación de estructura, detección de patrones de IA y análisis de imágenes incluidas',
         factors: [
-          { name: 'Patrones de escritura', value: 75, impact: 'negative' },
-          { name: 'Estructura del documento', value: 60, impact: 'positive' },
-          { name: 'Coherencia del contenido', value: 70, impact: 'positive' },
-          { name: 'Uso de conectores', value: 80, impact: 'negative' }
+          { name: 'Patrones de escritura', value: 75, impact: 'negative', description: 'Se detectaron patrones de escritura típicos de IA, con uso excesivo de conectores y estructuras repetitivas.' },
+          { name: 'Estructura del documento', value: 60, impact: 'positive', description: 'La estructura del documento es coherente, aunque presenta algunas inconsistencias menores en el formato.' },
+          { name: 'Coherencia del contenido', value: 70, impact: 'positive', description: 'El contenido muestra buena coherencia temática, con transiciones lógicas entre secciones.' },
+          { name: 'Uso de conectores', value: 80, impact: 'negative', description: 'Se observa un uso excesivo de conectores y frases de transición, típico de contenido generado por IA.' }
         ],
         metadata: {
           timestamp: new Date(),
@@ -282,11 +284,19 @@ const DocumentAnalysis: React.FC = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
-                      <p className="text-gray-700">{result.explanation}</p>
+                      <ExpandableText 
+                        text={result.explanation} 
+                        maxLength={200}
+                        className="text-gray-700"
+                      />
                     </div>
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
-                      <p className="text-gray-700">{result.methodology}</p>
+                      <ExpandableText 
+                        text={result.methodology} 
+                        maxLength={200}
+                        className="text-gray-700"
+                      />
                     </div>
                   </div>
                 </div>
@@ -310,6 +320,13 @@ const DocumentAnalysis: React.FC = () => {
                                factor.impact === 'negative' ? 'Negativo' : 'Neutral'}
                             </span>
                           </div>
+                          {factor.description && (
+                            <ExpandableText 
+                              text={factor.description} 
+                              maxLength={80}
+                              className="text-xs text-gray-600 mb-3"
+                            />
+                          )}
                           <div className="flex justify-between text-xs mb-1">
                             <span className="text-gray-600">Valor</span>
                             <span className="font-medium">{factor.value}%</span>
@@ -329,37 +346,13 @@ const DocumentAnalysis: React.FC = () => {
                   </div>
                 )}
 
-                {/* Related Documents - Grid Layout */}
+                {/* Related Documents - Carousel */}
                 {result.relatedContent && result.relatedContent.length > 0 && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <Info className="w-5 h-5 text-primary-600 mr-2" />
-                      Referencias y Sitios Relacionados
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {result.relatedContent.map((link: any, index: number) => (
-                        <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <a 
-                            href={link.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="block"
-                          >
-                            <h4 className="font-medium text-primary-600 hover:text-primary-700 mb-2 line-clamp-2">
-                              {link.title}
-                            </h4>
-                            <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                              {link.snippet}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-gray-500">{link.domain}</span>
-                              <span className="text-xs text-primary-600">Relevancia: {Math.round(link.relevance * 100)}%</span>
-                            </div>
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <RelatedContentCarousel 
+                    items={result.relatedContent}
+                    title="Referencias y Sitios Relacionados"
+                    type="document"
+                  />
                 )}
               </div>
             )}

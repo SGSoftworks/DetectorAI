@@ -10,6 +10,8 @@ import {
 } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
+import ExpandableText from '@/components/ExpandableText';
+import RelatedContentCarousel from '@/components/RelatedContentCarousel';
 
 const ImageAnalysis: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -65,10 +67,10 @@ const ImageAnalysis: React.FC = () => {
         explanation: 'El análisis de la imagen sugiere que fue generada por IA basándose en patrones de textura, iluminación y composición típicos de modelos generativos.',
         methodology: 'Análisis de patrones de píxeles, detección de artefactos de compresión y evaluación de consistencia visual',
         factors: [
-          { name: 'Patrones de textura', value: 75, impact: 'negative' },
-          { name: 'Consistencia de iluminación', value: 60, impact: 'positive' },
-          { name: 'Artefactos de compresión', value: 85, impact: 'negative' },
-          { name: 'Resolución y calidad', value: 70, impact: 'positive' }
+          { name: 'Patrones de textura', value: 75, impact: 'negative', description: 'Se detectaron patrones de textura artificiales típicos de modelos generativos de IA, con repeticiones y simetrías poco naturales.' },
+          { name: 'Consistencia de iluminación', value: 60, impact: 'positive', description: 'La iluminación muestra cierta consistencia, aunque presenta algunas anomalías menores que podrían indicar manipulación.' },
+          { name: 'Artefactos de compresión', value: 85, impact: 'negative', description: 'Se encontraron artefactos de compresión y distorsiones que son característicos de imágenes generadas por IA.' },
+          { name: 'Resolución y calidad', value: 70, impact: 'positive', description: 'La resolución y calidad general de la imagen son aceptables, con algunos detalles que sugieren procesamiento artificial.' }
         ],
         metadata: {
           timestamp: new Date(),
@@ -282,11 +284,19 @@ const ImageAnalysis: React.FC = () => {
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
-                      <p className="text-gray-700">{result.explanation}</p>
+                      <ExpandableText 
+                        text={result.explanation} 
+                        maxLength={200}
+                        className="text-gray-700"
+                      />
                     </div>
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
-                      <p className="text-gray-700">{result.methodology}</p>
+                      <ExpandableText 
+                        text={result.methodology} 
+                        maxLength={200}
+                        className="text-gray-700"
+                      />
                     </div>
                   </div>
                 </div>
@@ -310,6 +320,13 @@ const ImageAnalysis: React.FC = () => {
                                factor.impact === 'negative' ? 'Negativo' : 'Neutral'}
                             </span>
                           </div>
+                          {factor.description && (
+                            <ExpandableText 
+                              text={factor.description} 
+                              maxLength={80}
+                              className="text-xs text-gray-600 mb-3"
+                            />
+                          )}
                           <div className="flex justify-between text-xs mb-1">
                             <span className="text-gray-600">Valor</span>
                             <span className="font-medium">{factor.value}%</span>
@@ -329,37 +346,13 @@ const ImageAnalysis: React.FC = () => {
                   </div>
                 )}
 
-                {/* Related Images - Grid Layout */}
+                {/* Related Images - Carousel */}
                 {result.relatedContent && result.relatedContent.length > 0 && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                      <Info className="w-5 h-5 text-primary-600 mr-2" />
-                      Herramientas de Verificación
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {result.relatedContent.map((link: any, index: number) => (
-                        <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
-                          <a 
-                            href={link.url} 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                            className="block"
-                          >
-                            <h4 className="font-medium text-primary-600 hover:text-primary-700 mb-2 line-clamp-2">
-                              {link.title}
-                            </h4>
-                            <p className="text-sm text-gray-600 line-clamp-2 mb-2">
-                              {link.snippet}
-                            </p>
-                            <div className="flex items-center justify-between">
-                              <span className="text-xs text-gray-500">{link.domain}</span>
-                              <span className="text-xs text-primary-600">Relevancia: {Math.round(link.relevance * 100)}%</span>
-                            </div>
-                          </a>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                  <RelatedContentCarousel 
+                    items={result.relatedContent}
+                    title="Herramientas de Verificación"
+                    type="image"
+                  />
                 )}
               </div>
             )}
