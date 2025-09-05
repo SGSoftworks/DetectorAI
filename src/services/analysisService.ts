@@ -290,7 +290,7 @@ class AnalysisService {
       
       // Buscar con cada consulta y combinar resultados
       const allResults = await Promise.allSettled(
-        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 3))
       );
       
       // Combinar y deduplicar resultados
@@ -306,7 +306,7 @@ class AnalysisService {
         index === self.findIndex(t => t.url === item.url)
       );
       
-      return uniqueResults.slice(0, 5); // Máximo 5 resultados
+      return uniqueResults.slice(0, 8); // Máximo 8 resultados
     } catch (error) {
       console.error('Error al buscar contenido relacionado:', error);
       return [];
@@ -360,7 +360,7 @@ class AnalysisService {
       
       // Buscar con cada consulta y combinar resultados
       const allResults = await Promise.allSettled(
-        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 3))
       );
       
       // Combinar y deduplicar resultados
@@ -376,7 +376,7 @@ class AnalysisService {
         index === self.findIndex(t => t.url === item.url)
       );
       
-      return uniqueResults.slice(0, 6); // Máximo 6 resultados para imágenes
+      return uniqueResults.slice(0, 8); // Máximo 8 resultados para imágenes
     } catch (error) {
       console.error('Error al buscar imágenes relacionadas:', error);
       return [];
@@ -398,7 +398,7 @@ class AnalysisService {
       
       // Buscar con cada consulta y combinar resultados
       const allResults = await Promise.allSettled(
-        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 3))
       );
       
       // Combinar y deduplicar resultados
@@ -414,7 +414,7 @@ class AnalysisService {
         index === self.findIndex(t => t.url === item.url)
       );
       
-      return uniqueResults.slice(0, 5); // Máximo 5 resultados
+      return uniqueResults.slice(0, 8); // Máximo 8 resultados
     } catch (error) {
       console.error('Error al buscar videos relacionados:', error);
       return [];
@@ -438,7 +438,7 @@ class AnalysisService {
       
       // Buscar con cada consulta y combinar resultados
       const allResults = await Promise.allSettled(
-        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 3))
       );
       
       // Combinar y deduplicar resultados
@@ -454,7 +454,7 @@ class AnalysisService {
         index === self.findIndex(t => t.url === item.url)
       );
       
-      return uniqueResults.slice(0, 5); // Máximo 5 resultados
+      return uniqueResults.slice(0, 8); // Máximo 8 resultados
     } catch (error) {
       console.error('Error al buscar documentos relacionados:', error);
       return [];
