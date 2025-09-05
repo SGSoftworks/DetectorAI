@@ -49,13 +49,17 @@ class AnalysisService {
       try {
         const relatedContent = await this.searchRelatedContent(request.text);
         if (relatedContent.length === 0) {
-          combinedResult.relatedContent = this.generateExampleRelatedContent(request.text);
+          combinedResult.relatedContent = this.generateExampleRelatedContent(
+            request.text
+          );
         } else {
           combinedResult.relatedContent = relatedContent;
         }
       } catch (error) {
         console.error("Error al buscar contenido relacionado:", error);
-        combinedResult.relatedContent = this.generateExampleRelatedContent(request.text);
+        combinedResult.relatedContent = this.generateExampleRelatedContent(
+          request.text
+        );
       }
 
       // Guardar en Firebase DESPUÉS de agregar todo el contenido

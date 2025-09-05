@@ -66,7 +66,7 @@ class GeminiService {
       // Para documentos Word, PDF y otros, extraer el texto primero
       const documentText = await this.extractTextFromDocument(documentFile);
       const prompt = this.createDocumentAnalysisPrompt(documentText);
-      
+
       const result = await this.model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
@@ -351,60 +351,71 @@ RESPONDE ÚNICAMENTE EN ESPAÑOL.
   private async extractTextFromDocument(file: File): Promise<string> {
     try {
       // Para archivos de texto plano
-      if (file.type === 'text/plain') {
+      if (file.type === "text/plain") {
         return await file.text();
       }
-      
+
       // Para archivos PDF
-      if (file.type === 'application/pdf') {
+      if (file.type === "application/pdf") {
         try {
-          const pdfjsLib = await import('pdfjs-dist');
+          const pdfjsLib = await import("pdfjs-dist");
           const arrayBuffer = await file.arrayBuffer();
           const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-          let fullText = '';
-          
+          let fullText = "";
+
           for (let i = 1; i <= pdf.numPages; i++) {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
-            const pageText = textContent.items.map((item: any) => item.str).join(' ');
-            fullText += pageText + '\n';
+            const pageText = textContent.items
+              .map((item: any) => item.str)
+              .join(" ");
+            fullText += pageText + "\n";
           }
-          
-          return fullText.trim() || `[PDF: ${file.name}] - No se pudo extraer texto del PDF.`;
+
+          return (
+            fullText.trim() ||
+            `[PDF: ${file.name}] - No se pudo extraer texto del PDF.`
+          );
         } catch (error) {
-          console.error('Error al extraer texto del PDF:', error);
+          console.error("Error al extraer texto del PDF:", error);
           return `[PDF: ${file.name}] - Error al extraer texto del PDF.`;
         }
       }
-      
+
       // Para archivos Word (.docx)
-      if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+      if (
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+      ) {
         try {
-          const mammoth = await import('mammoth');
+          const mammoth = await import("mammoth");
           const arrayBuffer = await file.arrayBuffer();
           const result = await mammoth.extractRawText({ arrayBuffer });
-          return result.value || `[Word: ${file.name}] - No se pudo extraer texto del documento Word.`;
+          return (
+            result.value ||
+            `[Word: ${file.name}] - No se pudo extraer texto del documento Word.`
+          );
         } catch (error) {
-          console.error('Error al extraer texto del Word:', error);
+          console.error("Error al extraer texto del Word:", error);
           return `[Word: ${file.name}] - Error al extraer texto del documento Word.`;
         }
       }
-      
+
       // Para archivos Word (.doc) - formato más antiguo
-      if (file.type === 'application/msword') {
+      if (file.type === "application/msword") {
         return `[Word (.doc): ${file.name}] - Los archivos .doc no son compatibles. Convierta a .docx para análisis completo.`;
       }
-      
+
       // Para archivos RTF
-      if (file.type === 'application/rtf') {
+      if (file.type === "application/rtf") {
         try {
           return await file.text();
         } catch (error) {
-          console.error('Error al extraer texto del RTF:', error);
+          console.error("Error al extraer texto del RTF:", error);
           return `[RTF: ${file.name}] - Error al extraer texto del documento RTF.`;
         }
       }
-      
+
       // Para otros tipos de archivo, intentar leer como texto
       try {
         return await file.text();
@@ -412,7 +423,7 @@ RESPONDE ÚNICAMENTE EN ESPAÑOL.
         return `[Archivo: ${file.name}] - No se pudo extraer el contenido del archivo. Tipo: ${file.type}`;
       }
     } catch (error) {
-      console.error('Error al extraer texto del documento:', error);
+      console.error("Error al extraer texto del documento:", error);
       return `[Error] No se pudo procesar el documento: ${file.name}`;
     }
   }
