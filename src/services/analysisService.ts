@@ -312,6 +312,13 @@ class AnalysisService {
 
   private async searchRelatedContent(text: string): Promise<any[]> {
     try {
+      // Verificar si Google Search está disponible antes de hacer requests
+      const isGoogleSearchAvailable = await googleSearchService.isAvailable();
+      if (!isGoogleSearchAvailable) {
+        console.warn("Google Search no está disponible - usando contenido de ejemplo");
+        return this.generateExampleRelatedContent(text);
+      }
+
       // Extraer palabras clave del texto
       const keywords = this.extractKeywords(text);
 
@@ -338,6 +345,11 @@ class AnalysisService {
         }
       });
 
+      // Si no hay resultados, usar contenido de ejemplo
+      if (combinedResults.length === 0) {
+        return this.generateExampleRelatedContent(text);
+      }
+
       // Remover duplicados basado en URL
       const uniqueResults = combinedResults.filter(
         (item, index, self) =>
@@ -347,7 +359,7 @@ class AnalysisService {
       return uniqueResults.slice(0, 8); // Máximo 8 resultados
     } catch (error) {
       console.error("Error al buscar contenido relacionado:", error);
-      return [];
+      return this.generateExampleRelatedContent(text);
     }
   }
 
@@ -511,6 +523,13 @@ class AnalysisService {
 
   private async searchRelatedImages(imageName: string): Promise<any[]> {
     try {
+      // Verificar si Google Search está disponible antes de hacer requests
+      const isGoogleSearchAvailable = await googleSearchService.isAvailable();
+      if (!isGoogleSearchAvailable) {
+        console.warn("Google Search no está disponible - usando contenido de ejemplo para imágenes");
+        return this.generateExampleImageContent(imageName);
+      }
+
       // Extraer palabras clave del nombre de la imagen
       const keywords = this.extractKeywords(imageName);
 
@@ -541,6 +560,11 @@ class AnalysisService {
         }
       });
 
+      // Si no hay resultados, usar contenido de ejemplo
+      if (combinedResults.length === 0) {
+        return this.generateExampleImageContent(imageName);
+      }
+
       // Remover duplicados basado en URL
       const uniqueResults = combinedResults.filter(
         (item, index, self) =>
@@ -550,12 +574,19 @@ class AnalysisService {
       return uniqueResults.slice(0, 8); // Máximo 8 resultados para imágenes
     } catch (error) {
       console.error("Error al buscar imágenes relacionadas:", error);
-      return [];
+      return this.generateExampleImageContent(imageName);
     }
   }
 
   private async searchRelatedVideos(videoName: string): Promise<any[]> {
     try {
+      // Verificar si Google Search está disponible antes de hacer requests
+      const isGoogleSearchAvailable = await googleSearchService.isAvailable();
+      if (!isGoogleSearchAvailable) {
+        console.warn("Google Search no está disponible - usando contenido de ejemplo para videos");
+        return this.generateExampleVideoContent(videoName);
+      }
+
       // Extraer palabras clave del nombre del video
       const keywords = this.extractKeywords(videoName);
 
@@ -582,6 +613,11 @@ class AnalysisService {
         }
       });
 
+      // Si no hay resultados, usar contenido de ejemplo
+      if (combinedResults.length === 0) {
+        return this.generateExampleVideoContent(videoName);
+      }
+
       // Remover duplicados basado en URL
       const uniqueResults = combinedResults.filter(
         (item, index, self) =>
@@ -591,12 +627,19 @@ class AnalysisService {
       return uniqueResults.slice(0, 8); // Máximo 8 resultados
     } catch (error) {
       console.error("Error al buscar videos relacionados:", error);
-      return [];
+      return this.generateExampleVideoContent(videoName);
     }
   }
 
   private async searchRelatedDocuments(documentName: string): Promise<any[]> {
     try {
+      // Verificar si Google Search está disponible antes de hacer requests
+      const isGoogleSearchAvailable = await googleSearchService.isAvailable();
+      if (!isGoogleSearchAvailable) {
+        console.warn("Google Search no está disponible - usando contenido de ejemplo para documentos");
+        return this.generateExampleDocumentContent(documentName);
+      }
+
       // Extraer palabras clave del nombre del documento
       const keywords = this.extractKeywords(documentName);
 
@@ -625,6 +668,11 @@ class AnalysisService {
         }
       });
 
+      // Si no hay resultados, usar contenido de ejemplo
+      if (combinedResults.length === 0) {
+        return this.generateExampleDocumentContent(documentName);
+      }
+
       // Remover duplicados basado en URL
       const uniqueResults = combinedResults.filter(
         (item, index, self) =>
@@ -634,7 +682,7 @@ class AnalysisService {
       return uniqueResults.slice(0, 8); // Máximo 8 resultados
     } catch (error) {
       console.error("Error al buscar documentos relacionados:", error);
-      return [];
+      return this.generateExampleDocumentContent(documentName);
     }
   }
 
