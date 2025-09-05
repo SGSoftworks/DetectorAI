@@ -125,7 +125,7 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
                       {item.domain || item.source || "Fuente desconocida"}
                     </span>
                     <span className="text-xs text-primary-600">
-                      Relevancia: {Math.round((item.relevance || 0) * 100)}%
+                      Relevancia: {Math.round(item.relevance || 0)}%
                     </span>
                   </div>
                 </a>

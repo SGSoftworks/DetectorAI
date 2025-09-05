@@ -63,10 +63,11 @@ class GeminiService {
 
   async analyzeDocument(documentFile: File): Promise<AnalysisResult> {
     try {
-      const prompt = this.createDocumentAnalysisPrompt();
-      const documentData = await this.fileToGenerativePart(documentFile);
-
-      const result = await this.model.generateContent([prompt, documentData]);
+      // Para documentos Word, PDF y otros, extraer el texto primero
+      const documentText = await this.extractTextFromDocument(documentFile);
+      const prompt = this.createDocumentAnalysisPrompt(documentText);
+      
+      const result = await this.model.generateContent(prompt);
       const response = await result.response;
       const text = response.text();
 
@@ -239,13 +240,18 @@ Analiza este video y determina si fue generado por inteligencia artificial o es 
 
 IMPORTANTE: 
 - Responde SIEMPRE en español
+- Los videos de IA modernos pueden ser muy convincentes, pero tienen patrones específicos
 - Busca patrones típicos de IA como:
-  * Movimientos antinaturales o robóticos
-  * Inconsistencias en iluminación entre frames
-  * Artefactos de generación o compresión
-  * Transiciones extrañas o imposibles
-  * Calidad demasiado perfecta o artificial
+  * Movimientos antinaturales, robóticos o demasiado fluidos
+  * Inconsistencias en iluminación, sombras o reflejos entre frames
+  * Artefactos de generación, distorsiones o elementos imposibles
+  * Transiciones extrañas, cortes antinaturales o saltos temporales
+  * Calidad demasiado perfecta, uniforme o artificial
   * Elementos que no siguen las leyes de la física
+  * Falta de micro-movimientos naturales (parpadeos, respiración)
+  * Inconsistencias en texturas, patrones o detalles
+  * Audio desincronizado o artificial
+  * Falta de ruido natural o imperfecciones
 
 Proporciona tu análisis en el siguiente formato JSON:
 {
@@ -269,24 +275,26 @@ Proporciona tu análisis en el siguiente formato JSON:
 }
 
 Considera los siguientes factores:
-1. Fluidez y naturalidad del movimiento
-2. Consistencia de iluminación entre frames
-3. Calidad de audio sincronizado
-4. Detalles anatómicos o estructurales
-5. Transiciones y cortes
-6. Estabilidad de la cámara
-7. Elementos sobrenaturales o imposibles
-8. Artefactos de compresión o generación
-9. Duración y coherencia temporal
-10. Calidad general del video
+1. Fluidez y naturalidad del movimiento (busca movimientos demasiado perfectos)
+2. Consistencia de iluminación entre frames (inconsistencias = IA)
+3. Calidad de audio sincronizado (desincronización = IA)
+4. Detalles anatómicos o estructurales (imperfecciones = humano)
+5. Transiciones y cortes (antinaturales = IA)
+6. Estabilidad de la cámara (demasiado estable = IA)
+7. Elementos sobrenaturales o imposibles (física violada = IA)
+8. Artefactos de compresión o generación (distorsiones = IA)
+9. Duración y coherencia temporal (saltos = IA)
+10. Calidad general del video (demasiado perfecta = IA)
+11. Micro-movimientos naturales (falta de ellos = IA)
+12. Texturas y patrones (inconsistencias = IA)
 
 RESPONDE ÚNICAMENTE EN ESPAÑOL.
 `;
   }
 
-  private createDocumentAnalysisPrompt(): string {
+  private createDocumentAnalysisPrompt(documentText: string): string {
     return `
-Analiza este documento y determina si fue generado por inteligencia artificial o escrito por un humano.
+Analiza el siguiente texto de documento y determina si fue generado por inteligencia artificial o escrito por un humano.
 
 IMPORTANTE: 
 - Responde SIEMPRE en español
@@ -333,8 +341,47 @@ Considera los siguientes factores:
 11. Coherencia temática
 12. Longitud y desarrollo del contenido
 
+Texto del documento a analizar:
+${documentText}
+
 RESPONDE ÚNICAMENTE EN ESPAÑOL.
 `;
+  }
+
+  private async extractTextFromDocument(file: File): Promise<string> {
+    try {
+      // Para archivos de texto plano
+      if (file.type === 'text/plain') {
+        return await file.text();
+      }
+      
+      // Para archivos PDF, Word, etc., usar una aproximación simple
+      // En un entorno de producción, usarías bibliotecas como pdf-parse, mammoth, etc.
+      if (file.type === 'application/pdf') {
+        // Por ahora, devolver un mensaje indicando que es un PDF
+        return `[Documento PDF: ${file.name}] - El contenido del PDF no se puede extraer automáticamente en esta versión. Para un análisis completo, convierta el PDF a texto plano.`;
+      }
+      
+      if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
+          file.type === 'application/msword') {
+        // Por ahora, devolver un mensaje indicando que es un documento Word
+        return `[Documento Word: ${file.name}] - El contenido del documento Word no se puede extraer automáticamente en esta versión. Para un análisis completo, convierta el documento a texto plano.`;
+      }
+      
+      if (file.type === 'application/rtf') {
+        return `[Documento RTF: ${file.name}] - El contenido del documento RTF no se puede extraer automáticamente en esta versión. Para un análisis completo, convierta el documento a texto plano.`;
+      }
+      
+      // Para otros tipos de archivo, intentar leer como texto
+      try {
+        return await file.text();
+      } catch {
+        return `[Archivo: ${file.name}] - No se pudo extraer el contenido del archivo. Tipo: ${file.type}`;
+      }
+    } catch (error) {
+      console.error('Error al extraer texto del documento:', error);
+      return `[Error] No se pudo procesar el documento: ${file.name}`;
+    }
   }
 
   private async fileToGenerativePart(file: File): Promise<any> {

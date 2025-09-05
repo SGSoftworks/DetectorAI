@@ -348,10 +348,14 @@ class AnalysisService {
       
       // Crear múltiples consultas de búsqueda para mejor cobertura
       const searchQueries = [
-        `imagen similar ${keywords.slice(0, 2).join(' ')}`,
+        `${keywords.slice(0, 3).join(' ')} imagen`,
+        `${keywords.slice(0, 3).join(' ')} foto`,
+        `${keywords.slice(0, 3).join(' ')} imagen similar`,
         `verificar imagen ${keywords.slice(0, 2).join(' ')}`,
-        `búsqueda inversa imagen ${keywords.slice(0, 2).join(' ')}`,
-        `imagen original ${keywords.slice(0, 2).join(' ')}`
+        `búsqueda inversa ${keywords.slice(0, 2).join(' ')}`,
+        `imagen original ${keywords.slice(0, 2).join(' ')}`,
+        `google lens ${keywords.slice(0, 2).join(' ')}`,
+        `imagenes similares ${keywords.slice(0, 2).join(' ')}`
       ];
       
       // Buscar con cada consulta y combinar resultados
@@ -372,7 +376,7 @@ class AnalysisService {
         index === self.findIndex(t => t.url === item.url)
       );
       
-      return uniqueResults.slice(0, 5); // Máximo 5 resultados
+      return uniqueResults.slice(0, 6); // Máximo 6 resultados para imágenes
     } catch (error) {
       console.error('Error al buscar imágenes relacionadas:', error);
       return [];
@@ -424,9 +428,11 @@ class AnalysisService {
       
       // Crear múltiples consultas de búsqueda para mejor cobertura
       const searchQueries = [
-        `documento similar ${keywords.slice(0, 2).join(' ')}`,
-        `verificar documento ${keywords.slice(0, 2).join(' ')}`,
-        `plagio detección ${keywords.slice(0, 2).join(' ')}`,
+        `${keywords.slice(0, 3).join(' ')} artículo`,
+        `${keywords.slice(0, 3).join(' ')} información`,
+        `${keywords.slice(0, 3).join(' ')} noticias`,
+        `${keywords.slice(0, 3).join(' ')} estudio`,
+        `verificar información ${keywords.slice(0, 2).join(' ')}`,
         `contenido relacionado ${keywords.slice(0, 2).join(' ')}`
       ];
       
