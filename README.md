@@ -1,6 +1,13 @@
-# DetectorAI - Sistema de Detección de Contenido Generado por IA
+# 🚀 DetectorAI - Sistema de Detección de Contenido Generado por IA
 
-Un sistema avanzado desarrollado para detectar contenido generado por inteligencia artificial en textos, imágenes, videos y documentos.
+[![Version](https://img.shields.io/badge/version-1.5.2-blue.svg)](https://github.com/SGSoftworks/DetectorAI)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![Deployment](https://img.shields.io/badge/deployed-Vercel-black.svg)](https://detector-2v9iwqn8z-jgsoftworks-projects.vercel.app)
+
+Un sistema avanzado desarrollado para detectar contenido generado por inteligencia artificial en textos, imágenes, videos y documentos. Utiliza Google Gemini 2.0 Flash y múltiples APIs para proporcionar análisis detallados y contenido relacionado.
+
+## 🌐 Demo en Vivo
+**URL de Producción**: [https://detector-2v9iwqn8z-jgsoftworks-projects.vercel.app](https://detector-2v9iwqn8z-jgsoftworks-projects.vercel.app)
 
 ## 🚀 Características
 
@@ -14,11 +21,12 @@ Un sistema avanzado desarrollado para detectar contenido generado por inteligenc
 ## 🛠️ Tecnologías
 
 - **Frontend**: React 18 + TypeScript + Vite
-- **Styling**: TailwindCSS
-- **Backend**: Firebase (Firestore, Auth, Storage)
-- **APIs**: Google Gemini, Hugging Face, Google Search
+- **Styling**: TailwindCSS 3.4.x
+- **Backend**: Firebase (Firestore, Auth)
+- **APIs**: Google Gemini 2.0 Flash, Google Custom Search, Hugging Face
 - **Deployment**: Vercel
 - **Animations**: Framer Motion
+- **Icons**: Lucide React
 
 ## 📋 Requisitos
 
@@ -30,8 +38,8 @@ Un sistema avanzado desarrollado para detectar contenido generado por inteligenc
 
 1. **Clonar el repositorio**
 ```bash
-git clone https://github.com/tu-usuario/detector-ai.git
-cd detector-ai
+git clone https://github.com/SGSoftworks/DetectorAI.git
+cd DetectorAI
 ```
 
 2. **Instalar dependencias**
@@ -41,21 +49,29 @@ npm install
 
 3. **Configurar variables de entorno**
 ```bash
-cp .env.example .env.local
+# Crear archivo .env.local
+touch .env.local
 ```
 
 Edita `.env.local` con tus claves de API:
 ```env
+# Google Gemini 2.0 Flash
 VITE_GEMINI_API_KEY=tu_clave_gemini
-VITE_HUGGING_FACE_API_KEY=tu_token_hugging_face
+
+# Google Custom Search
 VITE_GOOGLE_SEARCH_API_KEY=tu_clave_google_search
 VITE_GOOGLE_SEARCH_ENGINE_ID=tu_engine_id
+
+# Firebase
 VITE_FIREBASE_API_KEY=tu_clave_firebase
 VITE_FIREBASE_AUTH_DOMAIN=tu_proyecto.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=tu_proyecto_id
-VITE_FIREBASE_STORAGE_BUCKET=tu_proyecto.firebasestorage.app
 VITE_FIREBASE_MESSAGING_SENDER_ID=tu_sender_id
 VITE_FIREBASE_APP_ID=tu_app_id
+VITE_FIREBASE_MEASUREMENT_ID=tu_measurement_id
+
+# Hugging Face (opcional)
+VITE_HUGGING_FACE_API_KEY=tu_token_hugging_face
 ```
 
 4. **Ejecutar en desarrollo**
@@ -166,8 +182,9 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 ## 📞 Soporte
 
 Para soporte técnico o preguntas:
-- Email: support@detectorai.com
-- GitHub Issues: [Crear un issue](https://github.com/tu-usuario/detector-ai/issues)
+- **GitHub Issues**: [Crear un issue](https://github.com/SGSoftworks/DetectorAI/issues)
+- **Documentación Técnica**: [Ver DOCUMENTACION_TECNICA.md](DOCUMENTACION_TECNICA.md)
+- **Guía de Despliegue**: [Ver GUIA_DESPLIEGUE_VERCEL.md](GUIA_DESPLIEGUE_VERCEL.md)
 
 ## 🤝 Contribuir
 

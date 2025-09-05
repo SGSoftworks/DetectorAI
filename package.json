@@ -1,8 +1,17 @@
 {
   "name": "detector-ai",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.5.2",
   "type": "module",
+  "description": "Sistema de detección de contenido generado por inteligencia artificial",
+  "keywords": ["ai", "detection", "fake-news", "machine-learning", "react", "typescript"],
+  "author": "SGSoftworks",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SGSoftworks/DetectorAI.git"
+  },
+  "homepage": "https://detector-2v9iwqn8z-jgsoftworks-projects.vercel.app",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

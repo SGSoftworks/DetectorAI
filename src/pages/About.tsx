@@ -9,7 +9,10 @@ import {
   Award,
   CheckCircle,
   ArrowRight,
-  Mail
+  Mail,
+  GitBranch,
+  Calendar,
+  Code
 } from 'lucide-react';
 
 const About: React.FC = () => {
@@ -52,13 +55,105 @@ const About: React.FC = () => {
   ];
 
   const technologies = [
-    { name: 'React', description: 'Frontend moderno y reactivo' },
+    { name: 'React 18', description: 'Frontend moderno y reactivo' },
     { name: 'TypeScript', description: 'Tipado estático para mayor confiabilidad' },
-    { name: 'TailwindCSS', description: 'Diseño responsivo y moderno' },
+    { name: 'TailwindCSS 3.4.x', description: 'Diseño responsivo y moderno' },
     { name: 'Firebase', description: 'Backend como servicio escalable' },
-    { name: 'Google Gemini', description: 'Modelo de IA para análisis de texto' },
+    { name: 'Google Gemini 2.0 Flash', description: 'Modelo de IA multimodal avanzado' },
+    { name: 'Google Custom Search', description: 'Búsqueda web integrada' },
     { name: 'Hugging Face', description: 'Modelos de IA especializados' },
     { name: 'Vercel', description: 'Despliegue y hosting optimizado' }
+  ];
+
+  const versions = [
+    {
+      version: '1.5.2',
+      date: 'Diciembre 2024',
+      status: 'Actual',
+      changes: [
+        'Restauración completa del carrusel',
+        'Mejora de detección de videos de IA',
+        'Soporte mejorado para documentos',
+        'Optimización final de rendimiento'
+      ]
+    },
+    {
+      version: '1.5.1',
+      date: 'Diciembre 2024',
+      status: 'Estable',
+      changes: [
+        'Corrección de cálculo de relevancia',
+        'Mejora de navegación del carrusel',
+        'Optimización de búsquedas',
+        'Mejora de experiencia de usuario'
+      ]
+    },
+    {
+      version: '1.5.0',
+      date: 'Diciembre 2024',
+      status: 'Estable',
+      changes: [
+        'Corrección de errores de runtime',
+        'Mejora de validación de datos',
+        'Optimización de memoria',
+        'Mejora de estabilidad general'
+      ]
+    },
+    {
+      version: '1.4.0',
+      date: 'Diciembre 2024',
+      status: 'Estable',
+      changes: [
+        'Búsquedas asíncronas',
+        'Mejora de manejo de errores',
+        'Optimización de consultas',
+        'Mejora de tiempo de respuesta'
+      ]
+    },
+    {
+      version: '1.3.0',
+      date: 'Diciembre 2024',
+      status: 'Estable',
+      changes: [
+        'Soporte para documentos Word',
+        'Mejora de extracción de texto',
+        'Búsqueda web mejorada',
+        'Deduplicación de resultados'
+      ]
+    },
+    {
+      version: '1.2.0',
+      date: 'Diciembre 2024',
+      status: 'Estable',
+      changes: [
+        'Reorganización de interfaz en cuadrícula',
+        'Implementación de textos expandibles',
+        'Mejora de navegación del carrusel',
+        'Optimización de layout responsive'
+      ]
+    },
+    {
+      version: '1.1.0',
+      date: 'Diciembre 2024',
+      status: 'Estable',
+      changes: [
+        'Actualización a Gemini 2.0 Flash',
+        'Mejora de detección de videos de IA',
+        'Implementación de carrusel de contenido',
+        'Mejora de búsqueda de imágenes similares'
+      ]
+    },
+    {
+      version: '1.0.0',
+      date: 'Diciembre 2024',
+      status: 'Lanzamiento',
+      changes: [
+        'Lanzamiento oficial',
+        'Todas las funcionalidades implementadas',
+        'Documentación completa',
+        'Despliegue en producción'
+      ]
+    }
   ];
 
   return (
@@ -287,7 +382,7 @@ const About: React.FC = () => {
             </motion.div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {technologies.map((tech, index) => (
               <motion.div
                 key={tech.name}
@@ -301,6 +396,79 @@ const About: React.FC = () => {
                   <h3 className="font-semibold text-gray-900">{tech.name}</h3>
                 </div>
                 <p className="text-gray-600 text-sm">{tech.description}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Version History Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+            >
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+                Historial de Versiones
+              </h2>
+              <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                Evolución del proyecto desde su concepción hasta la versión actual
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="space-y-6">
+            {versions.map((version, index) => (
+              <motion.div
+                key={version.version}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-gray-50 rounded-xl p-6 border border-gray-200"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2">
+                      <GitBranch className="w-5 h-5 text-primary-600" />
+                      <span className="text-2xl font-bold text-gray-900">
+                        v{version.version}
+                      </span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Calendar className="w-4 h-4 text-gray-500" />
+                      <span className="text-gray-600">{version.date}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className={`px-3 py-1 rounded-full text-sm font-medium ${
+                      version.status === 'Actual' 
+                        ? 'bg-green-100 text-green-800' 
+                        : version.status === 'Lanzamiento'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-gray-100 text-gray-800'
+                    }`}>
+                      {version.status}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="space-y-2">
+                  <h4 className="font-semibold text-gray-900 flex items-center space-x-2">
+                    <Code className="w-4 h-4" />
+                    <span>Cambios principales:</span>
+                  </h4>
+                  <ul className="space-y-1 ml-6">
+                    {version.changes.map((change, changeIndex) => (
+                      <li key={changeIndex} className="text-gray-700 flex items-start space-x-2">
+                        <span className="text-primary-600 mt-1">•</span>
+                        <span>{change}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </motion.div>
             ))}
           </div>
