@@ -1,9 +1,9 @@
 // Configuración de APIs con validación
 export const API_CONFIG = {
-  GEMINI_API_KEY: import.meta.env.VITE_GEMINI_API_KEY || '',
-  HUGGING_FACE_API_KEY: import.meta.env.VITE_HUGGING_FACE_API_KEY || '',
-  GOOGLE_SEARCH_API_KEY: import.meta.env.VITE_GOOGLE_SEARCH_API_KEY || '',
-  GOOGLE_SEARCH_ENGINE_ID: import.meta.env.VITE_GOOGLE_SEARCH_ENGINE_ID || '',
+  GEMINI_API_KEY: import.meta.env.VITE_GEMINI_API_KEY || "",
+  HUGGING_FACE_API_KEY: import.meta.env.VITE_HUGGING_FACE_API_KEY || "",
+  GOOGLE_SEARCH_API_KEY: import.meta.env.VITE_GOOGLE_SEARCH_API_KEY || "",
+  GOOGLE_SEARCH_ENGINE_ID: import.meta.env.VITE_GOOGLE_SEARCH_ENGINE_ID || "",
 };
 
 // URLs de las APIs
@@ -49,7 +49,7 @@ export const validateApiConfig = () => {
 
 // Función para verificar si una API está disponible
 export const isApiAvailable = (apiKey: string): boolean => {
-  return Boolean(apiKey && apiKey.length > 0 && apiKey !== 'undefined');
+  return Boolean(apiKey && apiKey.length > 0 && apiKey !== "undefined");
 };
 
 // Estado de las APIs
@@ -57,7 +57,9 @@ export const getApiStatus = () => {
   return {
     gemini: isApiAvailable(API_CONFIG.GEMINI_API_KEY),
     huggingFace: isApiAvailable(API_CONFIG.HUGGING_FACE_API_KEY),
-    googleSearch: isApiAvailable(API_CONFIG.GOOGLE_SEARCH_API_KEY) && isApiAvailable(API_CONFIG.GOOGLE_SEARCH_ENGINE_ID),
-    firebase: true // Firebase siempre está disponible si la app se carga
+    googleSearch:
+      isApiAvailable(API_CONFIG.GOOGLE_SEARCH_API_KEY) &&
+      isApiAvailable(API_CONFIG.GOOGLE_SEARCH_ENGINE_ID),
+    firebase: true, // Firebase siempre está disponible si la app se carga
   };
 };

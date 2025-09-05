@@ -125,15 +125,15 @@ Explicación: ${result.result.explanation}`;
           </p>
         </motion.div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          {/* Input Section */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
-          >
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+        {/* Input Section - Centered */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="max-w-4xl mx-auto mb-8"
+        >
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 text-center">
               Ingresa el texto a analizar
             </h2>
             
@@ -182,31 +182,51 @@ Explicación: ${result.result.explanation}`;
               </button>
             </div>
 
-            {/* Info Box */}
+            {/* Info Box - Grid Layout */}
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <div className="flex items-start space-x-3">
                 <Info className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
                 <div className="text-sm text-blue-800">
-                  <p className="font-medium mb-1">¿Qué analizamos?</p>
-                  <ul className="space-y-1 text-blue-700">
-                    <li>• Patrones lingüísticos y estructura del texto</li>
-                    <li>• Consistencia en el estilo y coherencia</li>
-                    <li>• Uso de conectores y transiciones</li>
-                    <li>• Originalidad y creatividad</li>
-                    <li>• Errores típicos de IA</li>
-                  </ul>
+                  <p className="font-medium mb-3">¿Qué analizamos?</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      <span>Patrones lingüísticos y estructura</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      <span>Consistencia en el estilo</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      <span>Uso de conectores y transiciones</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      <span>Originalidad y creatividad</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      <span>Errores típicos de IA</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-2 h-2 bg-blue-600 rounded-full"></div>
+                      <span>Fluidez natural del lenguaje</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </motion.div>
+          </div>
+        </motion.div>
 
-          {/* Results Section */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-            className="space-y-6"
-          >
+        {/* Results Section - Grid Layout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="space-y-6"
+        >
             {isAnalyzing && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="text-center">
@@ -237,7 +257,7 @@ Explicación: ${result.result.explanation}`;
 
             {result && (
               <div className="space-y-6">
-                {/* Main Result */}
+                {/* Main Result - Full Width */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <div className="flex items-center justify-between mb-4">
                     <h3 className="text-lg font-semibold text-gray-900">
@@ -283,7 +303,7 @@ Explicación: ${result.result.explanation}`;
                   </div>
 
                   {/* Probability Bars */}
-                  <div className="space-y-3 mb-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
                     <div>
                       <div className="flex justify-between text-sm mb-1">
                         <span className="text-gray-600">Probabilidad IA</span>
@@ -310,31 +330,31 @@ Explicación: ${result.result.explanation}`;
                     </div>
                   </div>
 
-                  {/* Explanation */}
-                  <div className="mb-6">
-                    <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
-                    <p className="text-gray-700">{result.result.explanation}</p>
-                  </div>
-
-                  {/* Methodology */}
-                  <div>
-                    <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
-                    <p className="text-gray-700">{result.result.methodology}</p>
+                  {/* Explanation and Methodology - Side by Side */}
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
+                      <p className="text-gray-700">{result.result.explanation}</p>
+                    </div>
+                    <div>
+                      <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
+                      <p className="text-gray-700">{result.result.methodology}</p>
+                    </div>
                   </div>
                 </div>
 
-                {/* Analysis Factors */}
+                {/* Analysis Factors - Grid Layout */}
                 {result.result.factors && result.result.factors.length > 0 && (
                   <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       Factores de Análisis
                     </h3>
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {result.result.factors.map((factor, index) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
-                            <h4 className="font-medium text-gray-900">{factor.name}</h4>
-                            <span className={`status-indicator ${
+                            <h4 className="font-medium text-gray-900 text-sm">{factor.name}</h4>
+                            <span className={`status-indicator text-xs ${
                               factor.impact === 'positive' ? 'status-online' :
                               factor.impact === 'negative' ? 'status-offline' : 'status-limited'
                             }`}>
@@ -342,8 +362,8 @@ Explicación: ${result.result.explanation}`;
                                factor.impact === 'negative' ? 'Negativo' : 'Neutral'}
                             </span>
                           </div>
-                          <p className="text-sm text-gray-600 mb-3">{factor.description}</p>
-                          <div className="flex justify-between text-sm mb-1">
+                          <p className="text-xs text-gray-600 mb-3 line-clamp-2">{factor.description}</p>
+                          <div className="flex justify-between text-xs mb-1">
                             <span className="text-gray-600">Valor</span>
                             <span className="font-medium">{factor.value}%</span>
                           </div>
@@ -362,14 +382,14 @@ Explicación: ${result.result.explanation}`;
                   </div>
                 )}
 
-                {/* Related Content */}
+                {/* Related Content - Grid Layout */}
                 {result.relatedContent && result.relatedContent.length > 0 && (
                   <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
                       <Info className="w-5 h-5 text-primary-600 mr-2" />
                       Contenido Relacionado
                     </h3>
-                    <div className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {result.relatedContent.map((link: any, index: number) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
                           <a 
@@ -395,12 +415,12 @@ Explicación: ${result.result.explanation}`;
                   </div>
                 )}
 
-                {/* Metadata */}
+                {/* Metadata - Grid Layout */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Información del Análisis
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <div className="flex items-center space-x-3">
                       <Clock className="w-5 h-5 text-gray-400" />
                       <div>
