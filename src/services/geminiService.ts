@@ -29,6 +29,38 @@ class GeminiService {
     }
   }
 
+  async analyzeImage(imageFile: File): Promise<AnalysisResult> {
+    try {
+      const prompt = this.createImageAnalysisPrompt();
+      const imageData = await this.fileToGenerativePart(imageFile);
+      
+      const result = await this.model.generateContent([prompt, imageData]);
+      const response = await result.response;
+      const text = response.text();
+
+      return this.parseAnalysisResponse(text, "image", imageFile.name);
+    } catch (error) {
+      console.error("Error en análisis de imagen con Gemini:", error);
+      throw new Error("Error al analizar la imagen con Gemini");
+    }
+  }
+
+  async analyzeVideo(videoFile: File): Promise<AnalysisResult> {
+    try {
+      const prompt = this.createVideoAnalysisPrompt();
+      const videoData = await this.fileToGenerativePart(videoFile);
+      
+      const result = await this.model.generateContent([prompt, videoData]);
+      const response = await result.response;
+      const text = response.text();
+
+      return this.parseAnalysisResponse(text, "video", videoFile.name);
+    } catch (error) {
+      console.error("Error en análisis de video con Gemini:", error);
+      throw new Error("Error al analizar el video con Gemini");
+    }
+  }
+
   private createAnalysisPrompt(text: string): string {
     return `
 Analiza el siguiente texto y determina si fue generado por inteligencia artificial o por un humano. 
@@ -133,6 +165,123 @@ NOTA: Si el contenido contiene afirmaciones falsas, conspirativas o científicam
         },
       };
     }
+  }
+
+  private createImageAnalysisPrompt(): string {
+    return `
+Analiza esta imagen y determina si fue generada por inteligencia artificial o es una imagen real capturada por humanos.
+
+IMPORTANTE: Busca patrones típicos de IA como:
+- Artefactos de generación (texturas extrañas, patrones repetitivos)
+- Inconsistencias en iluminación, sombras o perspectivas
+- Detalles imposibles o sobrenaturales
+- Calidad demasiado perfecta o artificial
+- Elementos que no siguen las leyes de la física
+
+Proporciona tu análisis en el siguiente formato JSON:
+{
+  "isAI": boolean,
+  "confidence": number (0-100),
+  "probability": {
+    "ai": number (0-100),
+    "human": number (0-100)
+  },
+  "explanation": "Explicación detallada de tu decisión",
+  "methodology": "Metodología utilizada para el análisis",
+  "factors": [
+    {
+      "name": "nombre del factor",
+      "weight": number (0-1),
+      "value": number (0-100),
+      "description": "descripción del factor",
+      "impact": "positive|negative|neutral"
+    }
+  ]
+}
+
+Considera los siguientes factores:
+1. Calidad y resolución de la imagen
+2. Consistencia de iluminación y sombras
+3. Detalles anatómicos o estructurales
+4. Texturas y patrones
+5. Perspectiva y proporciones
+6. Elementos sobrenaturales o imposibles
+7. Artefactos de compresión o generación
+8. Estilo artístico vs. realismo fotográfico
+9. Inconsistencias en el fondo o entorno
+10. Calidad general de la imagen
+`;
+  }
+
+  private createVideoAnalysisPrompt(): string {
+    return `
+Analiza este video y determina si fue generado por inteligencia artificial o es un video real capturado por humanos.
+
+IMPORTANTE: Busca patrones típicos de IA como:
+- Movimientos antinaturales o robóticos
+- Inconsistencias en iluminación entre frames
+- Artefactos de generación o compresión
+- Transiciones extrañas o imposibles
+- Calidad demasiado perfecta o artificial
+- Elementos que no siguen las leyes de la física
+
+Proporciona tu análisis en el siguiente formato JSON:
+{
+  "isAI": boolean,
+  "confidence": number (0-100),
+  "probability": {
+    "ai": number (0-100),
+    "human": number (0-100)
+  },
+  "explanation": "Explicación detallada de tu decisión",
+  "methodology": "Metodología utilizada para el análisis",
+  "factors": [
+    {
+      "name": "nombre del factor",
+      "weight": number (0-1),
+      "value": number (0-100),
+      "description": "descripción del factor",
+      "impact": "positive|negative|neutral"
+    }
+  ]
+}
+
+Considera los siguientes factores:
+1. Fluidez y naturalidad del movimiento
+2. Consistencia de iluminación entre frames
+3. Calidad de audio sincronizado
+4. Detalles anatómicos o estructurales
+5. Transiciones y cortes
+6. Estabilidad de la cámara
+7. Elementos sobrenaturales o imposibles
+8. Artefactos de compresión o generación
+9. Duración y coherencia temporal
+10. Calidad general del video
+`;
+  }
+
+  private async fileToGenerativePart(file: File): Promise<any> {
+    const base64 = await this.fileToBase64(file);
+    return {
+      inlineData: {
+        data: base64,
+        mimeType: file.type,
+      },
+    };
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Remover el prefijo "data:image/jpeg;base64," o similar
+        const base64 = result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = error => reject(error);
+    });
   }
 
   private generateId(): string {

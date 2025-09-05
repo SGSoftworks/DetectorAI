@@ -80,6 +80,136 @@ class AnalysisService {
     }
   }
 
+  async analyzeImage(imageFile: File): Promise<ApiResponse<AnalysisResult>> {
+    if (this.isProcessing) {
+      return {
+        success: false,
+        error: 'Ya hay un análisis en proceso. Por favor, espera.'
+      };
+    }
+
+    this.isProcessing = true;
+    const startTime = Date.now();
+
+    try {
+      // Validar archivo
+      if (!imageFile) {
+        return {
+          success: false,
+          error: 'No se ha seleccionado ninguna imagen'
+        };
+      }
+
+      if (imageFile.size > 10 * 1024 * 1024) { // 10MB
+        return {
+          success: false,
+          error: 'La imagen es demasiado grande. Máximo 10MB.'
+        };
+      }
+
+      // Ejecutar análisis con Gemini
+      const geminiResult = await geminiService.analyzeImage(imageFile);
+
+      // Actualizar tiempo de procesamiento
+      const processingTime = Date.now() - startTime;
+      geminiResult.metadata.processingTime = processingTime;
+      
+      // Buscar imágenes relacionadas de forma asíncrona
+      this.searchRelatedImages(imageFile.name).then(relatedImages => {
+        if (relatedImages.length === 0) {
+          geminiResult.relatedContent = this.generateExampleImageContent(imageFile.name);
+        } else {
+          geminiResult.relatedContent = relatedImages;
+        }
+      }).catch(error => {
+        console.error('Error al buscar imágenes relacionadas:', error);
+        geminiResult.relatedContent = this.generateExampleImageContent(imageFile.name);
+      });
+
+      this.isProcessing = false;
+
+      return {
+        success: true,
+        data: geminiResult,
+        message: 'Análisis de imagen completado exitosamente'
+      };
+
+    } catch (error) {
+      this.isProcessing = false;
+      console.error('Error en análisis de imagen:', error);
+      
+      return {
+        success: false,
+        error: 'Error interno del servidor. Por favor, intenta de nuevo.'
+      };
+    }
+  }
+
+  async analyzeVideo(videoFile: File): Promise<ApiResponse<AnalysisResult>> {
+    if (this.isProcessing) {
+      return {
+        success: false,
+        error: 'Ya hay un análisis en proceso. Por favor, espera.'
+      };
+    }
+
+    this.isProcessing = true;
+    const startTime = Date.now();
+
+    try {
+      // Validar archivo
+      if (!videoFile) {
+        return {
+          success: false,
+          error: 'No se ha seleccionado ningún video'
+        };
+      }
+
+      if (videoFile.size > 50 * 1024 * 1024) { // 50MB
+        return {
+          success: false,
+          error: 'El video es demasiado grande. Máximo 50MB.'
+        };
+      }
+
+      // Ejecutar análisis con Gemini
+      const geminiResult = await geminiService.analyzeVideo(videoFile);
+
+      // Actualizar tiempo de procesamiento
+      const processingTime = Date.now() - startTime;
+      geminiResult.metadata.processingTime = processingTime;
+      
+      // Buscar videos relacionados de forma asíncrona
+      this.searchRelatedVideos(videoFile.name).then(relatedVideos => {
+        if (relatedVideos.length === 0) {
+          geminiResult.relatedContent = this.generateExampleVideoContent(videoFile.name);
+        } else {
+          geminiResult.relatedContent = relatedVideos;
+        }
+      }).catch(error => {
+        console.error('Error al buscar videos relacionados:', error);
+        geminiResult.relatedContent = this.generateExampleVideoContent(videoFile.name);
+      });
+
+      this.isProcessing = false;
+
+      return {
+        success: true,
+        data: geminiResult,
+        message: 'Análisis de video completado exitosamente'
+      };
+
+    } catch (error) {
+      this.isProcessing = false;
+      console.error('Error en análisis de video:', error);
+      
+      return {
+        success: false,
+        error: 'Error interno del servidor. Por favor, intenta de nuevo.'
+      };
+    }
+  }
+
 
 
   private async searchRelatedContent(text: string): Promise<any[]> {
@@ -122,6 +252,38 @@ class AnalysisService {
       .map(([word]) => word);
   }
 
+  private async searchRelatedImages(imageName: string): Promise<any[]> {
+    try {
+      // Extraer palabras clave del nombre de la imagen
+      const keywords = this.extractKeywords(imageName);
+      const searchQuery = `imagen ${keywords.slice(0, 3).join(' ')} verificación`;
+      
+      // Buscar imágenes relacionadas
+      const relatedImages = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      
+      return relatedImages;
+    } catch (error) {
+      console.error('Error al buscar imágenes relacionadas:', error);
+      return [];
+    }
+  }
+
+  private async searchRelatedVideos(videoName: string): Promise<any[]> {
+    try {
+      // Extraer palabras clave del nombre del video
+      const keywords = this.extractKeywords(videoName);
+      const searchQuery = `video ${keywords.slice(0, 3).join(' ')} verificación`;
+      
+      // Buscar videos relacionados
+      const relatedVideos = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      
+      return relatedVideos;
+    } catch (error) {
+      console.error('Error al buscar videos relacionados:', error);
+      return [];
+    }
+  }
+
   private generateExampleRelatedContent(text: string): any[] {
     const keywords = this.extractKeywords(text);
     const mainKeyword = keywords[0] || 'contenido';
@@ -147,6 +309,64 @@ class AnalysisService {
         snippet: `Artículos científicos y análisis basados en evidencia sobre ${mainKeyword}. Fuente académica confiable.`,
         relevance: 0.75,
         domain: 'scientificamerican.com'
+      }
+    ];
+  }
+
+  private generateExampleImageContent(imageName: string): any[] {
+    const keywords = this.extractKeywords(imageName);
+    const mainKeyword = keywords[0] || 'imagen';
+    
+    return [
+      {
+        title: `Verificación de imagen: ${mainKeyword}`,
+        url: 'https://www.tineye.com',
+        snippet: `Herramienta de búsqueda inversa de imágenes para verificar la autenticidad y encontrar usos similares.`,
+        relevance: 0.90,
+        domain: 'tineye.com'
+      },
+      {
+        title: `Análisis de imagen con IA`,
+        url: 'https://www.fotoforensics.com',
+        snippet: `Análisis forense de imágenes para detectar manipulaciones y verificar autenticidad.`,
+        relevance: 0.85,
+        domain: 'fotoforensics.com'
+      },
+      {
+        title: `Detección de deepfakes`,
+        url: 'https://www.sensity.ai',
+        snippet: `Herramientas avanzadas para detectar imágenes y videos generados por IA.`,
+        relevance: 0.80,
+        domain: 'sensity.ai'
+      }
+    ];
+  }
+
+  private generateExampleVideoContent(videoName: string): any[] {
+    const keywords = this.extractKeywords(videoName);
+    const mainKeyword = keywords[0] || 'video';
+    
+    return [
+      {
+        title: `Verificación de video: ${mainKeyword}`,
+        url: 'https://www.invid-project.eu',
+        snippet: `Herramienta de verificación de videos para detectar manipulaciones y deepfakes.`,
+        relevance: 0.90,
+        domain: 'invid-project.eu'
+      },
+      {
+        title: `Análisis de video con IA`,
+        url: 'https://www.sensity.ai',
+        snippet: `Detección avanzada de videos generados por IA y deepfakes.`,
+        relevance: 0.85,
+        domain: 'sensity.ai'
+      },
+      {
+        title: `Verificación de contenido multimedia`,
+        url: 'https://www.verificationhandbook.com',
+        snippet: `Guía completa para verificar la autenticidad de videos y contenido multimedia.`,
+        relevance: 0.80,
+        domain: 'verificationhandbook.com'
       }
     ];
   }
