@@ -49,7 +49,7 @@ export const validateApiConfig = () => {
 
 // Función para verificar si una API está disponible
 export const isApiAvailable = (apiKey: string): boolean => {
-  return apiKey && apiKey.length > 0 && apiKey !== 'undefined';
+  return Boolean(apiKey && apiKey.length > 0 && apiKey !== 'undefined');
 };
 
 // Estado de las APIs
