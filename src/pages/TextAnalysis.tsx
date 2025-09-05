@@ -456,7 +456,6 @@ Explicación: ${result.result.explanation}`;
               </div>
             )}
           </motion.div>
-        </div>
       </div>
     </div>
   );
