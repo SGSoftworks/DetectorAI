@@ -46,6 +46,9 @@ class AnalysisService {
       const processingTime = Date.now() - startTime;
       combinedResult.metadata.processingTime = processingTime;
       
+      // Actualizar estadísticas locales
+      this.updateLocalStats(combinedResult);
+      
       // Buscar contenido relacionado de forma asíncrona (no bloquea la respuesta)
       this.searchRelatedContent(request.text).then(relatedContent => {
         // Si no hay contenido relacionado, agregar contenido de ejemplo
@@ -113,6 +116,9 @@ class AnalysisService {
       const processingTime = Date.now() - startTime;
       geminiResult.metadata.processingTime = processingTime;
       
+      // Actualizar estadísticas locales
+      this.updateLocalStats(geminiResult);
+      
       // Buscar imágenes relacionadas de forma asíncrona
       this.searchRelatedImages(imageFile.name).then(relatedImages => {
         if (relatedImages.length === 0) {
@@ -178,6 +184,9 @@ class AnalysisService {
       const processingTime = Date.now() - startTime;
       geminiResult.metadata.processingTime = processingTime;
       
+      // Actualizar estadísticas locales
+      this.updateLocalStats(geminiResult);
+      
       // Buscar videos relacionados de forma asíncrona
       this.searchRelatedVideos(videoFile.name).then(relatedVideos => {
         if (relatedVideos.length === 0) {
@@ -242,6 +251,9 @@ class AnalysisService {
       // Actualizar tiempo de procesamiento
       const processingTime = Date.now() - startTime;
       geminiResult.metadata.processingTime = processingTime;
+      
+      // Actualizar estadísticas locales
+      this.updateLocalStats(geminiResult);
       
       // Buscar documentos relacionados de forma asíncrona
       this.searchRelatedDocuments(documentFile.name).then(relatedDocuments => {
@@ -576,6 +588,103 @@ class AnalysisService {
     ];
   }
 
+
+  // Actualizar estadísticas locales en localStorage
+  private updateLocalStats(analysis: AnalysisResult): void {
+    try {
+      const statsKey = 'detector_ai_stats';
+      const recentKey = 'detector_ai_recent';
+      
+      // Obtener estadísticas actuales
+      const currentStats = JSON.parse(localStorage.getItem(statsKey) || '{}');
+      const currentRecent = JSON.parse(localStorage.getItem(recentKey) || '[]');
+      
+      // Actualizar contadores
+      currentStats.totalAnalyses = (currentStats.totalAnalyses || 0) + 1;
+      currentStats.totalConfidence = (currentStats.totalConfidence || 0) + analysis.result.confidence;
+      currentStats.averageConfidence = currentStats.totalConfidence / currentStats.totalAnalyses;
+      
+      // Actualizar tipos de análisis
+      currentStats.typeCounts = currentStats.typeCounts || {};
+      currentStats.typeCounts[analysis.type] = (currentStats.typeCounts[analysis.type] || 0) + 1;
+      
+      // Actualizar análisis recientes (máximo 10)
+      const newRecent = [analysis, ...currentRecent].slice(0, 10);
+      
+      // Guardar en localStorage
+      localStorage.setItem(statsKey, JSON.stringify(currentStats));
+      localStorage.setItem(recentKey, JSON.stringify(newRecent));
+      
+      console.log('Estadísticas locales actualizadas:', currentStats);
+    } catch (error) {
+      console.error('Error al actualizar estadísticas locales:', error);
+    }
+  }
+
+  // Obtener estadísticas locales
+  getLocalStats(): any {
+    try {
+      const statsKey = 'detector_ai_stats';
+      const recentKey = 'detector_ai_recent';
+      
+      const stats = JSON.parse(localStorage.getItem(statsKey) || '{}');
+      const recent = JSON.parse(localStorage.getItem(recentKey) || '[]');
+      
+      // Calcular tipos populares
+      const popularTypes = Object.entries(stats.typeCounts || {})
+        .map(([type, count]) => ({
+          type,
+          count: count as number,
+          percentage: ((count as number) / (stats.totalAnalyses || 1)) * 100
+        }))
+        .sort((a, b) => b.count - a.count);
+      
+      return {
+        totalAnalyses: stats.totalAnalyses || 0,
+        accuracyRate: stats.averageConfidence || 0, // Usar confianza promedio como precisión
+        averageConfidence: stats.averageConfidence || 0,
+        popularTypes,
+        recentAnalyses: recent,
+        systemHealth: {
+          apis: {
+            gemini: 'online',
+            huggingFace: 'offline',
+            googleSearch: 'limited',
+            firebase: 'online'
+          },
+          performance: {
+            averageResponseTime: 0,
+            successRate: 0,
+            errorRate: 0
+          },
+          lastUpdated: new Date()
+        }
+      };
+    } catch (error) {
+      console.error('Error al obtener estadísticas locales:', error);
+      return {
+        totalAnalyses: 0,
+        accuracyRate: 0,
+        averageConfidence: 0,
+        popularTypes: [],
+        recentAnalyses: [],
+        systemHealth: {
+          apis: {
+            gemini: 'offline',
+            huggingFace: 'offline',
+            googleSearch: 'limited',
+            firebase: 'offline'
+          },
+          performance: {
+            averageResponseTime: 0,
+            successRate: 0,
+            errorRate: 0
+          },
+          lastUpdated: new Date()
+        }
+      };
+    }
+  }
 
   async getSystemStatus(): Promise<any> {
     try {

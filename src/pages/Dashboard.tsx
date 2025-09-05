@@ -14,7 +14,6 @@ import {
   AlertTriangle,
   RefreshCw
 } from 'lucide-react';
-import { firebaseService } from '@/services/firebaseService';
 import { analysisService } from '@/services/analysisService';
 import type { DashboardStats, SystemStatus } from '@/types';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
@@ -28,11 +27,11 @@ const Dashboard: React.FC = () => {
   const loadDashboardData = async () => {
     setIsLoading(true);
     try {
-      // Cargar datos de Firebase (estadísticas reales)
-      const dashboardStats = await firebaseService.getDashboardStats();
-      setStats(dashboardStats);
+      // Cargar estadísticas locales (incluye todos los tipos de análisis)
+      const localStats = analysisService.getLocalStats();
+      setStats(localStats);
       
-      // Obtener estado del sistema con mejor manejo de errores
+      // Obtener estado del sistema
       const systemHealth = await analysisService.getSystemStatus();
       setSystemStatus(systemHealth);
       
@@ -50,8 +49,8 @@ const Dashboard: React.FC = () => {
           apis: {
             gemini: 'offline',
             huggingFace: 'offline',
-            googleSearch: 'offline',
-            firebase: 'offline'
+            googleSearch: 'limited',
+            firebase: 'online'
           },
           performance: {
             averageResponseTime: 0,
@@ -104,8 +103,8 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -131,7 +130,7 @@ const Dashboard: React.FC = () => {
         </motion.div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -209,7 +208,7 @@ const Dashboard: React.FC = () => {
           </motion.div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-12">
           {/* Content Types Chart */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
