@@ -34,7 +34,25 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
     setCurrentIndex(prev => Math.max(prev - 1, 0));
   };
 
-  if (items.length === 0) return null;
+  if (items.length === 0) {
+    return (
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+          <ExternalLink className="w-5 h-5 text-primary-600 mr-2" />
+          {title}
+        </h3>
+        <div className="text-center py-8">
+          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <ExternalLink className="w-8 h-8 text-gray-400" />
+          </div>
+          <p className="text-gray-500 text-lg font-medium mb-2">No se encontró contenido relacionado</p>
+          <p className="text-gray-400 text-sm">
+            No se pudieron encontrar referencias relacionadas con este análisis.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
@@ -101,7 +119,7 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-gray-500">{item.domain || item.source || 'Fuente desconocida'}</span>
                     <span className="text-xs text-primary-600">
-                      Relevancia: {Math.round(item.relevance * 100)}%
+                      Relevancia: {Math.round((item.relevance || 0) * 100)}%
                     </span>
                   </div>
                 </a>

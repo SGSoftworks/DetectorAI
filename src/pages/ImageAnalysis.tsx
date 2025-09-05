@@ -77,7 +77,30 @@ const ImageAnalysis: React.FC = () => {
           processingTime: 3000,
           model: 'image-detection-v1',
           version: '1.0.0'
-        }
+        },
+        relatedContent: [
+          {
+            title: 'Herramientas de detección de imágenes generadas por IA',
+            snippet: 'Descubre las mejores herramientas para detectar imágenes generadas por inteligencia artificial y deepfakes.',
+            url: 'https://example.com/ai-image-detection-tools',
+            source: 'techcrunch.com',
+            relevance: 0.95
+          },
+          {
+            title: 'Cómo identificar imágenes falsas generadas por IA',
+            snippet: 'Guía completa para identificar señales de que una imagen fue generada por inteligencia artificial.',
+            url: 'https://example.com/identify-ai-images',
+            source: 'wired.com',
+            relevance: 0.88
+          },
+          {
+            title: 'Verificador de imágenes AI - Herramienta gratuita',
+            snippet: 'Utiliza esta herramienta gratuita para verificar si una imagen fue generada por IA o es real.',
+            url: 'https://example.com/ai-image-verifier',
+            source: 'verification-tools.com',
+            relevance: 0.92
+          }
+        ]
       };
 
       setResult(mockResult);
@@ -347,13 +370,11 @@ const ImageAnalysis: React.FC = () => {
                 )}
 
                 {/* Related Images - Carousel */}
-                {result.relatedContent && result.relatedContent.length > 0 && (
-                  <RelatedContentCarousel 
-                    items={result.relatedContent}
-                    title="Herramientas de Verificación"
-                    type="image"
-                  />
-                )}
+                <RelatedContentCarousel 
+                  items={result.relatedContent || []}
+                  title="Herramientas de Verificación"
+                  type="image"
+                />
               </div>
             )}
           </motion.div>

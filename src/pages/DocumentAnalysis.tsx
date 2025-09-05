@@ -77,7 +77,30 @@ const DocumentAnalysis: React.FC = () => {
           processingTime: 4000,
           model: 'document-detection-v1',
           version: '1.0.0'
-        }
+        },
+        relatedContent: [
+          {
+            title: 'Detección de documentos generados por IA',
+            snippet: 'Herramientas y técnicas para identificar documentos creados por inteligencia artificial.',
+            url: 'https://example.com/ai-document-detection',
+            source: 'academic-research.org',
+            relevance: 0.94
+          },
+          {
+            title: 'Análisis de autenticidad de documentos',
+            snippet: 'Métodos avanzados para verificar la autenticidad y origen de documentos digitales.',
+            url: 'https://example.com/document-authenticity',
+            source: 'forensic-analysis.com',
+            relevance: 0.87
+          },
+          {
+            title: 'Verificador de plagio y contenido AI',
+            snippet: 'Plataforma para detectar plagio y contenido generado por inteligencia artificial en documentos.',
+            url: 'https://example.com/plagiarism-ai-detector',
+            source: 'content-verification.com',
+            relevance: 0.91
+          }
+        ]
       };
 
       setResult(mockResult);
@@ -347,13 +370,11 @@ const DocumentAnalysis: React.FC = () => {
                 )}
 
                 {/* Related Documents - Carousel */}
-                {result.relatedContent && result.relatedContent.length > 0 && (
-                  <RelatedContentCarousel 
-                    items={result.relatedContent}
-                    title="Referencias y Sitios Relacionados"
-                    type="document"
-                  />
-                )}
+                <RelatedContentCarousel 
+                  items={result.relatedContent || []}
+                  title="Referencias y Sitios Relacionados"
+                  type="document"
+                />
               </div>
             )}
           </motion.div>

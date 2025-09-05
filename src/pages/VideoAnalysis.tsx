@@ -77,7 +77,30 @@ const VideoAnalysis: React.FC = () => {
           processingTime: 5000,
           model: 'video-detection-v1',
           version: '1.0.0'
-        }
+        },
+        relatedContent: [
+          {
+            title: 'Detección de deepfakes y videos falsos',
+            snippet: 'Herramientas avanzadas para detectar videos manipulados y deepfakes generados por IA.',
+            url: 'https://example.com/deepfake-detection',
+            source: 'mit.edu',
+            relevance: 0.96
+          },
+          {
+            title: 'Cómo identificar videos generados por IA',
+            snippet: 'Técnicas y herramientas para identificar contenido de video generado por inteligencia artificial.',
+            url: 'https://example.com/ai-video-detection',
+            source: 'arstechnica.com',
+            relevance: 0.89
+          },
+          {
+            title: 'Verificador de autenticidad de videos',
+            snippet: 'Plataforma gratuita para verificar la autenticidad de videos y detectar manipulaciones.',
+            url: 'https://example.com/video-authenticity-checker',
+            source: 'verification-platform.com',
+            relevance: 0.93
+          }
+        ]
       };
 
       setResult(mockResult);
@@ -347,13 +370,11 @@ const VideoAnalysis: React.FC = () => {
                 )}
 
                 {/* Related Videos - Carousel */}
-                {result.relatedContent && result.relatedContent.length > 0 && (
-                  <RelatedContentCarousel 
-                    items={result.relatedContent}
-                    title="Herramientas de Verificación"
-                    type="video"
-                  />
-                )}
+                <RelatedContentCarousel 
+                  items={result.relatedContent || []}
+                  title="Herramientas de Verificación"
+                  type="video"
+                />
               </div>
             )}
           </motion.div>
