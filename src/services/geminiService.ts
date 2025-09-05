@@ -33,7 +33,7 @@ class GeminiService {
     try {
       const prompt = this.createImageAnalysisPrompt();
       const imageData = await this.fileToGenerativePart(imageFile);
-      
+
       const result = await this.model.generateContent([prompt, imageData]);
       const response = await result.response;
       const text = response.text();
@@ -49,7 +49,7 @@ class GeminiService {
     try {
       const prompt = this.createVideoAnalysisPrompt();
       const videoData = await this.fileToGenerativePart(videoFile);
-      
+
       const result = await this.model.generateContent([prompt, videoData]);
       const response = await result.response;
       const text = response.text();
@@ -65,7 +65,7 @@ class GeminiService {
     try {
       const prompt = this.createDocumentAnalysisPrompt();
       const documentData = await this.fileToGenerativePart(documentFile);
-      
+
       const result = await this.model.generateContent([prompt, documentData]);
       const response = await result.response;
       const text = response.text();
@@ -354,10 +354,10 @@ RESPONDE ÚNICAMENTE EN ESPAÑOL.
       reader.onload = () => {
         const result = reader.result as string;
         // Remover el prefijo "data:image/jpeg;base64," o similar
-        const base64 = result.split(',')[1];
+        const base64 = result.split(",")[1];
         resolve(base64);
       };
-      reader.onerror = error => reject(error);
+      reader.onerror = (error) => reject(error);
     });
   }
 
