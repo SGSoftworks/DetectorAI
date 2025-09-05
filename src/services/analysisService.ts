@@ -315,7 +315,9 @@ class AnalysisService {
       // Verificar si Google Search está disponible antes de hacer requests
       const isGoogleSearchAvailable = await googleSearchService.isAvailable();
       if (!isGoogleSearchAvailable) {
-        console.warn("Google Search no está disponible - usando contenido de ejemplo");
+        console.warn(
+          "Google Search no está disponible - usando contenido de ejemplo"
+        );
         return this.generateExampleRelatedContent(text);
       }
 
@@ -526,7 +528,9 @@ class AnalysisService {
       // Verificar si Google Search está disponible antes de hacer requests
       const isGoogleSearchAvailable = await googleSearchService.isAvailable();
       if (!isGoogleSearchAvailable) {
-        console.warn("Google Search no está disponible - usando contenido de ejemplo para imágenes");
+        console.warn(
+          "Google Search no está disponible - usando contenido de ejemplo para imágenes"
+        );
         return this.generateExampleImageContent(imageName);
       }
 
@@ -583,7 +587,9 @@ class AnalysisService {
       // Verificar si Google Search está disponible antes de hacer requests
       const isGoogleSearchAvailable = await googleSearchService.isAvailable();
       if (!isGoogleSearchAvailable) {
-        console.warn("Google Search no está disponible - usando contenido de ejemplo para videos");
+        console.warn(
+          "Google Search no está disponible - usando contenido de ejemplo para videos"
+        );
         return this.generateExampleVideoContent(videoName);
       }
 
@@ -636,7 +642,9 @@ class AnalysisService {
       // Verificar si Google Search está disponible antes de hacer requests
       const isGoogleSearchAvailable = await googleSearchService.isAvailable();
       if (!isGoogleSearchAvailable) {
-        console.warn("Google Search no está disponible - usando contenido de ejemplo para documentos");
+        console.warn(
+          "Google Search no está disponible - usando contenido de ejemplo para documentos"
+        );
         return this.generateExampleDocumentContent(documentName);
       }
 
