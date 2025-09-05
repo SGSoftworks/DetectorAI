@@ -45,28 +45,21 @@ class AnalysisService {
       const processingTime = Date.now() - startTime;
       combinedResult.metadata.processingTime = processingTime;
 
-      // Guardar en Firebase
-      await firebaseService.saveAnalysis(combinedResult);
+      // Buscar contenido relacionado primero
+      try {
+        const relatedContent = await this.searchRelatedContent(request.text);
+        if (relatedContent.length === 0) {
+          combinedResult.relatedContent = this.generateExampleRelatedContent(request.text);
+        } else {
+          combinedResult.relatedContent = relatedContent;
+        }
+      } catch (error) {
+        console.error("Error al buscar contenido relacionado:", error);
+        combinedResult.relatedContent = this.generateExampleRelatedContent(request.text);
+      }
 
-      // Buscar contenido relacionado de forma asíncrona (no bloquea la respuesta)
-      this.searchRelatedContent(request.text)
-        .then((relatedContent) => {
-          // Si no hay contenido relacionado, agregar contenido de ejemplo
-          if (relatedContent.length === 0) {
-            combinedResult.relatedContent = this.generateExampleRelatedContent(
-              request.text
-            );
-          } else {
-            combinedResult.relatedContent = relatedContent;
-          }
-        })
-        .catch((error) => {
-          console.error("Error al buscar contenido relacionado:", error);
-          // En caso de error, agregar contenido de ejemplo
-          combinedResult.relatedContent = this.generateExampleRelatedContent(
-            request.text
-          );
-        });
+      // Guardar en Firebase DESPUÉS de agregar todo el contenido
+      await firebaseService.saveAnalysis(combinedResult);
 
       this.isProcessing = false;
 

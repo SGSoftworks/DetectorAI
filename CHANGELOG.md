@@ -8,12 +8,14 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ## [1.5.3] - 2024-12-19
 
 ### 🔧 Corregido
+
 - Corregido error de permisos de Firebase en Dashboard
 - Simplificado manejo de errores de Firebase para mejor rendimiento
 - Corregido problema de fecha "Invalid Date" en análisis recientes
 - Eliminados archivos de configuración innecesarios (firebase.json, firestore.indexes.json)
 
 ### ⚡ Mejorado
+
 - Dashboard ahora funciona correctamente con datos reales de Firebase
 - Mejor manejo de fechas en análisis recientes con fallbacks
 - Simplificado sistema de consultas de Firebase sin ordenamiento complejo

@@ -355,21 +355,54 @@ RESPONDE ÚNICAMENTE EN ESPAÑOL.
         return await file.text();
       }
       
-      // Para archivos PDF, Word, etc., usar una aproximación simple
-      // En un entorno de producción, usarías bibliotecas como pdf-parse, mammoth, etc.
+      // Para archivos PDF
       if (file.type === 'application/pdf') {
-        // Por ahora, devolver un mensaje indicando que es un PDF
-        return `[Documento PDF: ${file.name}] - El contenido del PDF no se puede extraer automáticamente en esta versión. Para un análisis completo, convierta el PDF a texto plano.`;
+        try {
+          const pdfjsLib = await import('pdfjs-dist');
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+          let fullText = '';
+          
+          for (let i = 1; i <= pdf.numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            const pageText = textContent.items.map((item: any) => item.str).join(' ');
+            fullText += pageText + '\n';
+          }
+          
+          return fullText.trim() || `[PDF: ${file.name}] - No se pudo extraer texto del PDF.`;
+        } catch (error) {
+          console.error('Error al extraer texto del PDF:', error);
+          return `[PDF: ${file.name}] - Error al extraer texto del PDF.`;
+        }
       }
       
-      if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || 
-          file.type === 'application/msword') {
-        // Por ahora, devolver un mensaje indicando que es un documento Word
-        return `[Documento Word: ${file.name}] - El contenido del documento Word no se puede extraer automáticamente en esta versión. Para un análisis completo, convierta el documento a texto plano.`;
+      // Para archivos Word (.docx)
+      if (file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document') {
+        try {
+          const mammoth = await import('mammoth');
+          const arrayBuffer = await file.arrayBuffer();
+          const result = await mammoth.extractRawText({ arrayBuffer });
+          return result.value || `[Word: ${file.name}] - No se pudo extraer texto del documento Word.`;
+        } catch (error) {
+          console.error('Error al extraer texto del Word:', error);
+          return `[Word: ${file.name}] - Error al extraer texto del documento Word.`;
+        }
       }
       
+      // Para archivos Word (.doc) - formato más antiguo
+      if (file.type === 'application/msword') {
+        return `[Word (.doc): ${file.name}] - Los archivos .doc no son compatibles. Convierta a .docx para análisis completo.`;
+      }
+      
+      // Para archivos RTF
       if (file.type === 'application/rtf') {
-        return `[Documento RTF: ${file.name}] - El contenido del documento RTF no se puede extraer automáticamente en esta versión. Para un análisis completo, convierta el documento a texto plano.`;
+        try {
+          return await file.text();
+        } catch (error) {
+          console.error('Error al extraer texto del RTF:', error);
+          return `[RTF: ${file.name}] - Error al extraer texto del documento RTF.`;
+        }
       }
       
       // Para otros tipos de archivo, intentar leer como texto
