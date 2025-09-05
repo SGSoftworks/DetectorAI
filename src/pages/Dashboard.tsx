@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { 
   BarChart3, 
   TrendingUp, 
-  Users, 
   FileText, 
   Image, 
   Video, 
@@ -29,16 +28,39 @@ const Dashboard: React.FC = () => {
   const loadDashboardData = async () => {
     setIsLoading(true);
     try {
-      const [dashboardStats, systemHealth] = await Promise.all([
-        firebaseService.getDashboardStats(),
-        analysisService.getSystemStatus()
-      ]);
-      
+      // Cargar datos de Firebase (estadísticas reales)
+      const dashboardStats = await firebaseService.getDashboardStats();
       setStats(dashboardStats);
+      
+      // Obtener estado del sistema con mejor manejo de errores
+      const systemHealth = await analysisService.getSystemStatus();
       setSystemStatus(systemHealth);
+      
       setLastUpdated(new Date());
     } catch (error) {
       console.error('Error al cargar datos del dashboard:', error);
+      // En caso de error, mostrar datos por defecto
+      setStats({
+        totalAnalyses: 0,
+        accuracyRate: 0,
+        averageConfidence: 0,
+        popularTypes: [],
+        recentAnalyses: [],
+        systemHealth: {
+          apis: {
+            gemini: 'offline',
+            huggingFace: 'offline',
+            googleSearch: 'offline',
+            firebase: 'offline'
+          },
+          performance: {
+            averageResponseTime: 0,
+            successRate: 0,
+            errorRate: 0
+          },
+          lastUpdated: new Date()
+        }
+      });
     } finally {
       setIsLoading(false);
     }
@@ -175,11 +197,13 @@ const Dashboard: React.FC = () => {
           >
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-600">Usuarios Activos</p>
-                <p className="text-2xl font-bold text-gray-900">2,500+</p>
+                <p className="text-sm font-medium text-gray-600">Análisis de IA Detectados</p>
+                <p className="text-2xl font-bold text-gray-900">
+                  {stats?.recentAnalyses?.filter(a => a.result.isAI).length || 0}
+                </p>
               </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-danger-100 rounded-lg flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-danger-600" />
               </div>
             </div>
           </motion.div>
@@ -236,16 +260,24 @@ const Dashboard: React.FC = () => {
             </h3>
             <div className="space-y-4">
               {systemStatus?.apis && Object.entries(systemStatus.apis).map(([service, status]) => (
-                <div key={service} className="flex items-center justify-between">
+                <div key={service} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                   <div className="flex items-center space-x-3">
                     <div className={`w-3 h-3 rounded-full ${
                       status === 'online' ? 'bg-success-500' :
                       status === 'offline' ? 'bg-danger-500' : 'bg-warning-500'
                     }`}></div>
-                    <span className="font-medium text-gray-900 capitalize">
-                      {service === 'huggingFace' ? 'Hugging Face' : 
-                       service === 'googleSearch' ? 'Google Search' : service}
-                    </span>
+                    <div>
+                      <span className="font-medium text-gray-900 capitalize">
+                        {service === 'huggingFace' ? 'Hugging Face' : 
+                         service === 'googleSearch' ? 'Google Search' : 
+                         service === 'gemini' ? 'Google Gemini' : service}
+                      </span>
+                      <p className="text-xs text-gray-500">
+                        {status === 'online' ? 'Funcionando correctamente' :
+                         status === 'offline' ? 'Servicio no disponible' :
+                         'Límite de uso alcanzado'}
+                      </p>
+                    </div>
                   </div>
                   <div className={`flex items-center space-x-1 ${getStatusColor(status)}`}>
                     {getStatusIcon(status)}
@@ -310,10 +342,52 @@ const Dashboard: React.FC = () => {
           ) : (
             <div className="text-center py-12">
               <Clock className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-              <p className="text-gray-500">No hay análisis recientes</p>
+              <p className="text-gray-500 mb-2">No hay análisis recientes</p>
+              <p className="text-sm text-gray-400">
+                Los análisis aparecerán aquí una vez que se realicen
+              </p>
             </div>
           )}
         </motion.div>
+
+        {/* Información del sistema */}
+        {stats?.totalAnalyses === 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+            className="bg-blue-50 border border-blue-200 rounded-xl p-6"
+          >
+            <div className="flex items-start space-x-4">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Activity className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-blue-900 mb-2">
+                  Sistema en funcionamiento
+                </h3>
+                <p className="text-blue-700 mb-4">
+                  DetectorAI está listo para analizar contenido. Una vez que se realicen análisis, 
+                  las estadísticas aparecerán en este dashboard.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    Análisis de texto
+                  </span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    Análisis de imágenes
+                  </span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    Análisis de videos
+                  </span>
+                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    Análisis de documentos
+                  </span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </div>
   );

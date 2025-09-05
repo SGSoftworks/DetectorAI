@@ -579,26 +579,62 @@ class AnalysisService {
 
 
   async getSystemStatus(): Promise<any> {
-    const [geminiStatus, huggingFaceStatus, googleSearchStatus] = await Promise.allSettled([
-      geminiService.isAvailable(),
-      huggingFaceService.isAvailable(),
-      googleSearchService.isAvailable()
-    ]);
+    try {
+      const [geminiStatus, huggingFaceStatus, googleSearchStatus] = await Promise.allSettled([
+        geminiService.isAvailable(),
+        huggingFaceService.isAvailable(),
+        googleSearchService.isAvailable()
+      ]);
 
-    return {
-      apis: {
-        gemini: geminiStatus.status === 'fulfilled' && geminiStatus.value ? 'online' : 'offline',
-        huggingFace: huggingFaceStatus.status === 'fulfilled' && huggingFaceStatus.value ? 'online' : 'offline',
-        googleSearch: googleSearchStatus.status === 'fulfilled' && googleSearchStatus.value ? 'online' : 'offline',
-        firebase: 'online' // Asumimos que Firebase está online
-      },
-      performance: {
-        averageResponseTime: 0,
-        successRate: 0,
-        errorRate: 0
-      },
-      lastUpdated: new Date()
-    };
+      // Determinar estado de cada API con mejor lógica
+      const getApiStatus = (result: PromiseSettledResult<boolean>) => {
+        if (result.status === 'fulfilled') {
+          return result.value ? 'online' : 'offline';
+        } else {
+          // Si hay error, determinar si es temporal o permanente
+          const error = result.reason;
+          if (error?.message?.includes('429') || error?.message?.includes('rate limit')) {
+            return 'limited'; // Límite de rate alcanzado
+          } else if (error?.message?.includes('404') || error?.message?.includes('not found')) {
+            return 'offline'; // API no disponible
+          } else {
+            return 'offline'; // Otros errores
+          }
+        }
+      };
+
+      return {
+        apis: {
+          gemini: getApiStatus(geminiStatus),
+          huggingFace: getApiStatus(huggingFaceStatus),
+          googleSearch: getApiStatus(googleSearchStatus),
+          firebase: 'online' // Firebase generalmente está disponible
+        },
+        performance: {
+          averageResponseTime: 0,
+          successRate: 0,
+          errorRate: 0
+        },
+        lastUpdated: new Date()
+      };
+    } catch (error) {
+      console.error('Error al obtener estado del sistema:', error);
+      // Retornar estado por defecto en caso de error
+      return {
+        apis: {
+          gemini: 'offline',
+          huggingFace: 'offline',
+          googleSearch: 'offline',
+          firebase: 'offline'
+        },
+        performance: {
+          averageResponseTime: 0,
+          successRate: 0,
+          errorRate: 0
+        },
+        lastUpdated: new Date()
+      };
+    }
   }
 }
 
