@@ -23,22 +23,16 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
   type,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  // Mostrar entre 3-8 elementos dependiendo del contenido disponible
-  const itemsPerView = Math.min(Math.max(3, items.length), 8);
+  // Mostrar máximo 4 elementos por vista para mantener el carrusel
+  const itemsPerView = Math.min(4, items.length);
   const maxIndex = Math.max(0, items.length - itemsPerView);
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => {
-      const next = prev + 1;
-      return next > maxIndex ? 0 : next; // Volver al inicio si llega al final
-    });
+    setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => {
-      const prevIndex = prev - 1;
-      return prevIndex < 0 ? maxIndex : prevIndex; // Ir al final si está al inicio
-    });
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
   };
 
   if (items.length === 0) {
@@ -74,14 +68,16 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
           <div className="flex space-x-2">
             <button
               onClick={prevSlide}
-              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              disabled={currentIndex === 0}
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Anterior"
             >
               <ChevronLeft className="w-4 h-4" />
             </button>
             <button
               onClick={nextSlide}
-              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+              disabled={currentIndex === maxIndex}
+              className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               title="Siguiente"
             >
               <ChevronRight className="w-4 h-4" />
