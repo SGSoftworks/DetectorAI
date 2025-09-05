@@ -174,17 +174,24 @@ class FirebaseService {
   // Estadísticas del sistema
   async getDashboardStats(): Promise<DashboardStats> {
     try {
-      // Obtener estadísticas básicas
-      const analysesSnapshot = await getDocs(collection(db, this.collections.analyses));
+      // Obtener estadísticas básicas con ordenamiento por fecha
+      const q = query(
+        collection(db, this.collections.analyses),
+        orderBy('createdAt', 'desc')
+      );
+      const analysesSnapshot = await getDocs(q);
       const totalAnalyses = analysesSnapshot.size;
 
       // Calcular estadísticas
       let totalConfidence = 0;
       let accurateAnalyses = 0;
       const typeCounts: Record<string, number> = {};
+      const allAnalyses: AnalysisResult[] = [];
 
       analysesSnapshot.docs.forEach(doc => {
         const analysis = doc.data() as AnalysisResult;
+        allAnalyses.push(analysis);
+        
         totalConfidence += analysis.result.confidence;
         
         // Simular precisión basada en confianza
@@ -198,10 +205,8 @@ class FirebaseService {
       const averageConfidence = totalAnalyses > 0 ? totalConfidence / totalAnalyses : 0;
       const accuracyRate = totalAnalyses > 0 ? (accurateAnalyses / totalAnalyses) * 100 : 0;
 
-      // Obtener análisis recientes
-      const recentAnalyses = analysesSnapshot.docs
-        .slice(0, 5)
-        .map(doc => doc.data() as AnalysisResult);
+      // Obtener análisis recientes (los primeros 5)
+      const recentAnalyses = allAnalyses.slice(0, 5);
 
       // Calcular tipos populares
       const popularTypes = Object.entries(typeCounts)
@@ -212,6 +217,14 @@ class FirebaseService {
         }))
         .sort((a, b) => b.count - a.count);
 
+      console.log('Dashboard stats loaded:', {
+        totalAnalyses,
+        averageConfidence,
+        accuracyRate,
+        recentCount: recentAnalyses.length,
+        types: popularTypes.length
+      });
+
       return {
         totalAnalyses,
         accuracyRate,
@@ -221,8 +234,8 @@ class FirebaseService {
         systemHealth: {
           apis: {
             gemini: 'online',
-            huggingFace: 'online',
-            googleSearch: 'online',
+            huggingFace: 'offline',
+            googleSearch: 'limited',
             firebase: 'online'
           },
           performance: {
@@ -246,7 +259,7 @@ class FirebaseService {
           apis: {
             gemini: 'offline',
             huggingFace: 'offline',
-            googleSearch: 'offline',
+            googleSearch: 'limited',
             firebase: 'offline'
           },
           performance: {

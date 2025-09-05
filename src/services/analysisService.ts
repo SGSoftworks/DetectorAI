@@ -1,5 +1,4 @@
 import { geminiService } from './geminiService';
-import { huggingFaceService } from './huggingFaceService';
 import { googleSearchService } from './googleSearchService';
 import type { 
   TextAnalysisRequest, 
@@ -580,34 +579,18 @@ class AnalysisService {
 
   async getSystemStatus(): Promise<any> {
     try {
-      const [geminiStatus, huggingFaceStatus, googleSearchStatus] = await Promise.allSettled([
-        geminiService.isAvailable(),
-        huggingFaceService.isAvailable(),
-        googleSearchService.isAvailable()
-      ]);
-
-      // Determinar estado de cada API con mejor lógica
-      const getApiStatus = (result: PromiseSettledResult<boolean>) => {
-        if (result.status === 'fulfilled') {
-          return result.value ? 'online' : 'offline';
-        } else {
-          // Si hay error, determinar si es temporal o permanente
-          const error = result.reason;
-          if (error?.message?.includes('429') || error?.message?.includes('rate limit')) {
-            return 'limited'; // Límite de rate alcanzado
-          } else if (error?.message?.includes('404') || error?.message?.includes('not found')) {
-            return 'offline'; // API no disponible
-          } else {
-            return 'offline'; // Otros errores
-          }
-        }
-      };
+      // Verificar solo Gemini (que es el que realmente usamos)
+      const geminiStatus = await geminiService.isAvailable();
+      
+      // Para las otras APIs, usar estado basado en configuración y errores conocidos
+      const huggingFaceStatus = 'offline'; // Modelo no disponible
+      const googleSearchStatus = 'limited'; // Cuota excedida
 
       return {
         apis: {
-          gemini: getApiStatus(geminiStatus),
-          huggingFace: getApiStatus(huggingFaceStatus),
-          googleSearch: getApiStatus(googleSearchStatus),
+          gemini: geminiStatus ? 'online' : 'offline',
+          huggingFace: huggingFaceStatus,
+          googleSearch: googleSearchStatus,
           firebase: 'online' // Firebase generalmente está disponible
         },
         performance: {
@@ -624,8 +607,8 @@ class AnalysisService {
         apis: {
           gemini: 'offline',
           huggingFace: 'offline',
-          googleSearch: 'offline',
-          firebase: 'offline'
+          googleSearch: 'limited',
+          firebase: 'online'
         },
         performance: {
           averageResponseTime: 0,
