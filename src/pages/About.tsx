@@ -18,7 +18,9 @@ import {
 } from "lucide-react";
 
 const About: React.FC = () => {
-  const [expandedVersions, setExpandedVersions] = React.useState<Set<string>>(new Set());
+  const [expandedVersions, setExpandedVersions] = React.useState<Set<string>>(
+    new Set()
+  );
 
   const toggleVersion = (version: string) => {
     const newExpanded = new Set(expandedVersions);
@@ -481,7 +483,7 @@ const About: React.FC = () => {
                         {version.status}
                       </div>
                     </div>
-                    
+
                     <div className="flex items-center space-x-2 mb-4">
                       <Calendar className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-600">{version.date}</span>
