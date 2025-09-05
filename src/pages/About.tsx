@@ -13,9 +13,22 @@ import {
   GitBranch,
   Calendar,
   Code,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 
 const About: React.FC = () => {
+  const [expandedVersions, setExpandedVersions] = React.useState<Set<string>>(new Set());
+
+  const toggleVersion = (version: string) => {
+    const newExpanded = new Set(expandedVersions);
+    if (newExpanded.has(version)) {
+      newExpanded.delete(version);
+    } else {
+      newExpanded.add(version);
+    }
+    setExpandedVersions(newExpanded);
+  };
   const features = [
     {
       icon: Brain,
@@ -436,62 +449,91 @@ const About: React.FC = () => {
             </motion.div>
           </div>
 
-          <div className="space-y-6">
-            {versions.map((version, index) => (
-              <motion.div
-                key={version.version}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="bg-gray-50 rounded-xl p-6 border border-gray-200"
-              >
-                <div className="flex items-center justify-between mb-4">
-                  <div className="flex items-center space-x-4">
-                    <div className="flex items-center space-x-2">
-                      <GitBranch className="w-5 h-5 text-primary-600" />
-                      <span className="text-2xl font-bold text-gray-900">
-                        v{version.version}
-                      </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {versions.map((version, index) => {
+              const isExpanded = expandedVersions.has(version.version);
+              return (
+                <motion.div
+                  key={version.version}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden"
+                >
+                  {/* Header compacto */}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center space-x-2">
+                        <GitBranch className="w-5 h-5 text-primary-600" />
+                        <span className="text-xl font-bold text-gray-900">
+                          v{version.version}
+                        </span>
+                      </div>
+                      <div
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          version.status === "Actual"
+                            ? "bg-green-100 text-green-800"
+                            : version.status === "Lanzamiento"
+                            ? "bg-blue-100 text-blue-800"
+                            : "bg-gray-100 text-gray-800"
+                        }`}
+                      >
+                        {version.status}
+                      </div>
                     </div>
-                    <div className="flex items-center space-x-2">
+                    
+                    <div className="flex items-center space-x-2 mb-4">
                       <Calendar className="w-4 h-4 text-gray-500" />
                       <span className="text-gray-600">{version.date}</span>
                     </div>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <div
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        version.status === "Actual"
-                          ? "bg-green-100 text-green-800"
-                          : version.status === "Lanzamiento"
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {version.status}
-                    </div>
-                  </div>
-                </div>
 
-                <div className="space-y-2">
-                  <h4 className="font-semibold text-gray-900 flex items-center space-x-2">
-                    <Code className="w-4 h-4" />
-                    <span>Cambios principales:</span>
-                  </h4>
-                  <ul className="space-y-1 ml-6">
-                    {version.changes.map((change, changeIndex) => (
-                      <li
-                        key={changeIndex}
-                        className="text-gray-700 flex items-start space-x-2"
-                      >
-                        <span className="text-primary-600 mt-1">•</span>
-                        <span>{change}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </motion.div>
-            ))}
+                    {/* Botón para expandir/contraer */}
+                    <button
+                      onClick={() => toggleVersion(version.version)}
+                      className="w-full flex items-center justify-center space-x-2 py-2 px-4 bg-primary-100 hover:bg-primary-200 text-primary-700 rounded-lg transition-colors"
+                    >
+                      <span className="font-medium">
+                        {isExpanded ? "Ocultar cambios" : "Ver cambios"}
+                      </span>
+                      {isExpanded ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Contenido expandible */}
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className="border-t border-gray-200 bg-white"
+                    >
+                      <div className="p-6">
+                        <h4 className="font-semibold text-gray-900 flex items-center space-x-2 mb-3">
+                          <Code className="w-4 h-4" />
+                          <span>Cambios principales:</span>
+                        </h4>
+                        <ul className="space-y-2">
+                          {version.changes.map((change, changeIndex) => (
+                            <li
+                              key={changeIndex}
+                              className="text-gray-700 flex items-start space-x-2"
+                            >
+                              <span className="text-primary-600 mt-1">•</span>
+                              <span className="text-sm">{change}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </motion.div>
+                  )}
+                </motion.div>
+              );
+            })}
           </div>
         </div>
       </section>
