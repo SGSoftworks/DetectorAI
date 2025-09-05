@@ -174,22 +174,9 @@ class FirebaseService {
   // Estadísticas del sistema
   async getDashboardStats(): Promise<DashboardStats> {
     try {
-      // Intentar obtener estadísticas básicas sin ordenamiento primero
-      let analysesSnapshot;
-      try {
-        // Primero intentar con ordenamiento
-        const q = query(
-          collection(db, this.collections.analyses),
-          orderBy('createdAt', 'desc')
-        );
-        analysesSnapshot = await getDocs(q);
-      } catch (orderError) {
-        console.warn('Error con ordenamiento, intentando sin ordenar:', orderError);
-        // Si falla el ordenamiento, intentar sin él
-        const q = query(collection(db, this.collections.analyses));
-        analysesSnapshot = await getDocs(q);
-      }
-
+      // Intentar obtener estadísticas básicas sin ordenamiento
+      const q = query(collection(db, this.collections.analyses));
+      const analysesSnapshot = await getDocs(q);
       const totalAnalyses = analysesSnapshot.size;
 
       // Calcular estadísticas
@@ -258,7 +245,6 @@ class FirebaseService {
       };
     } catch (error: any) {
       console.warn('Error al obtener estadísticas del dashboard:', error.message);
-      console.warn('Error details:', error);
       
       // Retornar datos por defecto sin fallar
       return {
@@ -269,7 +255,7 @@ class FirebaseService {
         recentAnalyses: [],
         systemHealth: {
           apis: {
-            gemini: 'offline',
+            gemini: 'online',
             huggingFace: 'offline',
             googleSearch: 'limited',
             firebase: 'offline'
