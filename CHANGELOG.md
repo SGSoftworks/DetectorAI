@@ -8,18 +8,21 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 ## [1.5.2] - 2024-12-XX
 
 ### ✅ Agregado
+
 - Restauración completa del carrusel de contenido relacionado
 - Mejora de detección de videos de IA con 12 factores específicos
 - Soporte mejorado para documentos Word con extracción de texto
 - Optimización final de rendimiento y estabilidad
 
-### 🔧 Corregido
+### Corregido
+
 - Problema de visualización del carrusel que mostraba todos los elementos
 - Navegación del carrusel restaurada con botones funcionales
 - Cálculo de relevancia corregido (evita mostrar 2000% en lugar de 20%)
 - Ancho de elementos del carrusel para distribución correcta
 
-### 🚀 Mejorado
+### Mejorado
+
 - Búsqueda de contenido relacionado con hasta 8 resultados
 - Detección de videos de IA con micro-movimientos y texturas
 - Extracción de texto de documentos para análisis
@@ -27,88 +30,102 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ## [1.5.1] - 2024-12-XX
 
-### 🔧 Corregido
+### Corregido
+
 - Error de cálculo de porcentaje de relevancia en carrusel
 - Navegación del carrusel mejorada
 - Optimización de búsquedas web
 
-### 🚀 Mejorado
+### Mejorado
+
 - Experiencia de usuario general
 - Rendimiento de búsquedas
 - Estabilidad del carrusel
 
 ## [1.5.0] - 2024-12-XX
 
-### 🔧 Corregido
+### Corregido
+
 - Errores de runtime en servicios
 - Validación de datos mejorada
 - Problemas de memoria
 
-### 🚀 Mejorado
+### Mejorado
+
 - Estabilidad general del sistema
 - Manejo de errores
 - Optimización de recursos
 
 ## [1.4.0] - 2024-12-XX
 
-### ✅ Agregado
+### Agregado
+
 - Búsquedas asíncronas para mejor rendimiento
 - Manejo de errores mejorado
 - Optimización de consultas
 
-### 🚀 Mejorado
+### Mejorado
+
 - Tiempo de respuesta de análisis
 - Eficiencia de consultas a APIs
 - Manejo de errores de red
 
 ## [1.3.0] - 2024-12-XX
 
-### ✅ Agregado
+### Agregado
+
 - Soporte para documentos Word (.docx)
 - Mejora de extracción de texto
 - Búsqueda web mejorada con múltiples consultas
 - Deduplicación de resultados de búsqueda
 
-### 🚀 Mejorado
+### Mejorado
+
 - Análisis de documentos
 - Cobertura de búsquedas web
 - Calidad de resultados relacionados
 
 ## [1.2.0] - 2024-12-XX
 
-### ✅ Agregado
+### Agregado
+
 - Reorganización de interfaz en cuadrícula
 - Componente de textos expandibles ("Ver más")
 - Carrusel de contenido relacionado
 - Layout responsive optimizado
 
 ### 🚀 Mejorado
+
 - Organización visual de resultados
 - Experiencia de usuario en desktop
 - Navegación de contenido relacionado
 
 ## [1.1.0] - 2024-12-XX
 
-### ✅ Agregado
+### Agregado
+
 - Actualización a Google Gemini 2.0 Flash
 - Mejora de detección de videos de IA
 - Carrusel de contenido relacionado
 - Búsqueda de imágenes similares
 
-### 🚀 Mejorado
+### Mejorado
+
 - Precisión de análisis multimodal
 - Detección de deepfakes
 - Búsqueda de contenido relacionado
 
 ## [1.0.0] - 2024-12-XX
 
-### 🎉 Lanzamiento Oficial
+### Lanzamiento Oficial
+
 - Lanzamiento oficial del sistema
 - Todas las funcionalidades principales implementadas
 - Documentación completa
 - Despliegue en producción
 
-### ✅ Características Principales
+### Características Principales
+
 - Análisis de texto con Google Gemini
 - Análisis de imágenes multimodal
 - Análisis de videos con detección de IA
@@ -120,25 +137,29 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ## [0.1.0] - 2024-12-XX
 
-### 🔧 Corregido
+### Corregido
+
 - Errores de TypeScript
 - Configuración de APIs
 - Problemas de rendimiento
 
-### 🚀 Mejorado
+### Mejorado
+
 - Estabilidad del sistema
 - Validación de tipos
 - Optimización de consultas
 
 ## [0.0.1] - 2024-12-XX
 
-### 🚀 Versión Alpha
+### Versión Alpha
+
 - Estructura inicial del proyecto
 - Configuración básica de React + Vite
 - Diseño inicial de la interfaz
 - Integración básica con Firebase
 
-### ✅ Características Iniciales
+### Características Iniciales
+
 - Configuración de proyecto
 - Estructura de componentes
 - Integración con Firebase
@@ -146,23 +167,25 @@ y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.h
 
 ---
 
-## 📝 Notas de Versión
+## Notas de Versión
 
 ### Convenciones de Versionado
+
 - **MAJOR** (X.0.0): Cambios incompatibles en la API
 - **MINOR** (X.Y.0): Nueva funcionalidad compatible
 - **PATCH** (X.Y.Z): Correcciones de bugs compatibles
 
 ### Tipos de Cambios
-- **✅ Agregado**: Nueva funcionalidad
-- **🔧 Corregido**: Corrección de bugs
-- **🚀 Mejorado**: Mejoras en funcionalidad existente
-- **🗑️ Eliminado**: Funcionalidad removida
-- **⚠️ Cambio**: Cambios que rompen compatibilidad
-- **🔒 Seguridad**: Mejoras de seguridad
+
+- **Agregado**: Nueva funcionalidad
+- **Corregido**: Corrección de bugs
+- **Mejorado**: Mejoras en funcionalidad existente
+- **Eliminado**: Funcionalidad removida
+- **Cambio**: Cambios que rompen compatibilidad
+- **Seguridad**: Mejoras de seguridad
 
 ---
 
-**Última actualización**: Diciembre 2024  
-**Mantenido por**: SGSoftworks  
+**Última actualización**: Septiembre 2025
+**Mantenido por**:JGSoftworks
 **Repositorio**: [GitHub](https://github.com/SGSoftworks/DetectorAI)

@@ -816,28 +816,33 @@ class AnalysisService {
       return await firebaseService.getDashboardStats();
     } catch (error) {
       console.error("Error al obtener estadísticas de Firebase:", error);
-      return {
-        totalAnalyses: 0,
-        accuracyRate: 0,
-        averageConfidence: 0,
-        popularTypes: [],
-        recentAnalyses: [],
-        systemHealth: {
-          apis: {
-            gemini: "offline",
-            huggingFace: "offline",
-            googleSearch: "limited",
-            firebase: "offline",
-          },
-          performance: {
-            averageResponseTime: 0,
-            successRate: 0,
-            errorRate: 0,
-          },
-          lastUpdated: new Date(),
-        },
-      };
+      return this.getDefaultStats();
     }
+  }
+
+  // Obtener estadísticas por defecto cuando Firebase no está disponible
+  private getDefaultStats(): any {
+    return {
+      totalAnalyses: 0,
+      accuracyRate: 0,
+      averageConfidence: 0,
+      popularTypes: [],
+      recentAnalyses: [],
+      systemHealth: {
+        apis: {
+          gemini: "online", // Gemini está funcionando
+          huggingFace: "offline",
+          googleSearch: "limited",
+          firebase: "offline", // Firebase tiene problemas de permisos
+        },
+        performance: {
+          averageResponseTime: 0,
+          successRate: 0,
+          errorRate: 0,
+        },
+        lastUpdated: new Date(),
+      },
+    };
   }
 
   async getSystemStatus(): Promise<any> {
