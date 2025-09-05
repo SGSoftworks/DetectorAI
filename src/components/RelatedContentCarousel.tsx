@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 
 interface RelatedContentItem {
   title: string;
@@ -14,24 +14,24 @@ interface RelatedContentItem {
 interface RelatedContentCarouselProps {
   items: RelatedContentItem[];
   title: string;
-  type: 'image' | 'video' | 'text' | 'document';
+  type: "image" | "video" | "text" | "document";
 }
 
-const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({ 
-  items, 
-  title, 
-  type 
+const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
+  items,
+  title,
+  type,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const itemsPerView = 3;
   const maxIndex = Math.max(0, items.length - itemsPerView);
 
   const nextSlide = () => {
-    setCurrentIndex(prev => Math.min(prev + 1, maxIndex));
+    setCurrentIndex((prev) => Math.min(prev + 1, maxIndex));
   };
 
   const prevSlide = () => {
-    setCurrentIndex(prev => Math.max(prev - 1, 0));
+    setCurrentIndex((prev) => Math.max(prev - 1, 0));
   };
 
   if (items.length === 0) {
@@ -45,7 +45,9 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <ExternalLink className="w-8 h-8 text-gray-400" />
           </div>
-          <p className="text-gray-500 text-lg font-medium mb-2">No se encontró contenido relacionado</p>
+          <p className="text-gray-500 text-lg font-medium mb-2">
+            No se encontró contenido relacionado
+          </p>
           <p className="text-gray-400 text-sm">
             No se pudieron encontrar referencias relacionadas con este análisis.
           </p>
@@ -82,34 +84,36 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
       </div>
 
       <div className="relative overflow-hidden">
-        <div 
+        <div
           className="flex transition-transform duration-300 ease-in-out"
-          style={{ transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }}
+          style={{
+            transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)`,
+          }}
         >
           {items.map((item, index) => (
             <div key={index} className="w-full flex-shrink-0 px-2">
               <div className="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors h-full">
-                <a 
-                  href={item.url} 
-                  target="_blank" 
+                <a
+                  href={item.url}
+                  target="_blank"
                   rel="noopener noreferrer"
                   className="block h-full"
                 >
                   {/* Thumbnail for images and videos */}
-                  {(type === 'image' || type === 'video') && item.thumbnail && (
+                  {(type === "image" || type === "video") && item.thumbnail && (
                     <div className="mb-3">
-                      <img 
-                        src={item.thumbnail} 
+                      <img
+                        src={item.thumbnail}
                         alt={item.title}
                         className="w-full h-32 object-cover rounded-lg"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
-                          target.style.display = 'none';
+                          target.style.display = "none";
                         }}
                       />
                     </div>
                   )}
-                  
+
                   <h4 className="font-medium text-primary-600 hover:text-primary-700 mb-2 line-clamp-2">
                     {item.title}
                   </h4>
@@ -117,7 +121,9 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
                     {item.snippet}
                   </p>
                   <div className="flex items-center justify-between">
-                    <span className="text-xs text-gray-500">{item.domain || item.source || 'Fuente desconocida'}</span>
+                    <span className="text-xs text-gray-500">
+                      {item.domain || item.source || "Fuente desconocida"}
+                    </span>
                     <span className="text-xs text-primary-600">
                       Relevancia: {Math.round((item.relevance || 0) * 100)}%
                     </span>
@@ -137,7 +143,7 @@ const RelatedContentCarousel: React.FC<RelatedContentCarouselProps> = ({
               key={index}
               onClick={() => setCurrentIndex(index)}
               className={`w-2 h-2 rounded-full transition-colors ${
-                index === currentIndex ? 'bg-primary-600' : 'bg-gray-300'
+                index === currentIndex ? "bg-primary-600" : "bg-gray-300"
               }`}
             />
           ))}
