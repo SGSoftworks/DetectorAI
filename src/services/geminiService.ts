@@ -61,6 +61,22 @@ class GeminiService {
     }
   }
 
+  async analyzeDocument(documentFile: File): Promise<AnalysisResult> {
+    try {
+      const prompt = this.createDocumentAnalysisPrompt();
+      const documentData = await this.fileToGenerativePart(documentFile);
+      
+      const result = await this.model.generateContent([prompt, documentData]);
+      const response = await result.response;
+      const text = response.text();
+
+      return this.parseAnalysisResponse(text, "document", documentFile.name);
+    } catch (error) {
+      console.error("Error en análisis de documento con Gemini:", error);
+      throw new Error("Error al analizar el documento con Gemini");
+    }
+  }
+
   private createAnalysisPrompt(text: string): string {
     return `
 Analiza el siguiente texto y determina si fue generado por inteligencia artificial o por un humano. 
@@ -257,6 +273,55 @@ Considera los siguientes factores:
 8. Artefactos de compresión o generación
 9. Duración y coherencia temporal
 10. Calidad general del video
+`;
+  }
+
+  private createDocumentAnalysisPrompt(): string {
+    return `
+Analiza este documento y determina si fue generado por inteligencia artificial o escrito por un humano.
+
+IMPORTANTE: Busca patrones típicos de IA como:
+- Estructura muy organizada y formal
+- Uso excesivo de conectores y transiciones
+- Lenguaje demasiado pulido o genérico
+- Falta de errores menores típicos humanos
+- Repetición de patrones de escritura
+- Contenido muy estructurado sin espontaneidad
+
+Proporciona tu análisis en el siguiente formato JSON:
+{
+  "isAI": boolean,
+  "confidence": number (0-100),
+  "probability": {
+    "ai": number (0-100),
+    "human": number (0-100)
+  },
+  "explanation": "Explicación detallada de tu decisión",
+  "methodology": "Metodología utilizada para el análisis",
+  "factors": [
+    {
+      "name": "nombre del factor",
+      "weight": number (0-1),
+      "value": number (0-100),
+      "description": "descripción del factor",
+      "impact": "positive|negative|neutral"
+    }
+  ]
+}
+
+Considera los siguientes factores:
+1. Estructura y organización del documento
+2. Uso de conectores y transiciones
+3. Estilo de escritura y tono
+4. Consistencia en el formato
+5. Originalidad del contenido
+6. Complejidad del vocabulario
+7. Patrones de argumentación
+8. Uso de evidencia y referencias
+9. Fluidez natural del texto
+10. Errores menores típicos humanos
+11. Coherencia temática
+12. Longitud y desarrollo del contenido
 `;
   }
 

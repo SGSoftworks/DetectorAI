@@ -12,11 +12,13 @@ import { useDropzone } from "react-dropzone";
 import toast from "react-hot-toast";
 import ExpandableText from "@/components/ExpandableText";
 import RelatedContentCarousel from "@/components/RelatedContentCarousel";
+import { analysisService } from "@/services/analysisService";
+import type { AnalysisResult } from "@/types";
 
 const ImageAnalysis: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -56,88 +58,17 @@ const ImageAnalysis: React.FC = () => {
     setResult(null);
 
     try {
-      // Simular análisis (en producción, aquí se llamaría al servicio real)
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // Resultado simulado
-      const mockResult = {
-        id: `img_${Date.now()}`,
-        type: "image",
-        isAI: Math.random() > 0.5,
-        confidence: Math.floor(Math.random() * 40) + 60, // 60-100%
-        explanation:
-          "El análisis de la imagen sugiere que fue generada por IA basándose en patrones de textura, iluminación y composición típicos de modelos generativos.",
-        methodology:
-          "Análisis de patrones de píxeles, detección de artefactos de compresión y evaluación de consistencia visual",
-        factors: [
-          {
-            name: "Patrones de textura",
-            value: 75,
-            impact: "negative",
-            description:
-              "Se detectaron patrones de textura artificiales típicos de modelos generativos de IA, con repeticiones y simetrías poco naturales.",
-          },
-          {
-            name: "Consistencia de iluminación",
-            value: 60,
-            impact: "positive",
-            description:
-              "La iluminación muestra cierta consistencia, aunque presenta algunas anomalías menores que podrían indicar manipulación.",
-          },
-          {
-            name: "Artefactos de compresión",
-            value: 85,
-            impact: "negative",
-            description:
-              "Se encontraron artefactos de compresión y distorsiones que son característicos de imágenes generadas por IA.",
-          },
-          {
-            name: "Resolución y calidad",
-            value: 70,
-            impact: "positive",
-            description:
-              "La resolución y calidad general de la imagen son aceptables, con algunos detalles que sugieren procesamiento artificial.",
-          },
-        ],
-        metadata: {
-          timestamp: new Date(),
-          processingTime: 3000,
-          model: "image-detection-v1",
-          version: "1.0.0",
-        },
-        relatedContent: [
-          {
-            title: "Herramientas de detección de imágenes generadas por IA",
-            snippet:
-              "Descubre las mejores herramientas para detectar imágenes generadas por inteligencia artificial y deepfakes.",
-            url: "https://example.com/ai-image-detection-tools",
-            source: "techcrunch.com",
-            relevance: 0.95,
-          },
-          {
-            title: "Cómo identificar imágenes falsas generadas por IA",
-            snippet:
-              "Guía completa para identificar señales de que una imagen fue generada por inteligencia artificial.",
-            url: "https://example.com/identify-ai-images",
-            source: "wired.com",
-            relevance: 0.88,
-          },
-          {
-            title: "Verificador de imágenes AI - Herramienta gratuita",
-            snippet:
-              "Utiliza esta herramienta gratuita para verificar si una imagen fue generada por IA o es real.",
-            url: "https://example.com/ai-image-verifier",
-            source: "verification-tools.com",
-            relevance: 0.92,
-          },
-        ],
-      };
-
-      setResult(mockResult);
-      toast.success("Análisis completado exitosamente");
+      const response = await analysisService.analyzeImage(selectedFile);
+      
+      if (response.success && response.data) {
+        setResult(response.data);
+        toast.success("Análisis completado exitosamente");
+      } else {
+        setError(response.error || "Error desconocido");
+        toast.error(response.error || "Error al analizar la imagen");
+      }
     } catch (err) {
-      const errorMessage =
-        "Error al analizar la imagen. Por favor, intenta de nuevo.";
+      const errorMessage = "Error interno del servidor. Por favor, intenta de nuevo.";
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -320,27 +251,27 @@ const ImageAnalysis: React.FC = () => {
               {/* Main Result - Full Width */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                 <div className="text-center mb-6">
-                  <div
-                    className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                      result.isAI ? "bg-danger-100" : "bg-success-100"
-                    }`}
-                  >
-                    {result.isAI ? (
-                      <XCircle className="w-10 h-10 text-danger-600" />
-                    ) : (
-                      <CheckCircle className="w-10 h-10 text-success-600" />
-                    )}
-                  </div>
-                  <h4
-                    className={`text-2xl font-bold mb-2 ${
-                      result.isAI ? "text-danger-600" : "text-success-600"
-                    }`}
-                  >
-                    {result.isAI ? "Generada por IA" : "Imagen Real"}
-                  </h4>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">
-                    {result.confidence}%
-                  </div>
+                                     <div
+                     className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                       result.result.isAI ? "bg-danger-100" : "bg-success-100"
+                     }`}
+                   >
+                     {result.result.isAI ? (
+                       <XCircle className="w-10 h-10 text-danger-600" />
+                     ) : (
+                       <CheckCircle className="w-10 h-10 text-success-600" />
+                     )}
+                   </div>
+                   <h4
+                     className={`text-2xl font-bold mb-2 ${
+                       result.result.isAI ? "text-danger-600" : "text-success-600"
+                     }`}
+                   >
+                     {result.result.isAI ? "Generada por IA" : "Imagen Real"}
+                   </h4>
+                   <div className="text-3xl font-bold text-gray-900 mb-2">
+                     {result.result.confidence}%
+                   </div>
                   <p className="text-gray-600">Confianza en el resultado</p>
                 </div>
 
@@ -350,33 +281,33 @@ const ImageAnalysis: React.FC = () => {
                     <h5 className="font-semibold text-gray-900 mb-2">
                       Explicación
                     </h5>
-                    <ExpandableText
-                      text={result.explanation}
-                      maxLength={200}
-                      className="text-gray-700"
-                    />
-                  </div>
-                  <div>
-                    <h5 className="font-semibold text-gray-900 mb-2">
-                      Metodología
-                    </h5>
-                    <ExpandableText
-                      text={result.methodology}
-                      maxLength={200}
-                      className="text-gray-700"
-                    />
+                                         <ExpandableText
+                       text={result.result.explanation}
+                       maxLength={200}
+                       className="text-gray-700"
+                     />
+                   </div>
+                   <div>
+                     <h5 className="font-semibold text-gray-900 mb-2">
+                       Metodología
+                     </h5>
+                     <ExpandableText
+                       text={result.result.methodology}
+                       maxLength={200}
+                       className="text-gray-700"
+                     />
                   </div>
                 </div>
               </div>
 
               {/* Analysis Factors - Grid Layout */}
-              {result.factors && result.factors.length > 0 && (
+                             {result.result.factors && result.result.factors.length > 0 && (
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">
                     Factores de Análisis
                   </h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {result.factors.map((factor: any, index: number) => (
+                                         {result.result.factors.map((factor: any, index: number) => (
                       <div
                         key={index}
                         className="border border-gray-200 rounded-lg p-4"

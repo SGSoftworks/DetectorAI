@@ -210,7 +210,70 @@ class AnalysisService {
     }
   }
 
+  async analyzeDocument(documentFile: File): Promise<ApiResponse<AnalysisResult>> {
+    if (this.isProcessing) {
+      return {
+        success: false,
+        error: 'Ya hay un análisis en proceso. Por favor, espera.'
+      };
+    }
 
+    this.isProcessing = true;
+    const startTime = Date.now();
+
+    try {
+      // Validar archivo
+      if (!documentFile) {
+        return {
+          success: false,
+          error: 'No se ha seleccionado ningún documento'
+        };
+      }
+
+      if (documentFile.size > 50 * 1024 * 1024) { // 50MB
+        return {
+          success: false,
+          error: 'El documento es demasiado grande. Máximo 50MB.'
+        };
+      }
+
+      // Ejecutar análisis con Gemini
+      const geminiResult = await geminiService.analyzeDocument(documentFile);
+
+      // Actualizar tiempo de procesamiento
+      const processingTime = Date.now() - startTime;
+      geminiResult.metadata.processingTime = processingTime;
+      
+      // Buscar documentos relacionados de forma asíncrona
+      this.searchRelatedDocuments(documentFile.name).then(relatedDocuments => {
+        if (relatedDocuments.length === 0) {
+          geminiResult.relatedContent = this.generateExampleDocumentContent(documentFile.name);
+        } else {
+          geminiResult.relatedContent = relatedDocuments;
+        }
+      }).catch(error => {
+        console.error('Error al buscar documentos relacionados:', error);
+        geminiResult.relatedContent = this.generateExampleDocumentContent(documentFile.name);
+      });
+
+      this.isProcessing = false;
+
+      return {
+        success: true,
+        data: geminiResult,
+        message: 'Análisis de documento completado exitosamente'
+      };
+
+    } catch (error) {
+      this.isProcessing = false;
+      console.error('Error en análisis de documento:', error);
+      
+      return {
+        success: false,
+        error: 'Error interno del servidor. Por favor, intenta de nuevo.'
+      };
+    }
+  }
 
   private async searchRelatedContent(text: string): Promise<any[]> {
     try {
@@ -280,6 +343,22 @@ class AnalysisService {
       return relatedVideos;
     } catch (error) {
       console.error('Error al buscar videos relacionados:', error);
+      return [];
+    }
+  }
+
+  private async searchRelatedDocuments(documentName: string): Promise<any[]> {
+    try {
+      // Extraer palabras clave del nombre del documento
+      const keywords = this.extractKeywords(documentName);
+      const searchQuery = `documento ${keywords.slice(0, 3).join(' ')} verificación`;
+      
+      // Buscar documentos relacionados
+      const relatedDocuments = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      
+      return relatedDocuments;
+    } catch (error) {
+      console.error('Error al buscar documentos relacionados:', error);
       return [];
     }
   }
@@ -367,6 +446,35 @@ class AnalysisService {
         snippet: `Guía completa para verificar la autenticidad de videos y contenido multimedia.`,
         relevance: 0.80,
         domain: 'verificationhandbook.com'
+      }
+    ];
+  }
+
+  private generateExampleDocumentContent(documentName: string): any[] {
+    const keywords = this.extractKeywords(documentName);
+    const mainKeyword = keywords[0] || 'documento';
+    
+    return [
+      {
+        title: `Verificación de documento: ${mainKeyword}`,
+        url: 'https://www.turnitin.com',
+        snippet: `Herramienta de detección de plagio y verificación de autenticidad de documentos.`,
+        relevance: 0.90,
+        domain: 'turnitin.com'
+      },
+      {
+        title: `Análisis de documentos con IA`,
+        url: 'https://www.copyleaks.com',
+        snippet: `Detección avanzada de contenido generado por IA en documentos y textos.`,
+        relevance: 0.85,
+        domain: 'copyleaks.com'
+      },
+      {
+        title: `Verificación de autenticidad de documentos`,
+        url: 'https://www.grammarly.com',
+        snippet: `Herramientas para verificar la autenticidad y calidad de documentos escritos.`,
+        relevance: 0.80,
+        domain: 'grammarly.com'
       }
     ];
   }

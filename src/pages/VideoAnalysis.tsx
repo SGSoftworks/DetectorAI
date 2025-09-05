@@ -12,11 +12,13 @@ import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
 import ExpandableText from '@/components/ExpandableText';
 import RelatedContentCarousel from '@/components/RelatedContentCarousel';
+import { analysisService } from '@/services/analysisService';
+import type { AnalysisResult } from '@/types';
 
 const VideoAnalysis: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -55,58 +57,17 @@ const VideoAnalysis: React.FC = () => {
     setResult(null);
 
     try {
-      // Simular análisis (en producción, aquí se llamaría al servicio real)
-      await new Promise(resolve => setTimeout(resolve, 5000));
+      const response = await analysisService.analyzeVideo(selectedFile);
       
-      // Resultado simulado
-      const mockResult = {
-        id: `vid_${Date.now()}`,
-        type: 'video',
-        isAI: Math.random() > 0.5,
-        confidence: Math.floor(Math.random() * 40) + 60, // 60-100%
-        explanation: 'El análisis del video sugiere que contiene contenido generado por IA basándose en la detección de deepfakes y anomalías temporales.',
-        methodology: 'Análisis de frames, detección de deepfakes, evaluación de consistencia temporal y análisis de audio',
-        factors: [
-          { name: 'Detección de deepfakes', value: 80, impact: 'negative', description: 'Se detectaron patrones de deepfake con alta probabilidad, incluyendo inconsistencias faciales y movimientos poco naturales.' },
-          { name: 'Consistencia temporal', value: 65, impact: 'positive', description: 'La consistencia temporal entre frames es aceptable, aunque presenta algunas discontinuidades menores.' },
-          { name: 'Calidad de audio', value: 70, impact: 'positive', description: 'La calidad del audio es buena, con sincronización adecuada entre audio y video.' },
-          { name: 'Anomalías visuales', value: 75, impact: 'negative', description: 'Se encontraron anomalías visuales típicas de contenido generado por IA, como distorsiones y artefactos.' }
-        ],
-        metadata: {
-          timestamp: new Date(),
-          processingTime: 5000,
-          model: 'video-detection-v1',
-          version: '1.0.0'
-        },
-        relatedContent: [
-          {
-            title: 'Detección de deepfakes y videos falsos',
-            snippet: 'Herramientas avanzadas para detectar videos manipulados y deepfakes generados por IA.',
-            url: 'https://example.com/deepfake-detection',
-            source: 'mit.edu',
-            relevance: 0.96
-          },
-          {
-            title: 'Cómo identificar videos generados por IA',
-            snippet: 'Técnicas y herramientas para identificar contenido de video generado por inteligencia artificial.',
-            url: 'https://example.com/ai-video-detection',
-            source: 'arstechnica.com',
-            relevance: 0.89
-          },
-          {
-            title: 'Verificador de autenticidad de videos',
-            snippet: 'Plataforma gratuita para verificar la autenticidad de videos y detectar manipulaciones.',
-            url: 'https://example.com/video-authenticity-checker',
-            source: 'verification-platform.com',
-            relevance: 0.93
-          }
-        ]
-      };
-
-      setResult(mockResult);
-      toast.success('Análisis completado exitosamente');
+      if (response.success && response.data) {
+        setResult(response.data);
+        toast.success('Análisis completado exitosamente');
+      } else {
+        setError(response.error || 'Error desconocido');
+        toast.error(response.error || 'Error al analizar el video');
+      }
     } catch (err) {
-      const errorMessage = 'Error al analizar el video. Por favor, intenta de nuevo.';
+      const errorMessage = 'Error interno del servidor. Por favor, intenta de nuevo.';
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -284,21 +245,21 @@ const VideoAnalysis: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <div className="text-center mb-6">
                     <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                      result.isAI ? 'bg-danger-100' : 'bg-success-100'
+                      result.result.isAI ? 'bg-danger-100' : 'bg-success-100'
                     }`}>
-                      {result.isAI ? (
+                      {result.result.isAI ? (
                         <XCircle className="w-10 h-10 text-danger-600" />
                       ) : (
                         <CheckCircle className="w-10 h-10 text-success-600" />
                       )}
                     </div>
                     <h4 className={`text-2xl font-bold mb-2 ${
-                      result.isAI ? 'text-danger-600' : 'text-success-600'
+                      result.result.isAI ? 'text-danger-600' : 'text-success-600'
                     }`}>
-                      {result.isAI ? 'Contiene IA/Deepfake' : 'Video Real'}
+                      {result.result.isAI ? 'Contiene IA/Deepfake' : 'Video Real'}
                     </h4>
                     <div className="text-3xl font-bold text-gray-900 mb-2">
-                      {result.confidence}%
+                      {result.result.confidence}%
                     </div>
                     <p className="text-gray-600">Confianza en el resultado</p>
                   </div>
@@ -308,7 +269,7 @@ const VideoAnalysis: React.FC = () => {
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
                       <ExpandableText 
-                        text={result.explanation} 
+                        text={result.result.explanation} 
                         maxLength={200}
                         className="text-gray-700"
                       />
@@ -316,7 +277,7 @@ const VideoAnalysis: React.FC = () => {
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
                       <ExpandableText 
-                        text={result.methodology} 
+                        text={result.result.methodology} 
                         maxLength={200}
                         className="text-gray-700"
                       />
@@ -325,13 +286,13 @@ const VideoAnalysis: React.FC = () => {
                 </div>
 
                 {/* Analysis Factors - Grid Layout */}
-                {result.factors && result.factors.length > 0 && (
+                {result.result.factors && result.result.factors.length > 0 && (
                   <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       Factores de Análisis
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {result.factors.map((factor: any, index: number) => (
+                      {result.result.factors.map((factor: any, index: number) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium text-gray-900 text-sm">{factor.name}</h4>

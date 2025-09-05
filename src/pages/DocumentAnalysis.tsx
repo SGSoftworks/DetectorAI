@@ -12,11 +12,13 @@ import { useDropzone } from 'react-dropzone';
 import toast from 'react-hot-toast';
 import ExpandableText from '@/components/ExpandableText';
 import RelatedContentCarousel from '@/components/RelatedContentCarousel';
+import { analysisService } from '@/services/analysisService';
+import type { AnalysisResult } from '@/types';
 
 const DocumentAnalysis: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const onDrop = (acceptedFiles: File[]) => {
@@ -55,56 +57,15 @@ const DocumentAnalysis: React.FC = () => {
     setResult(null);
 
     try {
-      // Simular análisis (en producción, aquí se llamaría al servicio real)
-      await new Promise(resolve => setTimeout(resolve, 4000));
+      const response = await analysisService.analyzeDocument(selectedFile);
       
-      // Resultado simulado
-      const mockResult = {
-        id: `doc_${Date.now()}`,
-        type: 'document',
-        isAI: Math.random() > 0.5,
-        confidence: Math.floor(Math.random() * 40) + 60, // 60-100%
-        explanation: 'El análisis del documento sugiere que fue generado por IA basándose en patrones de escritura, estructura y coherencia del contenido.',
-        methodology: 'Análisis de texto extraído, evaluación de estructura, detección de patrones de IA y análisis de imágenes incluidas',
-        factors: [
-          { name: 'Patrones de escritura', value: 75, impact: 'negative', description: 'Se detectaron patrones de escritura típicos de IA, con uso excesivo de conectores y estructuras repetitivas.' },
-          { name: 'Estructura del documento', value: 60, impact: 'positive', description: 'La estructura del documento es coherente, aunque presenta algunas inconsistencias menores en el formato.' },
-          { name: 'Coherencia del contenido', value: 70, impact: 'positive', description: 'El contenido muestra buena coherencia temática, con transiciones lógicas entre secciones.' },
-          { name: 'Uso de conectores', value: 80, impact: 'negative', description: 'Se observa un uso excesivo de conectores y frases de transición, típico de contenido generado por IA.' }
-        ],
-        metadata: {
-          timestamp: new Date(),
-          processingTime: 4000,
-          model: 'document-detection-v1',
-          version: '1.0.0'
-        },
-        relatedContent: [
-          {
-            title: 'Detección de documentos generados por IA',
-            snippet: 'Herramientas y técnicas para identificar documentos creados por inteligencia artificial.',
-            url: 'https://example.com/ai-document-detection',
-            source: 'academic-research.org',
-            relevance: 0.94
-          },
-          {
-            title: 'Análisis de autenticidad de documentos',
-            snippet: 'Métodos avanzados para verificar la autenticidad y origen de documentos digitales.',
-            url: 'https://example.com/document-authenticity',
-            source: 'forensic-analysis.com',
-            relevance: 0.87
-          },
-          {
-            title: 'Verificador de plagio y contenido AI',
-            snippet: 'Plataforma para detectar plagio y contenido generado por inteligencia artificial en documentos.',
-            url: 'https://example.com/plagiarism-ai-detector',
-            source: 'content-verification.com',
-            relevance: 0.91
-          }
-        ]
-      };
-
-      setResult(mockResult);
-      toast.success('Análisis completado exitosamente');
+      if (response.success && response.data) {
+        setResult(response.data);
+        toast.success('Análisis completado exitosamente');
+      } else {
+        setError(response.error || 'Error desconocido');
+        toast.error(response.error || 'Error al analizar el documento');
+      }
     } catch (err) {
       const errorMessage = 'Error al analizar el documento. Por favor, intenta de nuevo.';
       setError(errorMessage);
@@ -284,21 +245,21 @@ const DocumentAnalysis: React.FC = () => {
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                   <div className="text-center mb-6">
                     <div className={`w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 ${
-                      result.isAI ? 'bg-danger-100' : 'bg-success-100'
+                      result.result.isAI ? 'bg-danger-100' : 'bg-success-100'
                     }`}>
-                      {result.isAI ? (
+                      {result.result.isAI ? (
                         <XCircle className="w-10 h-10 text-danger-600" />
                       ) : (
                         <CheckCircle className="w-10 h-10 text-success-600" />
                       )}
                     </div>
                     <h4 className={`text-2xl font-bold mb-2 ${
-                      result.isAI ? 'text-danger-600' : 'text-success-600'
+                      result.result.isAI ? 'text-danger-600' : 'text-success-600'
                     }`}>
-                      {result.isAI ? 'Generado por IA' : 'Documento Humano'}
+                      {result.result.isAI ? 'Generado por IA' : 'Documento Humano'}
                     </h4>
                     <div className="text-3xl font-bold text-gray-900 mb-2">
-                      {result.confidence}%
+                      {result.result.confidence}%
                     </div>
                     <p className="text-gray-600">Confianza en el resultado</p>
                   </div>
@@ -308,7 +269,7 @@ const DocumentAnalysis: React.FC = () => {
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Explicación</h5>
                       <ExpandableText 
-                        text={result.explanation} 
+                        text={result.result.explanation} 
                         maxLength={200}
                         className="text-gray-700"
                       />
@@ -316,7 +277,7 @@ const DocumentAnalysis: React.FC = () => {
                     <div>
                       <h5 className="font-semibold text-gray-900 mb-2">Metodología</h5>
                       <ExpandableText 
-                        text={result.methodology} 
+                        text={result.result.methodology} 
                         maxLength={200}
                         className="text-gray-700"
                       />
@@ -325,13 +286,13 @@ const DocumentAnalysis: React.FC = () => {
                 </div>
 
                 {/* Analysis Factors - Grid Layout */}
-                {result.factors && result.factors.length > 0 && (
+                {result.result.factors && result.result.factors.length > 0 && (
                   <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">
                       Factores de Análisis
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                      {result.factors.map((factor: any, index: number) => (
+                      {result.result.factors.map((factor: any, index: number) => (
                         <div key={index} className="border border-gray-200 rounded-lg p-4">
                           <div className="flex justify-between items-start mb-2">
                             <h4 className="font-medium text-gray-900 text-sm">{factor.name}</h4>
