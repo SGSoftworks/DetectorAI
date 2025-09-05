@@ -5,6 +5,19 @@ Todos los cambios notables de este proyecto serán documentados en este archivo.
 El formato está basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
 y este proyecto adhiere a [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.5.3] - 2024-12-19
+
+### 🔧 Corregido
+- Corregido error de permisos de Firebase en Dashboard
+- Simplificado manejo de errores de Firebase para mejor rendimiento
+- Corregido problema de fecha "Invalid Date" en análisis recientes
+- Eliminados archivos de configuración innecesarios (firebase.json, firestore.indexes.json)
+
+### ⚡ Mejorado
+- Dashboard ahora funciona correctamente con datos reales de Firebase
+- Mejor manejo de fechas en análisis recientes con fallbacks
+- Simplificado sistema de consultas de Firebase sin ordenamiento complejo
+
 ## [1.5.2] - 2024-12-XX
 
 ### ✅ Agregado

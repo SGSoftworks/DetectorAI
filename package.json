@@ -1,7 +1,7 @@
 {
   "name": "detector-ai",
   "private": true,
-  "version": "1.5.2",
+  "version": "1.5.3",
   "type": "module",
   "description": "Sistema de detección de contenido generado por inteligencia artificial",
   "keywords": ["ai", "detection", "fake-news", "machine-learning", "react", "typescript"],

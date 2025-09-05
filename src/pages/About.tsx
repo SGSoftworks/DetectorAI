@@ -93,9 +93,20 @@ const About: React.FC = () => {
 
   const versions = [
     {
-      version: "1.5.2",
+      version: "1.5.3",
       date: "Diciembre 2024",
       status: "Actual",
+      changes: [
+        "Corregido error de permisos de Firebase",
+        "Simplificado manejo de errores de Dashboard",
+        "Corregido problema de fecha en análisis recientes",
+        "Eliminados archivos de configuración innecesarios",
+      ],
+    },
+    {
+      version: "1.5.2",
+      date: "Diciembre 2024",
+      status: "Estable",
       changes: [
         "Restauración completa del carrusel",
         "Mejora de detección de videos de IA",

@@ -321,7 +321,10 @@ const Dashboard: React.FC = () => {
                         Análisis de {analysis.type}
                       </p>
                       <p className="text-sm text-gray-500">
-                        {new Date(analysis.metadata.timestamp).toLocaleString('es-ES')}
+                        {analysis.metadata?.timestamp ? 
+                          new Date(analysis.metadata.timestamp).toLocaleString('es-ES') :
+                          'Fecha no disponible'
+                        }
                       </p>
                     </div>
                   </div>
