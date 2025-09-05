@@ -279,12 +279,34 @@ class AnalysisService {
     try {
       // Extraer palabras clave del texto
       const keywords = this.extractKeywords(text);
-      const searchQuery = keywords.slice(0, 5).join(' ');
       
-      // Buscar contenido relacionado
-      const relatedContent = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      // Crear múltiples consultas de búsqueda para mejor cobertura
+      const searchQueries = [
+        keywords.slice(0, 3).join(' '),
+        `verificar información ${keywords.slice(0, 2).join(' ')}`,
+        `fact check ${keywords.slice(0, 2).join(' ')}`,
+        `noticias ${keywords.slice(0, 2).join(' ')}`
+      ];
       
-      return relatedContent;
+      // Buscar con cada consulta y combinar resultados
+      const allResults = await Promise.allSettled(
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+      );
+      
+      // Combinar y deduplicar resultados
+      const combinedResults: any[] = [];
+      allResults.forEach(result => {
+        if (result.status === 'fulfilled' && result.value) {
+          combinedResults.push(...result.value);
+        }
+      });
+      
+      // Remover duplicados basado en URL
+      const uniqueResults = combinedResults.filter((item, index, self) => 
+        index === self.findIndex(t => t.url === item.url)
+      );
+      
+      return uniqueResults.slice(0, 5); // Máximo 5 resultados
     } catch (error) {
       console.error('Error al buscar contenido relacionado:', error);
       return [];
@@ -294,13 +316,17 @@ class AnalysisService {
   private extractKeywords(text: string): string[] {
     // Eliminar palabras comunes y extraer palabras significativas
     const commonWords = new Set([
-      'el', 'la', 'de', 'que', 'y', 'a', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'más', 'muy', 'ya', 'todo', 'esta', 'está', 'han', 'hay', 'fue', 'ser', 'tiene', 'puede', 'hacer', 'decir', 'ver', 'saber', 'querer', 'ir', 'venir', 'dar', 'tener', 'estar', 'hacer', 'poder', 'decir', 'ver', 'saber', 'querer', 'ir', 'venir', 'dar', 'tener', 'estar'
+      'el', 'la', 'de', 'que', 'y', 'a', 'en', 'un', 'es', 'se', 'no', 'te', 'lo', 'le', 'da', 'su', 'por', 'son', 'con', 'para', 'al', 'del', 'los', 'las', 'una', 'como', 'pero', 'sus', 'más', 'muy', 'ya', 'todo', 'esta', 'está', 'han', 'hay', 'fue', 'ser', 'tiene', 'puede', 'hacer', 'decir', 'ver', 'saber', 'querer', 'ir', 'venir', 'dar', 'tener', 'estar', 'hacer', 'poder', 'decir', 'ver', 'saber', 'querer', 'ir', 'venir', 'dar', 'tener', 'estar',
+      // Palabras comunes en inglés
+      'the', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with', 'by', 'from', 'up', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between', 'among', 'under', 'over', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must', 'can', 'this', 'that', 'these', 'those', 'i', 'you', 'he', 'she', 'it', 'we', 'they', 'me', 'him', 'her', 'us', 'them', 'my', 'your', 'his', 'her', 'its', 'our', 'their'
     ]);
 
+    // Limpiar el texto y extraer palabras
     const words = text.toLowerCase()
-      .replace(/[^\w\s]/g, ' ')
+      .replace(/[^\w\s]/g, ' ') // Reemplazar caracteres especiales con espacios
+      .replace(/\d+/g, ' ') // Remover números
       .split(/\s+/)
-      .filter(word => word.length > 3 && !commonWords.has(word));
+      .filter(word => word.length > 2 && !commonWords.has(word));
 
     // Contar frecuencia de palabras
     const wordFreq: Record<string, number> = {};
@@ -311,7 +337,7 @@ class AnalysisService {
     // Ordenar por frecuencia y devolver las más comunes
     return Object.entries(wordFreq)
       .sort(([, a], [, b]) => b - a)
-      .slice(0, 10)
+      .slice(0, 8) // Reducir a 8 palabras clave
       .map(([word]) => word);
   }
 
@@ -319,12 +345,34 @@ class AnalysisService {
     try {
       // Extraer palabras clave del nombre de la imagen
       const keywords = this.extractKeywords(imageName);
-      const searchQuery = `imagen ${keywords.slice(0, 3).join(' ')} verificación`;
       
-      // Buscar imágenes relacionadas
-      const relatedImages = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      // Crear múltiples consultas de búsqueda para mejor cobertura
+      const searchQueries = [
+        `imagen similar ${keywords.slice(0, 2).join(' ')}`,
+        `verificar imagen ${keywords.slice(0, 2).join(' ')}`,
+        `búsqueda inversa imagen ${keywords.slice(0, 2).join(' ')}`,
+        `imagen original ${keywords.slice(0, 2).join(' ')}`
+      ];
       
-      return relatedImages;
+      // Buscar con cada consulta y combinar resultados
+      const allResults = await Promise.allSettled(
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+      );
+      
+      // Combinar y deduplicar resultados
+      const combinedResults: any[] = [];
+      allResults.forEach(result => {
+        if (result.status === 'fulfilled' && result.value) {
+          combinedResults.push(...result.value);
+        }
+      });
+      
+      // Remover duplicados basado en URL
+      const uniqueResults = combinedResults.filter((item, index, self) => 
+        index === self.findIndex(t => t.url === item.url)
+      );
+      
+      return uniqueResults.slice(0, 5); // Máximo 5 resultados
     } catch (error) {
       console.error('Error al buscar imágenes relacionadas:', error);
       return [];
@@ -335,12 +383,34 @@ class AnalysisService {
     try {
       // Extraer palabras clave del nombre del video
       const keywords = this.extractKeywords(videoName);
-      const searchQuery = `video ${keywords.slice(0, 3).join(' ')} verificación`;
       
-      // Buscar videos relacionados
-      const relatedVideos = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      // Crear múltiples consultas de búsqueda para mejor cobertura
+      const searchQueries = [
+        `video similar ${keywords.slice(0, 2).join(' ')}`,
+        `verificar video ${keywords.slice(0, 2).join(' ')}`,
+        `deepfake detección ${keywords.slice(0, 2).join(' ')}`,
+        `video original ${keywords.slice(0, 2).join(' ')}`
+      ];
       
-      return relatedVideos;
+      // Buscar con cada consulta y combinar resultados
+      const allResults = await Promise.allSettled(
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+      );
+      
+      // Combinar y deduplicar resultados
+      const combinedResults: any[] = [];
+      allResults.forEach(result => {
+        if (result.status === 'fulfilled' && result.value) {
+          combinedResults.push(...result.value);
+        }
+      });
+      
+      // Remover duplicados basado en URL
+      const uniqueResults = combinedResults.filter((item, index, self) => 
+        index === self.findIndex(t => t.url === item.url)
+      );
+      
+      return uniqueResults.slice(0, 5); // Máximo 5 resultados
     } catch (error) {
       console.error('Error al buscar videos relacionados:', error);
       return [];
@@ -351,12 +421,34 @@ class AnalysisService {
     try {
       // Extraer palabras clave del nombre del documento
       const keywords = this.extractKeywords(documentName);
-      const searchQuery = `documento ${keywords.slice(0, 3).join(' ')} verificación`;
       
-      // Buscar documentos relacionados
-      const relatedDocuments = await googleSearchService.searchRelatedContent(searchQuery, 3);
+      // Crear múltiples consultas de búsqueda para mejor cobertura
+      const searchQueries = [
+        `documento similar ${keywords.slice(0, 2).join(' ')}`,
+        `verificar documento ${keywords.slice(0, 2).join(' ')}`,
+        `plagio detección ${keywords.slice(0, 2).join(' ')}`,
+        `contenido relacionado ${keywords.slice(0, 2).join(' ')}`
+      ];
       
-      return relatedDocuments;
+      // Buscar con cada consulta y combinar resultados
+      const allResults = await Promise.allSettled(
+        searchQueries.map(query => googleSearchService.searchRelatedContent(query, 2))
+      );
+      
+      // Combinar y deduplicar resultados
+      const combinedResults: any[] = [];
+      allResults.forEach(result => {
+        if (result.status === 'fulfilled' && result.value) {
+          combinedResults.push(...result.value);
+        }
+      });
+      
+      // Remover duplicados basado en URL
+      const uniqueResults = combinedResults.filter((item, index, self) => 
+        index === self.findIndex(t => t.url === item.url)
+      );
+      
+      return uniqueResults.slice(0, 5); // Máximo 5 resultados
     } catch (error) {
       console.error('Error al buscar documentos relacionados:', error);
       return [];

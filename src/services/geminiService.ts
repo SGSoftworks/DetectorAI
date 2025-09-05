@@ -187,12 +187,14 @@ NOTA: Si el contenido contiene afirmaciones falsas, conspirativas o científicam
     return `
 Analiza esta imagen y determina si fue generada por inteligencia artificial o es una imagen real capturada por humanos.
 
-IMPORTANTE: Busca patrones típicos de IA como:
-- Artefactos de generación (texturas extrañas, patrones repetitivos)
-- Inconsistencias en iluminación, sombras o perspectivas
-- Detalles imposibles o sobrenaturales
-- Calidad demasiado perfecta o artificial
-- Elementos que no siguen las leyes de la física
+IMPORTANTE: 
+- Responde SIEMPRE en español
+- Busca patrones típicos de IA como:
+  * Artefactos de generación (texturas extrañas, patrones repetitivos)
+  * Inconsistencias en iluminación, sombras o perspectivas
+  * Detalles imposibles o sobrenaturales
+  * Calidad demasiado perfecta o artificial
+  * Elementos que no siguen las leyes de la física
 
 Proporciona tu análisis en el siguiente formato JSON:
 {
@@ -202,14 +204,14 @@ Proporciona tu análisis en el siguiente formato JSON:
     "ai": number (0-100),
     "human": number (0-100)
   },
-  "explanation": "Explicación detallada de tu decisión",
-  "methodology": "Metodología utilizada para el análisis",
+  "explanation": "Explicación detallada de tu decisión en español",
+  "methodology": "Metodología utilizada para el análisis en español",
   "factors": [
     {
-      "name": "nombre del factor",
+      "name": "nombre del factor en español",
       "weight": number (0-1),
       "value": number (0-100),
-      "description": "descripción del factor",
+      "description": "descripción del factor en español",
       "impact": "positive|negative|neutral"
     }
   ]
@@ -226,6 +228,8 @@ Considera los siguientes factores:
 8. Estilo artístico vs. realismo fotográfico
 9. Inconsistencias en el fondo o entorno
 10. Calidad general de la imagen
+
+RESPONDE ÚNICAMENTE EN ESPAÑOL.
 `;
   }
 
@@ -233,13 +237,15 @@ Considera los siguientes factores:
     return `
 Analiza este video y determina si fue generado por inteligencia artificial o es un video real capturado por humanos.
 
-IMPORTANTE: Busca patrones típicos de IA como:
-- Movimientos antinaturales o robóticos
-- Inconsistencias en iluminación entre frames
-- Artefactos de generación o compresión
-- Transiciones extrañas o imposibles
-- Calidad demasiado perfecta o artificial
-- Elementos que no siguen las leyes de la física
+IMPORTANTE: 
+- Responde SIEMPRE en español
+- Busca patrones típicos de IA como:
+  * Movimientos antinaturales o robóticos
+  * Inconsistencias en iluminación entre frames
+  * Artefactos de generación o compresión
+  * Transiciones extrañas o imposibles
+  * Calidad demasiado perfecta o artificial
+  * Elementos que no siguen las leyes de la física
 
 Proporciona tu análisis en el siguiente formato JSON:
 {
@@ -249,14 +255,14 @@ Proporciona tu análisis en el siguiente formato JSON:
     "ai": number (0-100),
     "human": number (0-100)
   },
-  "explanation": "Explicación detallada de tu decisión",
-  "methodology": "Metodología utilizada para el análisis",
+  "explanation": "Explicación detallada de tu decisión en español",
+  "methodology": "Metodología utilizada para el análisis en español",
   "factors": [
     {
-      "name": "nombre del factor",
+      "name": "nombre del factor en español",
       "weight": number (0-1),
       "value": number (0-100),
-      "description": "descripción del factor",
+      "description": "descripción del factor en español",
       "impact": "positive|negative|neutral"
     }
   ]
@@ -273,6 +279,8 @@ Considera los siguientes factores:
 8. Artefactos de compresión o generación
 9. Duración y coherencia temporal
 10. Calidad general del video
+
+RESPONDE ÚNICAMENTE EN ESPAÑOL.
 `;
   }
 
@@ -280,13 +288,15 @@ Considera los siguientes factores:
     return `
 Analiza este documento y determina si fue generado por inteligencia artificial o escrito por un humano.
 
-IMPORTANTE: Busca patrones típicos de IA como:
-- Estructura muy organizada y formal
-- Uso excesivo de conectores y transiciones
-- Lenguaje demasiado pulido o genérico
-- Falta de errores menores típicos humanos
-- Repetición de patrones de escritura
-- Contenido muy estructurado sin espontaneidad
+IMPORTANTE: 
+- Responde SIEMPRE en español
+- Busca patrones típicos de IA como:
+  * Estructura muy organizada y formal
+  * Uso excesivo de conectores y transiciones
+  * Lenguaje demasiado pulido o genérico
+  * Falta de errores menores típicos humanos
+  * Repetición de patrones de escritura
+  * Contenido muy estructurado sin espontaneidad
 
 Proporciona tu análisis en el siguiente formato JSON:
 {
@@ -296,14 +306,14 @@ Proporciona tu análisis en el siguiente formato JSON:
     "ai": number (0-100),
     "human": number (0-100)
   },
-  "explanation": "Explicación detallada de tu decisión",
-  "methodology": "Metodología utilizada para el análisis",
+  "explanation": "Explicación detallada de tu decisión en español",
+  "methodology": "Metodología utilizada para el análisis en español",
   "factors": [
     {
-      "name": "nombre del factor",
+      "name": "nombre del factor en español",
       "weight": number (0-1),
       "value": number (0-100),
-      "description": "descripción del factor",
+      "description": "descripción del factor en español",
       "impact": "positive|negative|neutral"
     }
   ]
@@ -322,6 +332,8 @@ Considera los siguientes factores:
 10. Errores menores típicos humanos
 11. Coherencia temática
 12. Longitud y desarrollo del contenido
+
+RESPONDE ÚNICAMENTE EN ESPAÑOL.
 `;
   }
 
